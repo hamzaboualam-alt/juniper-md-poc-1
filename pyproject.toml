@@ -1,0 +1,17 @@
+[project]
+name = "juniper-md-poc"
+version = "0.1.0"
+description = "POC: DDXPlus sequential-diagnosis game with a human or Claude doctor"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "anthropic>=1.0",
+    "pydantic>=2.7",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

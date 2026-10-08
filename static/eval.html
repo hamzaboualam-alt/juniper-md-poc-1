@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnosis Room · Evaluation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+  :root { --ink: #22303C; --paper: #F6F1E7; --frame: #1B2733; --frame-2: #15202B; --frame-3: #22303C; --line: #2A3A49; --line-2: #3A4C5E; --muted: #9FB3C8; --accent: #B5E48C; --teal: #2A9D8F; --gold: #E9C46A; --orange: #F4A261; --pat: #E76F51; --claude: #7C3AED; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Nunito', sans-serif; color: var(--paper); background: var(--frame); min-height: 100vh; }
+  header { display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 64px; background: var(--frame-2); border-bottom: 2px solid var(--line); }
+  header .logo { font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800; }
+  header a { color: var(--muted); font-weight: 700; text-decoration: none; }
+  header a:hover { color: var(--paper); }
+  main { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; padding: 20px 24px; }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--frame-3); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 18px; }
+  h3 { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  select, input { font: inherit; font-size: 14px; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line-2); background: var(--frame); color: var(--paper); }
+  button { font: inherit; font-weight: 800; font-size: 14px; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--line-2); background: transparent; color: var(--paper); cursor: pointer; }
+  button.accent { background: var(--accent); color: #0F1A14; border-color: var(--accent); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .runs { display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow: auto; }
+  .run { padding: 10px 12px; border-radius: 10px; background: var(--frame); cursor: pointer; display: flex; flex-direction: column; gap: 2px; border: 2px solid transparent; }
+  .run.on { border-color: var(--accent); }
+  .run .t { font-weight: 700; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+  .run .s { font-size: 12px; color: var(--muted); }
+  .tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 999px; background: var(--line-2); color: var(--paper); }
+  .tag.claude { background: var(--claude); } .tag.running { background: var(--gold); color: #0F1A14; } .tag.failed { background: var(--pat); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .tile { padding: 12px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 2px; }
+  .tile .v { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; }
+  .tile .v.accent { color: var(--accent); } .tile .v.warn { color: var(--orange); }
+  .tile .l { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: var(--muted); }
+  .tile .d { font-size: 11px; color: var(--muted); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 1300px) { .grid2 { grid-template-columns: 1fr; } }
+  .bars { display: flex; flex-direction: column; gap: 6px; }
+  .bar { display: grid; grid-template-columns: 200px 1fr 70px; gap: 10px; align-items: center; font-size: 13px; }
+  .bar .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .track { height: 14px; border-radius: 4px; background: var(--frame); overflow: hidden; position: relative; }
+  .bar .track i { display: block; height: 100%; background: var(--teal); border-radius: 0 4px 4px 0; }
+  .bar .n { color: var(--muted); font-weight: 700; text-align: right; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 11px; letter-spacing: .5px; color: var(--muted); }
+  tr.case { cursor: pointer; } tr.case:hover { background: var(--frame); }
+  .ok { color: var(--accent); font-weight: 800; } .bad { color: var(--pat); font-weight: 800; } .warn { color: var(--gold); font-weight: 800; }
+  .muted { color: var(--muted); }
+  .err { color: var(--orange); font-size: 12px; font-weight: 700; min-height: 14px; }
+  dialog { border: 0; border-radius: 16px; padding: 0; background: var(--frame-3); color: var(--paper); width: 760px; max-width: 94vw; max-height: 88vh; }
+  dialog::backdrop { background: rgba(10,16,22,.7); }
+  dialog .in { padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; max-height: 88vh; overflow: auto; }
+  .tr { padding: 8px 10px; border-radius: 10px; background: var(--frame); font-size: 13px; display: flex; flex-direction: column; gap: 2px; }
+  .tr .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  .tr .why { font-size: 12px; color: #C9B6FF; font-style: italic; }
+  .verdict { padding: 10px 12px; border-radius: 10px; background: var(--frame); border-left: 4px solid var(--accent); font-weight: 700; font-size: 13px; }
+  .verdict.bad { border-color: var(--pat); } .verdict.warn { border-color: var(--gold); }
+  .legend { font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">DIAGNOSIS ROOM · EVALUATION</div>
+  <a href="/">← back to the game</a>
+  <span style="flex:1"></span>
+  <span class="muted" id="meta">loading…</span>
+</header>
+<main>
+  <aside class="panel">
+    <h2>New run</h2>
+    <label>DOCTOR<select id="doctor"><option value="claude">Claude (model)</option><option value="baseline">Rule-based baseline (offline)</option></select></label>
+    <label>DIFFICULTY PRESET<select id="preset"></select></label>
+    <div class="legend" id="presetDesc"></div>
+    <label>CASES<input id="n" type="number" min="1" max="500" value="30"></label>
+    <label>SEED (OPTIONAL, FOR A REPEATABLE CASE LIST)<input id="seed" type="number" placeholder="random"></label>
+    <button class="accent" id="start">Start run</button>
+    <div class="err" id="err"></div>
+    <h3>RUNS</h3>
+    <div class="runs" id="runs"></div>
+  </aside>
+  <section class="panel" id="detail">
+    <p class="muted">Pick a run on the left, or start one.</p>
+  </section>
+</main>
+<dialog id="caseDialog"><div class="in" id="caseBody"></div></dialog>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const pct = (x) => x == null ? '—' : `${Math.round(x * 100)}%`;
+const num = (x, d = 1) => x == null ? '—' : Number(x).toFixed(d);
+let S = { presets: [], runs: [], selected: null, detail: null, claude: false };
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.detail || res.statusText);
+  return body;
+}
+
+async function init() {
+  const meta = await api('/api/meta');
+  S.presets = meta.presets; S.claude = meta.claude_available;
+  $('meta').textContent = `${meta.patients.toLocaleString()} patients · ${meta.hard_patients.toLocaleString()} misleading · Claude: ${meta.claude_available ? 'ready' : 'off'}`;
+  $('preset').innerHTML = S.presets.map(p => `<option value="${p.name}">${p.name} · ${p.max_questions} questions</option>`).join('');
+  $('preset').value = 'standard';
+  describePreset();
+  if (!S.claude) { $('doctor').value = 'baseline'; $('doctor').querySelector('[value=claude]').disabled = true; $('err').textContent = meta.claude_error; }
+  await refresh();
+  setInterval(refresh, 4000);
+}
+
+function describePreset() {
+  const p = S.presets.find(p => p.name === $('preset').value);
+  $('presetDesc').textContent = p ? p.description : '';
+}
+
+async function refresh() {
+  S.runs = await api('/api/eval/runs');
+  $('runs').innerHTML = S.runs.map(r => `<div class="run ${r.id === S.selected ? 'on' : ''}" data-id="${r.id}">
+    <div class="t"><span class="tag ${r.doctor === 'claude' ? 'claude' : ''}">${r.doctor}</span><span>${r.preset}</span><span class="tag ${r.status}">${r.status}</span></div>
+    <div class="s">${r.done}/${r.n} cases · top-1 ${pct(r.summary.top1)} · score ${num(r.summary.score, 2)} · ${new Date(r.started * 1000).toLocaleString()}</div></div>`).join('') || '<p class="muted">No runs yet.</p>';
+  const sel = S.runs.find(r => r.id === S.selected);
+  // Re-render the detail only while it can still change, so scrolling and open rows survive the poll.
+  if (sel && (sel.status === 'running' || !S.detail || S.detail.id !== sel.id || S.detail.done !== sel.done)) await showRun(S.selected);
+}
+
+async function showRun(id) {
+  S.selected = id;
+  const r = await api(`/api/eval/runs/${id}`); S.detail = r;
+  const s = r.summary, d = r.config;
+  if (!s.n) { $('detail').innerHTML = `<h2>Run ${id}</h2><p class="muted">${r.status === 'running' ? 'Waiting for the first case…' : 'No cases recorded.'} ${r.error ? '<br>' + esc(r.error) : ''}</p>`; return; }
+  const tile = (v, l, dsc, cls = '') => `<div class="tile"><div class="v ${cls}">${v}</div><div class="l">${l}</div>${dsc ? `<div class="d">${dsc}</div>` : ''}</div>`;
+  const maxN = Math.max(...s.by_condition.map(c => c.n));
+  $('detail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h2>Run ${id}</h2><span class="tag ${r.doctor === 'claude' ? 'claude' : ''}">${r.doctor}</span><span class="tag">${r.preset}</span><span class="tag ${r.status}">${r.status} · ${r.done}/${r.n}</span>
+      <span class="muted" style="font-size:12px">${d.max_questions} questions · pool ${d.case_pool} · unsure ${pct(d.patient_recall)} · candidates ${d.show_candidates ? 'shown' : 'hidden'}</span>
+    </div>
+    ${r.error ? `<div class="err">${esc(r.error)}</div>` : ''}
+    <h3>OUTCOME</h3>
+    <div class="tiles">
+      ${tile(pct(s.top1), 'TOP-1 ACCURACY', 'named the true condition', 'accent')}
+      ${tile(pct(s.top3), 'TOP-3', 'truth within the first three named')}
+      ${tile(num(s.mean_rank), 'MEAN RANK OF TRUTH', 'when it was listed at all')}
+      ${tile(num(s.score, 2), 'MEAN SCORE', '0.6 exact + 0.2 shortlist + 0.2 clues')}
+      ${tile(pct(s.ddx_overlap), 'SHORTLIST OVERLAP', 'with the reference differential')}
+    </div>
+    <h3>PROCESS</h3>
+    <div class="tiles">
+      ${tile(num(s.questions), 'QUESTIONS / CASE', `budget ${d.max_questions}`)}
+      ${tile(pct(s.coverage), 'CLUES UNCOVERED', 'share of the record the doctor saw')}
+      ${tile(pct(s.premature_closure_rate), 'PREMATURE CLOSURE', 'wrong commit before half the budget', s.premature_closure_rate > 0.2 ? 'warn' : '')}
+      ${tile(pct(s.timeout_rate), 'BUDGET EXHAUSTED', 'never committed', s.timeout_rate > 0 ? 'warn' : '')}
+      ${tile(pct(s.abstain_rate), 'ABSTAINED', 'said it could not be determined')}
+      ${tile(pct(s.repeat_rate), 'REPEATED QUESTIONS', 'share of turns re-asking an answered question', s.repeat_rate > 0.1 ? 'warn' : '')}
+      ${tile(num(s.unsure_per_case), 'UNSURE ANSWERS / CASE', 'patient hesitations met')}
+      ${tile(pct(s.unrecognised_rate), 'UNRECOGNISED NAMES', 'named a condition not in the set', s.unrecognised_rate > 0 ? 'warn' : '')}
+    </div>
+    <h3>WHERE IT BREAKS</h3>
+    <div class="tiles">
+      ${tile(pct(s.hard_share), 'MISLEADING CASES', 'truth not top of the reference list')}
+      ${tile(pct(s.accuracy_when_truth_is_ref_top), 'ACCURACY · EASY CASES', 'truth was the reference top-1')}
+      ${tile(pct(s.accuracy_when_truth_not_ref_top), 'ACCURACY · MISLEADING', 'truth was not the reference top-1', 'warn')}
+      ${tile(s.errors, 'DOCTOR ERRORS', 'calls that failed')}
+      ${tile('$' + num(s.cost_usd, 2), 'COST', `${(s.tokens.input_tokens || 0).toLocaleString()} in · ${(s.tokens.output_tokens || 0).toLocaleString()} out · ${(s.tokens.cache_read_input_tokens || 0).toLocaleString()} cached`)}
+      ${tile(num(s.seconds_per_case) + 's', 'SECONDS / CASE', '')}
+    </div>
+    <div class="grid2">
+      <div>
+        <h3>ACCURACY BY TRUE CONDITION (WORST FIRST)</h3>
+        <div class="bars">${s.by_condition.slice(0, 20).map(c => `<div class="bar" title="${esc(c.condition)}: ${c.correct}/${c.n}"><span class="lbl">${esc(c.condition)}</span><span class="track"><i style="width:${c.accuracy * 100}%"></i></span><span class="n">${c.correct}/${c.n}</span></div>`).join('')}</div>
+      </div>
+      <div>
+        <h3>MOST COMMON CONFUSIONS</h3>
+        <table><tr><th>Doctor said</th><th>Truth</th><th>n</th></tr>${s.confusion.map(c => `<tr><td>${esc(c.said)}</td><td>${esc(c.truth)}</td><td>${c.n}</td></tr>`).join('') || '<tr><td colspan="3" class="muted">No misses.</td></tr>'}</table>
+      </div>
+    </div>
+    <h3>CASES</h3>
+    <table><tr><th>#</th><th>Patient</th><th>Came in for</th><th>Truth</th><th>Doctor said</th><th>Q</th><th>Clues</th><th>Score</th><th>Rank</th></tr>
+    ${r.cases.map((c, i) => { const x = c.result; const cls = x.exact ? 'ok' : (x.undeterminable ? 'warn' : 'bad'); return `<tr class="case" data-i="${i}"><td>${i + 1}</td><td>${c.view.age} ${c.view.sex[0]}</td><td>${esc(c.view.initial_complaint.statement)}</td><td>${esc(x.truth)}</td><td class="${cls}">${x.timed_out ? 'timed out' : (x.undeterminable ? 'undetermined' : esc(x.doctor_pathology ?? x.doctor_pathology_raw))}</td><td>${x.questions_asked}</td><td>${pct(x.evidence_coverage)}</td><td>${num(x.score, 2)}</td><td>${x.truth_rank_in_doctor_ddx ?? '—'}</td></tr>`; }).join('')}
+    </table>`;
+}
+
+function showCase(i) {
+  const c = S.detail.cases[i], x = c.result, t = c.truth;
+  const cls = x.exact ? '' : (x.undeterminable ? 'warn' : 'bad');
+  $('caseBody').innerHTML = `
+    <h2>Case ${i + 1} · ${c.view.age} year old ${c.view.sex}</h2>
+    <div class="verdict ${cls}">${esc(x.verdict)}</div>
+    <div class="muted" style="font-size:12px">Truth: <b>${esc(t.pathology)}</b> (reference rank ${t.truth_rank_in_reference ?? '—'}, p=${t.truth_probability_in_reference}) · ${x.questions_asked}/${x.questions_budget} questions · cost $${c.cost_usd} · ${c.seconds}s</div>
+    <div class="tr"><div class="k">PATIENT SAYS ON ARRIVAL</div>${esc(c.view.initial_complaint.statement)}</div>
+    ${c.view.transcript.map((tr, j) => `<div class="tr"><div class="k">${j + 1} · ${tr.by.toUpperCase()}${tr.repeat ? ' · REPEAT' : ''}${tr.unsure ? ' · UNSURE' : ''}</div><div>${esc(tr.question)} → <b>${esc(tr.answer)}</b></div>${tr.rationale ? `<div class="why">${esc(tr.rationale)}</div>` : ''}</div>`).join('')}
+    <div class="tr"><div class="k">COMMIT</div><div>${x.undeterminable ? 'cannot determine' : esc(x.doctor_pathology ?? x.doctor_pathology_raw)}${x.doctor_differential.length > 1 ? ` <span class="muted">then ${x.doctor_differential.slice(1).map(esc).join(', ')}</span>` : ''}</div>${x.rationale ? `<div class="why">${esc(x.rationale)}</div>` : ''}</div>
+    <div class="tr"><div class="k">CLUES OF ${esc(t.pathology).toUpperCase()} NEVER ASKED ABOUT</div>${x.missed_key_clues.map(m => `<div>${esc(m.question)} → <b>${esc(m.answer)}</b></div>`).join('') || '<div class="muted">none</div>'}</div>
+    <div class="tr"><div class="k">REFERENCE DIFFERENTIAL</div><div>${t.reference_differential.map(d => `${esc(d.name)} ${Math.round(d.probability * 100)}%`).join(' · ')}</div></div>
+    <div style="display:flex;justify-content:flex-end"><button onclick="document.getElementById('caseDialog').close()">Close</button></div>`;
+  $('caseDialog').showModal();
+}
+
+$('preset').onchange = describePreset;
+$('start').onclick = async () => {
+  $('err').textContent = ''; $('start').disabled = true;
+  try {
+    const body = { doctor: $('doctor').value, preset: $('preset').value, n: Number($('n').value), seed: $('seed').value === '' ? null : Number($('seed').value) };
+    const { run_id } = await api('/api/eval/runs', { method: 'POST', body: JSON.stringify(body) });
+    S.selected = run_id; await refresh();
+  } catch (e) { $('err').textContent = e.message; }
+  finally { $('start').disabled = false; }
+};
+$('runs').onclick = (e) => { const el = e.target.closest('[data-id]'); if (el) { S.selected = el.dataset.id; showRun(el.dataset.id); document.querySelectorAll('.run').forEach(r => r.classList.toggle('on', r.dataset.id === el.dataset.id)); } };
+$('detail').onclick = (e) => { const tr = e.target.closest('tr.case'); if (tr) showCase(Number(tr.dataset.i)); };
+init().catch(e => { $('meta').textContent = 'failed to load: ' + e.message; });
+</script>
+</body>
+</html>
