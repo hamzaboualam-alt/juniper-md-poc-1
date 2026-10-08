@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnosis Room</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&display=swap">
+<style>
+  :root {
+    --ink: #22303C; --paper: #F6F1E7; --frame: #1B2733; --frame-2: #15202B; --frame-3: #22303C; --line: #2A3A49; --line-2: #3A4C5E;
+    --muted: #9FB3C8; --accent: #B5E48C; --teal: #2A9D8F; --gold: #E9C46A; --orange: #F4A261;
+    --doc: #3D5A80; --doc-soft: #EEF3F8; --pat: #E76F51; --pat-dark: #C85A3E; --pat-soft: #FFF4EF; --claude: #7C3AED; --claude-soft: #C9B6FF;
+    --wall: #DCEFE6; --wall-2: #CFE6DA; --floor: #E9DCC9; --floor-2: #D6C6AE;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font-family: 'Nunito', sans-serif; color: var(--paper); background: var(--frame); overflow: hidden; }
+  button { font: inherit; cursor: pointer; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .frame { display: grid; grid-template-rows: 72px 1fr 184px; grid-template-columns: minmax(0, 1fr) minmax(300px, 24vw); height: 100vh; min-width: 900px; }
+
+  /* HUD */
+  .hud { grid-column: 1 / 3; display: flex; align-items: center; gap: 20px; padding: 0 24px; background: var(--frame-2); border-bottom: 2px solid var(--line); }
+  .hud .logo { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: .5px; }
+  .pill { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--frame-3); font-weight: 700; font-size: 14px; }
+  .pill .k { color: var(--muted); }
+  .meter { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 420px; }
+  .meter .k { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .meter .bar { flex: 1; height: 14px; border-radius: 999px; background: var(--frame-3); overflow: hidden; }
+  .meter .bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .4s; }
+  .live { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .live i { width: 10px; height: 10px; border-radius: 999px; background: var(--accent); display: inline-block; }
+  .live.closed i { background: var(--gold); }
+  .btn { font-weight: 800; font-size: 14px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--line-2); background: transparent; color: var(--paper); }
+  .btn.accent { background: var(--accent); color: #0F1A14; border-color: var(--accent); }
+  .btn.claude { background: var(--claude); color: #fff; border-color: var(--claude); }
+  .btn.big { font-size: 16px; padding: 14px 18px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+  /* ROOM */
+  .room { position: relative; overflow: hidden; background: var(--wall); }
+  .stage { position: absolute; left: 0; top: 0; width: 1000px; height: 600px; transform-origin: top left; }
+  .stage > svg.scene { position: absolute; inset: 0; width: 1000px; height: 600px; }
+  .actor { position: absolute; width: 260px; height: 330px; transition: transform .3s; }
+  .actor.doc { left: 150px; top: 262px; }
+  .actor.pat { left: 640px; top: 262px; }
+  .actor.talking { transform: translateY(-6px); }
+  .bubble { position: absolute; padding: 16px 20px; border-radius: 18px; background: #fff; border: 3px solid var(--doc); color: var(--ink); box-shadow: 0 10px 24px rgba(27,39,51,.18); display: flex; flex-direction: column; gap: 6px; opacity: .55; transition: opacity .3s, transform .3s; }
+  .bubble.on { opacity: 1; animation: pop .35s ease-out; }
+  @keyframes pop { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .bubble::after { content: ""; position: absolute; bottom: -26px; width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 26px solid var(--doc); }
+  .bubble.doc { left: 40px; top: 70px; width: 400px; }
+  .bubble.doc::after { left: 170px; }
+  .bubble.pat { right: 40px; top: 110px; width: 320px; background: var(--pat-soft); border-color: var(--pat); }
+  .bubble.pat::after { right: 120px; border-top-color: var(--pat); }
+  .stage.is-verdict .bubble.doc { width: 330px; left: 30px; top: 96px; }
+  .stage.is-verdict .bubble.doc::after { left: 140px; }
+  .stage.is-verdict .bubble.pat { width: 300px; right: 30px; top: 126px; }
+  .bubble .who { font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--doc); display: flex; align-items: center; gap: 8px; }
+  .bubble.pat .who { color: var(--pat-dark); }
+  .bubble .chip { padding: 2px 8px; border-radius: 999px; background: var(--doc-soft); font-weight: 700; letter-spacing: 0; }
+  .bubble .chip.claude { background: #F1E9FF; color: var(--claude); }
+  .bubble .say { font-size: 21px; font-weight: 700; line-height: 1.3; }
+  .bubble.pat .say { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; }
+  .bubble.pat .say.long { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700; }
+  .bubble .why { font-size: 13px; color: #5B6B7A; font-style: italic; }
+  .bubble .why.claude { color: var(--claude); }
+  .chart { position: absolute; left: 24px; bottom: 20px; display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: rgba(255,255,255,.92); border-radius: 14px; border: 2px solid var(--floor-2); color: var(--ink); }
+  .chart .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #5B6B7A; }
+  .chart .v { font-weight: 700; font-size: 15px; }
+  .chart .v b { color: var(--pat-dark); }
+
+  /* verdict banner */
+  .banner { position: absolute; left: 50%; top: 24px; transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 6px; text-align: center; z-index: 3; }
+  .banner.on { display: flex; animation: pop .4s ease-out; }
+  .banner .stars { display: flex; gap: 6px; }
+  .banner h1 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 54px; line-height: 1; color: #1F7A6E; }
+  .banner h1.bad { color: var(--pat-dark); }
+  .banner h1.warn { color: #B48A1E; }
+  .banner p { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink); }
+
+  /* CASE FILE */
+  .file { background: var(--frame-3); border-left: 2px solid var(--line); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .file .head { padding: 16px 18px 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); }
+  .file .head h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px; }
+  .file .head .n { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .tabs { display: flex; gap: 6px; margin-left: auto; }
+  .tab { font-size: 12px; font-weight: 800; padding: 5px 10px; border-radius: 8px; border: 2px solid var(--line-2); background: transparent; color: var(--muted); }
+  .tab.on { background: var(--line-2); color: var(--paper); }
+  .log { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; flex: 1; }
+  .entry { padding: 10px 12px; border-radius: 10px; background: var(--frame); display: flex; flex-direction: column; gap: 4px; }
+  .entry .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  .entry .k.claude { color: var(--claude-soft); }
+  .entry .q { font-size: 14px; font-weight: 600; }
+  .entry .q b { color: var(--accent); font-weight: 700; }
+  .entry .why { font-size: 12px; color: var(--claude-soft); font-style: italic; }
+  .entry.open { background: var(--line); }
+  .entry.now { background: var(--doc); }
+  .entry.now .k { color: #DCEFE6; }
+  .seal { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .seal .tab { margin-left: auto; }
+  .drawer { position: absolute; inset: 0; background: var(--frame-3); display: none; flex-direction: column; overflow: hidden; }
+  .drawer.on { display: flex; }
+  .truthcard { margin: 12px 14px 0; padding: 12px 14px; border-radius: 12px; background: var(--pat-soft); color: var(--ink); }
+  .truthcard b { font-family: 'Baloo 2', sans-serif; font-size: 20px; }
+  .truthcard .s { font-size: 12px; color: #5B6B7A; font-weight: 700; }
+  .clues { list-style: none; margin: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; overflow: auto; flex: 1; }
+  .clues li { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 6px 8px; border-radius: 8px; background: var(--frame); font-size: 13px; }
+  .clues li .a { font-weight: 800; color: var(--accent); text-align: right; max-width: 40%; }
+  .tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 999px; background: var(--line-2); color: var(--paper); white-space: nowrap; }
+  .tag.truth { background: var(--teal); color: #0F1A14; }
+  .tag.initial { background: var(--gold); color: #0F1A14; }
+  .sev { background: var(--pat); color: #fff; }
+  .stats { padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow: auto; flex: 1; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tile { padding: 12px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 2px; }
+  .tile .v { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; }
+  .tile .v.accent { color: var(--accent); }
+  .tile .l { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: var(--muted); }
+  .bars { display: flex; flex-direction: column; gap: 6px; }
+  .bars .r { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+  .bars .r span:first-child { color: var(--muted); }
+  .bars .bar { height: 12px; border-radius: 999px; background: var(--frame); overflow: hidden; }
+  .bars .bar i { display: block; height: 100%; background: var(--accent); }
+  .bars .bar i.gold { background: var(--gold); }
+  .box { padding: 12px 14px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 8px; }
+  .box .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--orange); }
+  .box .k.m { color: var(--muted); }
+  .box .row { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 600; }
+  .box .row span:last-child { color: var(--accent); white-space: nowrap; font-weight: 800; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { padding: 4px 10px; border-radius: 999px; background: var(--line); font-size: 12px; font-weight: 700; }
+  .chips span.hit { background: var(--teal); color: #0F1A14; font-weight: 800; }
+  .verdict { padding: 12px 14px; border-radius: 12px; font-weight: 700; font-size: 13px; line-height: 1.4; background: var(--frame); border-left: 4px solid var(--accent); }
+  .verdict.bad { border-color: var(--pat); }
+  .verdict.warn { border-color: var(--gold); }
+
+  /* YOUR MOVE */
+  .move { grid-column: 1 / 3; background: var(--frame-2); border-top: 2px solid var(--line); padding: 16px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 24vw); gap: 24px; }
+  .move .top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .move .top h3 { margin: 0; font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 18px; color: var(--accent); }
+  .move .top p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .search { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .search input { font: inherit; font-size: 13px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--line-2); background: var(--frame); color: var(--paper); width: clamp(140px, 18vw, 260px); }
+  .hand { display: flex; gap: 10px; overflow: hidden; }
+  .card { width: 176px; min-height: 92px; flex: none; text-align: left; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--teal); background: var(--frame); color: var(--paper); display: flex; flex-direction: column; gap: 5px; transition: transform .15s; }
+  .card:hover { transform: translateY(-4px); }
+  .card .k { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--teal); }
+  .card.history { border-color: var(--gold); } .card.history .k { color: var(--gold); }
+  .card.asked { opacity: .45; }
+  .card .q { font-size: 13px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .card.more { width: 120px; border: 2px dashed var(--line-2); color: var(--muted); font-weight: 700; font-size: 13px; align-items: center; justify-content: center; }
+  .actions { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+  .actions .row { display: flex; gap: 10px; }
+  .actions .row .btn { flex: 1; padding: 12px; }
+  .err { font-size: 12px; color: var(--orange); font-weight: 700; min-height: 16px; }
+
+  /* diagnosis dialog */
+  dialog { border: 0; border-radius: 18px; padding: 0; background: var(--frame-3); color: var(--paper); width: 560px; max-width: 92vw; }
+  dialog::backdrop { background: rgba(10, 16, 22, .7); }
+  dialog .in { padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
+  dialog h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 22px; }
+  dialog label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  dialog select { font: inherit; font-size: 14px; padding: 10px; border-radius: 10px; border: 2px solid var(--line-2); background: var(--frame); color: var(--paper); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <header class="hud">
+    <div class="logo">DIAGNOSIS ROOM</div>
+    <div class="pill"><span class="k">CASE</span><span id="caseNo">—</span></div>
+    <div class="pill"><span class="k">TURN</span><span id="turn">0 / 20</span></div>
+    <div class="pill"><span class="k">PRESET</span><select id="presetSel" style="font: inherit; font-weight: 700; background: transparent; color: var(--paper); border: 0; cursor: pointer"></select></div>
+    <div class="meter"><span class="k">QUESTION BUDGET</span><div class="bar"><i id="budget" style="width:0%"></i></div></div>
+    <div style="flex:1"></div>
+    <div class="live" id="live"><i></i><span>LIVE CONSULTATION</span></div>
+    <a class="btn" href="/eval" style="text-decoration: none; display: inline-flex; align-items: center">Evaluation</a>
+    <button class="btn" id="newCase">New patient</button>
+  </header>
+
+  <section class="room" id="room">
+    <div class="stage" id="stage">
+      <svg class="scene" viewBox="0 0 1000 600" aria-hidden="true">
+        <rect x="0" y="0" width="1000" height="60" fill="#CFE6DA"></rect>
+        <rect x="0" y="420" width="1000" height="180" fill="#E9DCC9"></rect>
+        <rect x="0" y="420" width="1000" height="10" fill="#D6C6AE"></rect>
+        <rect x="60" y="300" width="150" height="100" rx="8" fill="#BFE3F2" stroke="#F6F1E7" stroke-width="8"></rect>
+        <rect x="60" y="348" width="150" height="4" fill="#F6F1E7"></rect>
+        <g transform="translate(850 70)"><rect width="110" height="150" rx="8" fill="#F6F1E7"></rect><rect x="12" y="14" width="70" height="8" rx="4" fill="#C9D6E2"></rect><rect x="12" y="30" width="86" height="8" rx="4" fill="#C9D6E2"></rect><rect x="12" y="46" width="50" height="8" rx="4" fill="#C9D6E2"></rect><rect x="12" y="62" width="86" height="40" rx="6" fill="#DCEFE6"></rect><rect x="12" y="112" width="70" height="8" rx="4" fill="#C9D6E2"></rect></g>
+        <rect x="380" y="380" width="300" height="110" rx="10" fill="#B98A5E"></rect>
+        <rect x="390" y="486" width="18" height="110" fill="#8E6540"></rect>
+        <rect x="652" y="486" width="18" height="110" fill="#8E6540"></rect>
+        <rect x="460" y="318" width="96" height="66" rx="6" fill="#22303C"></rect>
+        <rect x="468" y="326" width="80" height="50" rx="3" fill="#2A9D8F"></rect>
+        <path d="M500 346 l8 0 l5 -12 l7 24 l6 -14 l6 8 l20 0" fill="none" stroke="#B5E48C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        <rect x="590" y="352" width="60" height="34" rx="4" fill="#F6F1E7" stroke="#D6C6AE" stroke-width="3" transform="rotate(-8 620 369)"></rect>
+      </svg>
+      <svg class="actor doc" id="docActor" viewBox="0 0 260 330" aria-hidden="true">
+        <rect x="40" y="250" width="180" height="22" rx="6" fill="#3D5A80"></rect>
+        <rect x="54" y="272" width="14" height="50" fill="#2B4160"></rect>
+        <rect x="192" y="272" width="14" height="50" fill="#2B4160"></rect>
+        <rect x="30" y="150" width="120" height="110" rx="12" fill="#3D5A80"></rect>
+        <path d="M70 160 Q130 150 190 160 L190 250 L70 250 Z" fill="#F6F1E7"></path>
+        <path d="M118 160 L130 250 L142 160 Z" fill="#8FB8DE"></path>
+        <path d="M96 170 Q100 210 130 210 Q160 210 164 170" fill="none" stroke="#22303C" stroke-width="5" stroke-linecap="round"></path>
+        <circle cx="166" cy="172" r="7" fill="#22303C"></circle>
+        <rect x="150" y="214" width="70" height="40" rx="8" fill="#3D5A80"></rect>
+        <circle cx="130" cy="110" r="46" fill="#F1C9A5"></circle>
+        <path d="M84 100 Q90 60 130 60 Q170 60 176 100 Q150 86 110 90 Q96 96 84 100 Z" fill="#4A3728"></path>
+        <circle cx="116" cy="112" r="4" fill="#22303C"></circle>
+        <circle cx="144" cy="112" r="4" fill="#22303C"></circle>
+        <path id="docMouth" d="M118 128 Q130 136 142 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
+      </svg>
+      <svg class="actor pat" id="patActor" viewBox="0 0 260 330" aria-hidden="true">
+        <rect x="40" y="250" width="180" height="22" rx="6" fill="#8E6540"></rect>
+        <rect x="54" y="272" width="14" height="50" fill="#6E4C2E"></rect>
+        <rect x="192" y="272" width="14" height="50" fill="#6E4C2E"></rect>
+        <rect x="110" y="150" width="120" height="110" rx="12" fill="#8E6540"></rect>
+        <path d="M70 162 Q130 150 190 162 L190 250 L70 250 Z" fill="#E76F51"></path>
+        <path d="M104 166 Q130 186 156 166" fill="none" stroke="#C85A3E" stroke-width="5" stroke-linecap="round"></path>
+        <rect x="40" y="214" width="70" height="40" rx="8" fill="#E76F51"></rect>
+        <path d="M60 236 Q58 250 70 258 L104 258 Q110 248 104 236 Z" fill="#F1C9A5"></path>
+        <circle cx="130" cy="110" r="46" fill="#E8B48C"></circle>
+        <path d="M84 104 Q84 56 130 58 Q176 60 176 104 Q168 76 130 78 Q96 80 84 104 Z" fill="#2B2B2B"></path>
+        <circle cx="116" cy="112" r="4" fill="#22303C"></circle>
+        <circle cx="144" cy="112" r="4" fill="#22303C"></circle>
+        <path id="patMouth" d="M118 128 Q130 136 142 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M100 96 Q110 90 120 96" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
+      </svg>
+      <div class="bubble doc" id="docBubble"><div class="who">DR. ASKS</div><div class="say">…</div></div>
+      <div class="bubble pat" id="patBubble"><div class="who">PATIENT</div><div class="say">…</div></div>
+      <div class="chart"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#22303C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3h6v3H9z M8 11h8 M8 15h5"></path></svg><div><div class="k">PATIENT CHART</div><div class="v" id="chart">—</div></div></div>
+      <div class="banner" id="banner"></div>
+    </div>
+  </section>
+
+  <aside class="file">
+    <div class="head">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16 M4 12h16 M4 18h10"></path></svg>
+      <h2 id="fileTitle">Case file</h2>
+      <div class="tabs" id="fileTabs" style="display:none"><button class="tab on" data-tab="log">Case file</button><button class="tab" data-tab="stats">Verdict</button></div>
+      <span class="n" id="fileCount"></span>
+    </div>
+    <div class="log" id="log"></div>
+    <div class="stats" id="stats" style="display:none"></div>
+    <div class="seal" id="seal">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+      <span id="sealText">The truth stays sealed until you commit</span>
+      <button class="tab" id="peek">Peek</button>
+    </div>
+    <div class="drawer" id="drawer">
+      <div class="head"><h2>What the patient really has</h2><button class="tab" id="closeDrawer" style="margin-left:auto">Close</button></div>
+      <div class="truthcard" id="truthCard"></div>
+      <ul class="clues" id="clues"></ul>
+    </div>
+  </aside>
+
+  <footer class="move">
+    <div>
+      <div class="top"><h3>YOUR MOVE</h3><p id="moveHint">Play a question card, or hand the turn to Claude</p>
+        <label class="search"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg><input type="search" id="qsearch" placeholder="Search 223 questions"></label>
+      </div>
+      <div class="hand" id="hand"></div>
+    </div>
+    <div class="actions">
+      <button class="btn accent big" id="commit"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0F1A14" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Commit a diagnosis</button>
+      <div class="row"><button class="btn claude" id="claudeStep">Claude plays a turn</button><button class="btn claude" id="claudePlay">Claude plays it out</button><button class="btn" id="baselinePlay" title="Rule-based doctor, no model">Baseline plays it out</button><button class="btn" id="undet">Cannot determine</button></div>
+      <div class="err" id="err"></div>
+    </div>
+  </footer>
+</div>
+
+<dialog id="dxDialog">
+  <form method="dialog" class="in">
+    <h2>Commit a diagnosis</h2>
+    <label>THE CONDITION<select id="dx" required></select></label>
+    <label>OTHER CANDIDATES, MOST LIKELY FIRST (OPTIONAL)<select id="ddx" multiple size="5"></select></label>
+    <div class="row" style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" value="cancel" type="button" id="dxCancel">Back</button><button class="btn accent" value="ok" id="dxOk">Commit</button></div>
+  </form>
+</dialog>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let MAX_Q = 20;
+let S = { caseId: null, view: null, truth: null, questions: [], conditions: [], claude: false };
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.detail || res.statusText);
+  return body;
+}
+
+function fitStage() {
+  const r = $('room').getBoundingClientRect();
+  const k = Math.min(r.width / 1000, r.height / 600);
+  $('stage').style.transform = `translate(${(r.width - 1000 * k) / 2}px, ${(r.height - 600 * k)}px) scale(${k})`;
+}
+window.addEventListener('resize', fitStage);
+
+async function init() {
+  const meta = await api('/api/meta');
+  S.claude = meta.claude_available;
+  $('presetSel').innerHTML = meta.presets.map(p => `<option value="${p.name}" title="${esc(p.description)}">${p.name}</option>`).join('');
+  if (!S.claude) { $('claudeStep').title = $('claudePlay').title = meta.claude_error; }
+  S.questions = await api('/api/questions');
+  S.conditions = await api('/api/conditions');
+  $('dx').innerHTML = '<option value="">— pick the condition —</option>' + S.conditions.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  $('ddx').innerHTML = S.conditions.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  fitStage();
+  await newCase();
+}
+
+async function newCase() {
+  S.view = await api(`/api/cases?preset=${encodeURIComponent($('presetSel').value || 'warmup')}`, { method: 'POST' });
+  MAX_Q = S.view.difficulty.max_questions;
+  S.caseId = S.view.case_id;
+  S.truth = await api(`/api/cases/${S.caseId}/truth`);
+  $('caseNo').textContent = '#' + (parseInt(S.caseId, 16) % 10000).toString().padStart(4, '0');
+  $('drawer').classList.remove('on');
+  $('err').textContent = '';
+  $('qsearch').value = '';
+  showTab('log');
+  renderTruth(); render();
+}
+
+function speak(who, label, text, why, opts = {}) {
+  const b = $(who === 'doc' ? 'docBubble' : 'patBubble');
+  b.classList.remove('on'); void b.offsetWidth;
+  b.innerHTML = `<div class="who">${label}</div><div class="say ${opts.long ? 'long' : ''}">${esc(text)}</div>${why ? `<div class="why ${opts.claude ? 'claude' : ''}">${esc(why)}</div>` : ''}`;
+  b.classList.add('on');
+  $('docActor').classList.toggle('talking', who === 'doc');
+  $('patActor').classList.toggle('talking', who === 'pat');
+}
+function mouth(id, shape) { $(id).setAttribute('d', { open: 'M120 128 Q130 142 140 128 Z', smile: 'M118 128 Q130 136 142 128', sad: 'M118 134 Q130 126 142 134' }[shape]); }
+
+function render() {
+  const v = S.view, n = v.transcript.length, last = v.transcript[n - 1];
+  $('turn').textContent = `${n} / ${MAX_Q}`;
+  $('budget').style.width = `${Math.min(100, n / MAX_Q * 100)}%`;
+  $('chart').innerHTML = `${v.age} year old ${v.sex} · came in because: <b>${esc(v.initial_complaint.statement)}</b>`;
+
+  if (v.done) renderVerdict(v.result);
+  else {
+    $('banner').classList.remove('on'); $('stage').classList.remove('is-verdict');
+    $('live').className = 'live'; $('live').lastElementChild.textContent = 'LIVE CONSULTATION';
+    if (!last) {
+      speak('doc', 'DR. ASKS', 'Hello. What brings you in today?', 'Pick a question card below to start the consultation.');
+      $('docBubble').classList.add('on');
+      speak('pat', `PATIENT <span class="chip">why I'm here</span>`, v.initial_complaint.statement, null, { long: true });
+      mouth('docMouth', 'smile'); mouth('patMouth', 'open');
+    } else {
+      const byClaude = last.by === 'claude';
+      speak('doc', `DR. ASKS <span class="chip ${byClaude ? 'claude' : ''}">${byClaude ? 'Claude' : 'turn ' + n}</span>`, last.question, last.rationale || (last.repeat ? 'Asked before: the patient repeats the answer.' : ''), { claude: byClaude });
+      speak('pat', last.unsure ? 'PATIENT HESITATES' : 'PATIENT ANSWERS', last.answer, last.unsure ? 'Ask again to get an answer; it costs a turn.' : null, { long: last.answer.length > 16 });
+      $('docBubble').classList.add('on');
+      mouth('docMouth', 'smile'); mouth('patMouth', 'open');
+    }
+    $('fileTabs').style.display = 'none'; $('fileTitle').textContent = 'Case file';
+    $('seal').style.display = 'flex';
+  }
+  $('fileCount').textContent = `${n} question${n === 1 ? '' : 's'}`;
+  $('log').innerHTML = `<div class="entry open"><div class="k">WHY THE PATIENT CAME IN</div><div class="q">${esc(v.initial_complaint.statement)}</div></div>` +
+    v.transcript.map((t, i) => `<div class="entry ${i === n - 1 && !v.done ? 'now' : ''}"><div class="k ${t.by === 'claude' ? 'claude' : ''}">${i + 1} · ${t.by === 'claude' ? 'CLAUDE' : (t.by === 'baseline' ? 'BASELINE' : 'DR.')}${i === n - 1 && !v.done ? ' · NOW' : ''}</div><div class="q">${esc(t.question)} → <b>${esc(t.answer)}</b>${t.unsure ? ' <span class="tag">unsure</span>' : ''}</div>${t.rationale ? `<div class="why">${esc(t.rationale)}</div>` : ''}</div>`).join('');
+  $('log').scrollTop = $('log').scrollHeight;
+  renderHand($('qsearch').value);
+  const busy = v.done;
+  $('commit').disabled = $('undet').disabled = busy;
+  $('claudeStep').disabled = $('claudePlay').disabled = busy || !S.claude;
+  if (busy) $('moveHint').textContent = 'Case closed. Start a new patient from the top bar.';
+  else if (n >= MAX_Q) $('moveHint').textContent = 'Question budget spent. Commit a diagnosis or say it cannot be determined.';
+  else $('moveHint').textContent = S.claude ? `Play a question card, or hand the turn to Claude · ${MAX_Q - n} left` : `Play a question card · ${MAX_Q - n} left (set ANTHROPIC_API_KEY to enable Claude)`;
+  $('baselinePlay').disabled = busy;
+}
+
+function renderHand(filter) {
+  const asked = new Set(S.view.transcript.map(t => t.code));
+  const f = filter.trim().toLowerCase();
+  const items = S.questions.filter(q => !f || q.question.toLowerCase().includes(f));
+  const shown = items.slice(0, 6);
+  $('hand').innerHTML = shown.map(q => `<button class="card ${q.kind} ${asked.has(q.code) ? 'asked' : ''}" data-code="${q.code}" ${S.view.done ? 'disabled' : ''}><span class="k">${q.kind.toUpperCase()}</span><span class="q">${esc(q.question)}</span></button>`).join('')
+    + (items.length > shown.length ? `<button class="card more" id="more">+ ${items.length - shown.length} more</button>` : '')
+    + (items.length === 0 ? '<div class="err">No question matches.</div>' : '');
+}
+
+function renderTruth() {
+  const t = S.truth;
+  $('truthCard').innerHTML = `<b>${esc(t.pathology)}</b> <span class="tag sev">severity ${t.severity}/5</span><div class="s">${t.age} year old ${t.sex} · ICD-10 ${esc(t.icd10)} · ${t.clues.length} clues on record · green tags = textbook clues of this condition</div>`;
+  $('clues').innerHTML = t.clues.map(c => `<li><span class="tag ${c.points_to_truth ? 'truth' : ''}">${c.kind}</span><span>${esc(c.question)}${c.is_initial ? ' <span class="tag initial">opening</span>' : ''}</span><span class="a">${esc(c.answer)}</span></li>`).join('');
+}
+
+function renderVerdict(r) {
+  const cls = r.exact ? '' : (r.undeterminable ? 'warn' : 'bad');
+  const stars = r.exact ? (r.evidence_coverage >= .5 ? 3 : 2) : (r.truth_rank_in_doctor_ddx ? 1 : 0);
+  const star = (on) => `<svg viewBox="0 0 24 24" width="34" height="34" fill="${on ? '#E9C46A' : '#DCEFE6'}" stroke="#B48A1E" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>`;
+  $('banner').innerHTML = `<div class="stars">${[0, 1, 2].map(i => star(i < stars)).join('')}</div><h1 class="${cls}">${r.exact ? 'CORRECT' : (r.timed_out ? 'OUT OF TIME' : (r.undeterminable ? 'UNDECIDED' : 'MISSED'))}</h1><p>${esc(r.truth)} · ${r.questions_asked} question${r.questions_asked === 1 ? '' : 's'}</p>`;
+  $('banner').classList.add('on'); $('stage').classList.add('is-verdict');
+  $('live').className = 'live closed'; $('live').lastElementChild.textContent = 'CASE CLOSED';
+  speak('doc', `DR. CONCLUDES ${r.by === 'claude' ? '<span class="chip claude">Claude</span>' : (r.by === 'baseline' ? '<span class="chip">baseline</span>' : '')}`, r.timed_out ? 'I ran out of questions.' : (r.undeterminable ? 'I cannot determine this from what I have.' : `It is ${r.doctor_pathology ?? r.doctor_pathology_raw}.`), r.rationale || (r.doctor_differential.length > 1 ? 'Also considered: ' + r.doctor_differential.slice(1).join(', ') : ''), { claude: r.by === 'claude' });
+  $('docBubble').classList.add('on');
+  speak('pat', `PATIENT'S RECORD SAYS`, r.truth, `ICD-10 ${S.truth.icd10} · severity ${r.truth_severity} of 5`);
+  mouth('docMouth', 'open'); mouth('patMouth', r.exact ? 'smile' : 'sad');
+
+  const missed = r.missed_key_clues.length
+    ? `<div class="box"><div class="k">CLUES THE DOCTOR NEVER ASKED ABOUT</div>${r.missed_key_clues.map(m => `<div class="row"><span>${esc(m.question)}</span><span>${esc(m.answer)}</span></div>`).join('')}</div>`
+    : `<div class="box"><div class="k">CLUES</div><div class="row"><span>Every textbook clue of ${esc(r.truth)} was uncovered.</span></div></div>`;
+  $('stats').innerHTML = `
+    <div class="verdict ${cls}">${esc(r.verdict)}</div>
+    <div class="tiles">
+      <div class="tile"><div class="v accent">${r.score.toFixed(2)}</div><div class="l">SCORE</div></div>
+      <div class="tile"><div class="v">${r.questions_asked}</div><div class="l">QUESTIONS</div></div>
+      <div class="tile"><div class="v">${r.truth_rank_in_doctor_ddx ?? '—'}</div><div class="l">RANK OF TRUTH</div></div>
+    </div>
+    <div class="bars">
+      <div class="r"><span>Clues uncovered</span><span>${r.clues_known} of ${r.clues_total}</span></div><div class="bar"><i style="width:${r.evidence_coverage * 100}%"></i></div>
+      <div class="r"><span>Overlap with reference shortlist</span><span>${Math.round(r.ddx_overlap * r.reference_differential.length)} of ${r.reference_differential.length}</span></div><div class="bar"><i class="gold" style="width:${r.ddx_overlap * 100}%"></i></div>
+    </div>
+    ${missed}
+    <div class="box"><div class="k m">REFERENCE SHORTLIST (RULE-BASED)</div><div class="chips">${S.truth.reference_differential.map(d => `<span class="${d.name === r.truth ? 'hit' : ''}">${esc(d.name)} ${(d.probability * 100).toFixed(0)}%</span>`).join('')}</div></div>
+    <div class="box"><div class="k m">SCORE = 0.6 × exact + 0.2 × shortlist overlap + 0.2 × clues uncovered</div></div>`;
+  $('fileTabs').style.display = 'flex'; $('fileTitle').textContent = '';
+  $('seal').style.display = 'none';
+  showTab('stats');
+}
+
+function showTab(name) {
+  $('log').style.display = name === 'log' ? 'flex' : 'none';
+  $('stats').style.display = name === 'stats' ? 'flex' : 'none';
+  document.querySelectorAll('#fileTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+}
+
+async function ask(code) {
+  $('err').textContent = '';
+  try { S.view = await api(`/api/cases/${S.caseId}/ask`, { method: 'POST', body: JSON.stringify({ code }) }); render(); }
+  catch (e) { $('err').textContent = e.message; }
+}
+async function diagnose(body) {
+  $('err').textContent = '';
+  try { S.view = await api(`/api/cases/${S.caseId}/diagnose`, { method: 'POST', body: JSON.stringify(body) }); render(); }
+  catch (e) { $('err').textContent = e.message; }
+}
+async function doctorStep(doctor) {
+  $('err').textContent = '';
+  $('claudeStep').disabled = $('claudePlay').disabled = $('baselinePlay').disabled = true;
+  $('moveHint').textContent = doctor === 'claude' ? 'Claude is thinking…' : 'Baseline is choosing…';
+  try { S.view = await api(`/api/cases/${S.caseId}/${doctor}/step`, { method: 'POST' }); render(); return true; }
+  catch (e) { $('err').textContent = e.message; render(); return false; }
+}
+const claudeStep = () => doctorStep('claude');
+
+$('newCase').onclick = newCase;
+$('qsearch').oninput = (e) => renderHand(e.target.value);
+$('hand').onclick = (e) => {
+  const el = e.target.closest('[data-code]');
+  if (el && !S.view.done) ask(el.dataset.code);
+  if (e.target.closest('#more')) $('qsearch').focus();
+};
+$('peek').onclick = () => $('drawer').classList.add('on');
+$('closeDrawer').onclick = () => $('drawer').classList.remove('on');
+$('fileTabs').onclick = (e) => { const b = e.target.closest('[data-tab]'); if (b) showTab(b.dataset.tab); };
+$('commit').onclick = () => { $('dx').value = ''; [...$('ddx').options].forEach(o => o.selected = false); $('dxDialog').showModal(); };
+$('dxCancel').onclick = () => $('dxDialog').close('cancel');
+$('dxDialog').onclose = () => { if ($('dxDialog').returnValue === 'ok' && $('dx').value) diagnose({ pathology: $('dx').value, differential: [...$('ddx').selectedOptions].map(o => o.value) }); };
+$('undet').onclick = () => diagnose({ undeterminable: true });
+$('claudeStep').onclick = claudeStep;
+$('claudePlay').onclick = async () => { for (let i = 0; i < 25 && !S.view.done; i++) { if (!await claudeStep()) break; } };
+$('baselinePlay').onclick = async () => { for (let i = 0; i < 25 && !S.view.done; i++) { if (!await doctorStep('baseline')) break; await new Promise(r => setTimeout(r, 350)); } };
+$('presetSel').onchange = newCase;
+
+init().catch(e => { $('err').textContent = 'failed to load: ' + e.message; });
+</script>
+</body>
+</html>
