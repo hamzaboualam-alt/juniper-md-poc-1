@@ -1,0 +1,117 @@
+situation_id,step_id,hypothesis_id,effect_type,effect_label,text,source_id
+chest_pain,chest_pain.s1,acs,steer,Shifts suspicion,Sweating and fast breathing raise suspicion.,aafp_cp
+chest_pain,chest_pain.s1,pe,steer,Shifts suspicion,Fast heart rate and dyspnea raise suspicion.,aafp_cp
+chest_pain,chest_pain.s1,ad,steer,Shifts suspicion,"Abrupt, severe or tearing pain, pulse or BP differential, perfusion deficit.",mdcalc_addrs
+chest_pain,chest_pain.s1,ptx,steer,Shifts suspicion,"Dyspnea, pain on inspiration, absent breath sounds on one side.",tw_cp_exam
+chest_pain,chest_pain.s1,pna,steer,Shifts suspicion,"Fever, localized pleuritic pain, dullness to percussion.",tw_cp_exam
+chest_pain,chest_pain.s1,pc,steer,Shifts suspicion,"Pleuritic, positional pain easing when leaning forward; friction rub.",radio_peri
+chest_pain,chest_pain.s1,er,steer,Shifts suspicion,Air under the skin.,aafp_cp
+chest_pain,chest_pain.s1,nc,steer,Shifts suspicion,Chest wall tenderness or pain on inspiration points here.,aafp_cp
+chest_pain,chest_pain.s2,acs,blind,Cannot decide it,Ischemic or dynamic change escalates; one normal ECG does not rule ACS out.,iatrox_cp
+chest_pain,chest_pain.s2,pc,steer,Shifts suspicion,New widespread ST elevation or PR depression counts toward the two-of-four criteria.,radio_peri
+chest_pain,chest_pain.s3,ptx,rule,Can eliminate,"Normal film with distress, pleuritic pain and hypoxia excludes it; absent vascular markings is diagnostic.",rcem_cxr
+chest_pain,chest_pain.s3,pna,conf,Can confirm,Infiltrate or consolidation confirms; a normal film makes it unlikely.,rcem_cxr
+chest_pain,chest_pain.s3,acs,blind,Cannot decide it,No specific finding for ACS.,rcem_cxr
+chest_pain,chest_pain.s3,pe,steer,Shifts suspicion,"Often normal; with other causes excluded, a normal film raises PE probability.",rcem_cxr
+chest_pain,chest_pain.s3,ad,blind,Cannot decide it,"Mediastinal widening helps, but a film cannot rule out aortic syndromes at low probability.",ebm_addrs
+chest_pain,chest_pain.s3,er,steer,Shifts suspicion,Air in the mediastinum contributes.,rcem_cxr
+chest_pain,chest_pain.s3,pc,blind,Cannot decide it,Recommended but does not establish the diagnosis.,esc_peri_comments
+chest_pain,chest_pain.s4,acs,rule,Can eliminate,Low-risk class with non-ischemic ECG and negative serial troponin: no further acute testing.,aha_cp_top
+chest_pain,chest_pain.s4,pc,blind,Cannot decide it,Recommended in suspected pericarditis but not diagnostic.,esc_peri_comments
+chest_pain,chest_pain.s5,pe,steer,Shifts suspicion,Wells two-level score; PERC first if suspicion is very low.,oep_vte
+chest_pain,chest_pain.s5,ad,steer,Shifts suspicion,"ADD-RS 0 to 3: above 1 goes straight to imaging, 1 or less to D-dimer.",mdcalc_addrs
+chest_pain,chest_pain.s6,pe,rule,Can eliminate,Wells 4 or less and D-dimer below the age-adjusted cutoff.,evi_wells
+chest_pain,chest_pain.s6,ad,rule,Can eliminate,ADD-RS 1 or less and D-dimer below 500 ng/mL (FEU): consider stopping; not externally validated.,mdcalc_addrs
+chest_pain,chest_pain.s7,pe,rule,Can eliminate,"CT pulmonary angiography: positive confirms, negative excludes.",evi_wells
+chest_pain,chest_pain.s7,ad,conf,Can confirm,ECG-gated contrast CT from neck to pelvis is the recommended first-line imaging.,ecr_esc_aortic
+chest_pain,chest_pain.s7,pc,conf,Can confirm,Echocardiography: new or worsening effusion counts toward criteria.,esc_peri_comments
+chest_pain,chest_pain.s7,er,blind,Cannot decide it,Confirmation route not yet sourced.,
+chest_pain,chest_pain.s8,nc,steer,Shifts suspicion,"Chest wall pain, reflux esophagitis and costochondritis are most common in primary care.",cchcs_cp
+chest_pain,chest_pain.s8,acs,steer,Shifts suspicion,Low-risk patients do not need urgent stress testing or imaging.,aha_cp_top
+dyspnea,dyspnea.s1,ptx,steer,Shifts suspicion,"Dyspnea, pain on inspiration, one-sided absent breath sounds.",tw_cp_exam
+dyspnea,dyspnea.s1,pna,steer,Shifts suspicion,"Fever, localized pleuritic pain, dullness, egophony.",tw_cp_exam
+dyspnea,dyspnea.s1,pe,steer,Shifts suspicion,Fast heart rate and dyspnea.,aafp_cp
+dyspnea,dyspnea.s1,acs,steer,Shifts suspicion,Shortness of breath counts as an anginal equivalent.,aha_cp_top
+dyspnea,dyspnea.s2,acs,blind,Cannot decide it,Ischemic change escalates; one normal ECG does not rule ACS out.,iatrox_cp
+dyspnea,dyspnea.s3,ptx,rule,Can eliminate,"Normal film with distress, pleuritic pain and hypoxia excludes pneumothorax.",rcem_cxr
+dyspnea,dyspnea.s3,pna,conf,Can confirm,Infiltrate confirms; a normal film makes pneumonia unlikely.,rcem_cxr
+dyspnea,dyspnea.s3,pe,steer,Shifts suspicion,"A normal film in a hypoxic, distressed patient raises PE probability.",rcem_cxr
+dyspnea,dyspnea.s3,ahf,steer,Shifts suspicion,"With echocardiography and judgment, helps in the natriuretic peptide grey zone.",np_elderly
+dyspnea,dyspnea.s4,ahf,rule,Can eliminate,BNP below 100 ng/L or NT-proBNP below 300 ng/L rules out heart failure.,nice_cg187
+dyspnea,dyspnea.s5,pe,rule,Can eliminate,"Low pre-test probability with negative D-dimer, or negative CTPA.",ash_vte
+dyspnea,dyspnea.s6,ahf,conf,Can confirm,Transthoracic echo confirms cardiac abnormalities.,iatrox_ahf
+lower_abdominal_pain,lower_abdominal_pain.s1,appy,steer,Shifts suspicion,Periumbilical pain migrating to the right lower quadrant.,aafp_pelvic
+lower_abdominal_pain,lower_abdominal_pain.s1,divert,steer,Shifts suspicion,Left lower quadrant tenderness.,aafp_pelvic
+lower_abdominal_pain,lower_abdominal_pain.s1,torsion,steer,Shifts suspicion,Right- or left-sided pelvic pain keeps torsion on the list.,aafp_pelvic
+lower_abdominal_pain,lower_abdominal_pain.s1,stone,steer,Shifts suspicion,Right-sided pelvic pain can also be a stone.,aafp_pelvic
+lower_abdominal_pain,lower_abdominal_pain.s2,ectopic,rule,Can eliminate,A negative serum beta-hCG essentially excludes acute ectopic pregnancy.,acr_pelvic_narr
+lower_abdominal_pain,lower_abdominal_pain.s3,ectopic,conf,Can confirm,First-line imaging when hCG is positive.,acr_pelvic_2023
+lower_abdominal_pain,lower_abdominal_pain.s3,torsion,conf,Can confirm,Ultrasound with Doppler is the initial study for gynecologic causes.,acr_pelvic_2023
+lower_abdominal_pain,lower_abdominal_pain.s3,gyn,conf,Can confirm,Characterizes cysts and complications of pelvic inflammatory disease.,hopkins_pelvic
+lower_abdominal_pain,lower_abdominal_pain.s3,appy,steer,Shifts suspicion,"First choice in children and pregnancy; often inconclusive in pregnancy, then MRI.",acr_rlq
+lower_abdominal_pain,lower_abdominal_pain.s4,appy,rule,Can eliminate,CT is the most accurate study for appendicitis and its alternatives.,acr_rlq
+lower_abdominal_pain,lower_abdominal_pain.s4,divert,conf,Can confirm,CT with IV contrast is best for gastrointestinal causes such as diverticulitis.,hopkins_pelvic
+headache,headache.s1,sah,steer,Shifts suspicion,Sudden or thunderclap onset is a red flag.,snnoop10
+headache,headache.s1,men,steer,Shifts suspicion,Fever and systemic symptoms are a red flag.,snnoop10
+headache,headache.s1,sec,steer,Shifts suspicion,"Each flag raises suspicion, but specificity is not validated.",snnoop10
+headache,headache.s1,prim,steer,Shifts suspicion,"With no red flags, primary headache becomes more likely.",jin_headache
+headache,headache.s2,sah,blind,Cannot decide it,"Neck stiffness is strongly associated, but no single sign rules SAH out.",acep_headache
+headache,headache.s2,men,steer,Shifts suspicion,Abnormal consciousness or focal deficit means CT before lumbar puncture.,cam_ct_study
+headache,headache.s2,sec,steer,Shifts suspicion,A deficit or papilledema is a red flag.,snnoop10
+headache,headache.s3,sah,rule,Can eliminate,None present: high sensitivity supports ruling SAH out; any present only means investigate (low specificity).,acep_headache
+headache,headache.s4,sah,rule,Can eliminate,"Normal CT within 6 hours of onset, with normal neuro exam, rules out nontraumatic SAH.",acep_headache
+headache,headache.s4,men,steer,Shifts suspicion,"Only needed before LP if immunocompromised, CNS disease, new seizure, papilledema, abnormal consciousness or focal deficit.",cam_ct_study
+headache,headache.s5,sah,rule,Can eliminate,LP or CTA safely rules out SAH in a patient still at risk after a negative CT.,mdcalc_acep_headache
+headache,headache.s5,men,conf,Can confirm,Diagnosis depends on CSF examination; blood cultures and LP should be done promptly.,aafp_idsa_mening
+headache,headache.s6,prim,steer,Shifts suspicion,Diagnosis of exclusion once red flags are absent or answered.,jin_headache
+fever_sepsis,fever_sepsis.s1,sepsis,blind,Cannot decide it,A negative qSOFA alone does not rule sepsis out.,epocrates_ssc_2026
+fever_sepsis,fever_sepsis.s2,sepsis,steer,Shifts suspicion,"Sets urgency: 1 hour for probable or definite, a time-limited work-up for possible.",umem_ssc_2026
+fever_sepsis,fever_sepsis.s3,sepsis,steer,Shifts suspicion,"If infection becomes likely, antimicrobials within 3 hours; the guideline does not state a formal exclusion test.",umem_ssc_2026
+fever_sepsis,fever_sepsis.s3,noninf,steer,Shifts suspicion,The 2026 guideline addresses noninfectious causes in possible sepsis without shock; details not extracted.,ssc_2026
+fever_sepsis,fever_sepsis.s4,sepsis,steer,Shifts suspicion,Elevated lactate supports sepsis and guides resuscitation (2021 statement).,ssc_2021
+fever_sepsis,fever_sepsis.s5,pna,conf,Can confirm,Infiltrate on chest film confirms.,rcem_cxr
+fever_sepsis,fever_sepsis.s5,men,conf,Can confirm,CSF examination is the diagnostic test.,aafp_idsa_mening
+syncope,syncope.s1,card,steer,Shifts suspicion,"Exertion, supine position, sudden palpitations, or no or very short prodrome with heart disease.",esc_syncope_table
+syncope,syncope.s1,serious,steer,Shifts suspicion,"New chest discomfort, breathlessness, abdominal pain or headache is a major high-risk feature.",esc_syncope_table
+syncope,syncope.s1,orth,steer,Shifts suspicion,Syncope on standing up from lying or sitting.,esc_syncope_table
+syncope,syncope.s1,reflex,steer,Shifts suspicion,"Prodrome of light-headedness, warmth, sweating or nausea; pain, crowded hot places, cough or micturition triggers.",esc_syncope_table
+syncope,syncope.s2,orth,steer,Shifts suspicion,Lying and standing BP is the bedside test for orthostatic causes.,syncope_risk_review
+syncope,syncope.s2,card,steer,Shifts suspicion,Findings of structural heart disease are high risk.,esc_syncope_table
+syncope,syncope.s3,card,steer,Shifts suspicion,An abnormal ECG turns minor features into high-risk ones.,esc_syncope_table
+syncope,syncope.s4,card,steer,Shifts suspicion,Low-risk features only: discharge from the ED is recommended for patients without recurrence.,sec_syncope
+syncope,syncope.s4,reflex,steer,Shifts suspicion,Low-risk patients mostly have reflex syncope with a good prognosis.,sec_syncope
+syncope,syncope.s5,card,conf,Can confirm,ECG monitoring in high-risk patients with suspected arrhythmia; cardiac imaging only if a cardiac cause is suspected.,acc_esc_syncope
+syncope,syncope.s5,reflex,conf,Can confirm,Tilt testing when reflex syncope is suspected.,acc_esc_syncope
+syncope,syncope.s5,orth,conf,Can confirm,Tilt testing when an orthostatic cause is suspected.,acc_esc_syncope
+ugib,ugib.s1,needs_intervention,rule,Can eliminate,Score 0 to 1 identifies very-low-risk patients; the score is about 99% sensitive for need for intervention.,jhm_ugib
+ugib,ugib.s2,ulcer,conf,Can confirm,Endoscopic therapy for ulcers with active bleeding or a visible vessel.,acg_ugib
+ugib,ugib.s2,other_ugi,conf,Can confirm,Endoscopy identifies the source (non-ulcer routes not sourced).,
+leg_swelling,leg_swelling.s1,dvt,steer,Shifts suspicion,Sets which test comes first.,ash_vte_pmc
+leg_swelling,leg_swelling.s1,alt,steer,Shifts suspicion,An alternative diagnosis being as likely lowers the score.,ash_slides
+leg_swelling,leg_swelling.s2,dvt,rule,Can eliminate,Negative D-dimer at low pre-test probability: no further testing.,ash_vte
+leg_swelling,leg_swelling.s3,dvt,rule,Can eliminate,Positive scan confirms; a negative whole-leg scan or negative serial proximal scans end the work-up.,mdedge_dvt
+dizziness,dizziness.s1,bppv,steer,Shifts suspicion,Triggered positional episodes.,grace3
+dizziness,dizziness.s1,stroke,steer,Shifts suspicion,Continuous symptoms over 24 hours.,grace3_pdf
+dizziness,dizziness.s1,periph,steer,Shifts suspicion,Continuous symptoms over 24 hours.,grace3_pdf
+dizziness,dizziness.s2,bppv,conf,Can confirm,Positive test diagnoses posterior canal BPPV; treat with Epley maneuver.,grace3
+dizziness,dizziness.s3,stroke,rule,Can eliminate,"A peripheral HINTS pattern helps rule out stroke, but only when performed by trained clinicians.",jfp_dizzy
+dizziness,dizziness.s3,periph,conf,Can confirm,Peripheral pattern supports a peripheral cause.,jfp_dizzy
+dizziness,dizziness.s4,stroke,conf,Can confirm,MRI confirms; in the first 48 hours it misses about 1 in 5 strokes presenting as dizziness.,sgem_grace3
+focal_deficit,focal_deficit.s1,hypo,rule,Can eliminate,"Normal glucose, or a disabling deficit that persists after correction, means glucose does not explain the deficit.",medscape_stroke_2026
+focal_deficit,focal_deficit.s2,ich,rule,Can eliminate,Imaging without hemorrhage excludes intracranial hemorrhage before reperfusion.,aha_stroke_2026_gc
+focal_deficit,focal_deficit.s2,ais,blind,Cannot decide it,Mild to moderate early ischemic change neither precludes nor delays thrombolysis.,medscape_stroke_2026
+focal_deficit,focal_deficit.s3,ais,steer,Shifts suspicion,Baseline ECG and troponin must not delay IV thrombolysis or thrombectomy.,emdocs_stroke_2026
+focal_deficit,focal_deficit.s4,ais,conf,Can confirm,Perfusion imaging can select some unknown-onset patients for thrombolysis up to 9 hours.,pn_stroke_2026
+low_back_pain,low_back_pain.s1,ces,steer,Shifts suspicion,"Bladder, bowel or saddle symptoms, or progressive weakness.",lbp_imaging
+low_back_pain,low_back_pain.s1,malig,steer,Shifts suspicion,Cancer history raises suspicion.,acr_lbp
+low_back_pain,low_back_pain.s1,infx,steer,Shifts suspicion,Infection red flags raise suspicion.,acr_lbp
+low_back_pain,low_back_pain.s1,fx,steer,Shifts suspicion,Fracture red flags raise suspicion.,acr_lbp
+low_back_pain,low_back_pain.s1,mech,steer,Shifts suspicion,No red flags makes uncomplicated pain likely.,acr_lbp
+low_back_pain,low_back_pain.s2,mech,steer,Shifts suspicion,Half of patients recover in 2 weeks and 90% by 3 months.,applied_rad_lbp
+low_back_pain,low_back_pain.s3,ces,conf,Can confirm,MRI evaluates the cauda equina better than CT.,applied_rad_lbp
+low_back_pain,low_back_pain.s3,malig,conf,Can confirm,MRI is preferred when malignancy is suspected.,lbp_imaging
+low_back_pain,low_back_pain.s3,infx,conf,Can confirm,MRI is the modality of choice for most patients who need imaging.,lbp_imaging
+flank_pain,flank_pain.s1,stone,conf,Can confirm,"Reliably shows stone size, position and complications.",acr_flank
+flank_pain,flank_pain.s1,alt_abd,conf,Can confirm,Also diagnoses other causes of abdominal pain.,acr_flank
+flank_pain,flank_pain.s2,stone,steer,Shifts suspicion,Shows obstruction; MRI may follow in pregnancy.,acr_flank
+flank_pain,flank_pain.s3,stone,conf,Can confirm,CT urogram or MRI may be appropriate.,acr_flank

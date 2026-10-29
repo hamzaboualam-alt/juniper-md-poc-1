@@ -1,0 +1,8 @@
+situation_id,step_id,text,source_id
+chest_pain,chest_pain.s5,PE incidence is about 12% in the Wells unlikely band and about 37% in the likely band.,wikem_wells
+chest_pain,chest_pain.s5,About 95% of patients with acute aortic dissection score intermediate or high on ADD-RS.,rcem_addrs
+chest_pain,chest_pain.s5,Meta-analysis: ADD-RS of 1 or more is about 94% sensitive alone and close to 100% with D-dimer; the best threshold depends on setting.,addrs_meta
+chest_pain,chest_pain.s7,"ESC 2024 recommends a multiparametric diagnostic algorithm using ADD-RS (class I, level B).",ecr_esc_aortic
+lower_abdominal_pain,lower_abdominal_pain.s4,"Cochrane review: at 43% prevalence, a positive CT means about a 92% chance of appendicitis and a negative CT about 4%.",cochrane_appy
+flank_pain,flank_pain.s1,"In one prospective comparison, CT found an alternative diagnosis in about a third of patients.",relias_nephro
+flank_pain,flank_pain.s1,"For causes other than stones, noncontrast CT and ultrasound had similar accuracy (CT sensitivity 74%).",flank_alt_study

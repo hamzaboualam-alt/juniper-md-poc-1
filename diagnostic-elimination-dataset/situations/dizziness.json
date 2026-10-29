@@ -1,0 +1,215 @@
+{
+ "id": "dizziness",
+ "title": "Acute dizziness or vertigo",
+ "setting": "Emergency department",
+ "population": "Adults, symptoms under 2 weeks",
+ "priority": "Common ED complaint with a 2023 GRADE guideline.",
+ "priority_source": null,
+ "lead_guidelines": [
+  "grace3",
+  "grace3_pdf"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Timing and triggers",
+   "detail": "Continuous for more than 24 hours (acute vestibular syndrome), triggered by position, or spontaneous episodes.",
+   "source": "grace3_pdf"
+  },
+  {
+   "label": "Exam",
+   "detail": "Nystagmus, HINTS (head impulse, nystagmus, test of skew), gait, Dix-Hallpike when positional.",
+   "source": "grace3"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Continuous dizziness (acute vestibular syndrome)",
+   "detail": "Stroke must be excluded with HINTS by a trained examiner, then MRI if central or equivocal.",
+   "source": "grace3_pdf"
+  },
+  {
+   "urgent": false,
+   "label": "Positional (triggered) episodes",
+   "detail": "Dix-Hallpike for posterior canal BPPV; no CT and no routine MRI.",
+   "source": "grace3"
+  }
+ ],
+ "gate_note": "Untrained clinicians apply and interpret HINTS inaccurately; GRACE-3 recommends training.",
+ "gate_note_source": "grace3",
+ "hypotheses": [
+  {
+   "id": "stroke",
+   "name": "Posterior circulation stroke",
+   "short": "Stroke",
+   "tier": "must_not_miss",
+   "clue": "Continuous dizziness with central signs",
+   "clue_source": "grace3_pdf",
+   "status": "partial"
+  },
+  {
+   "id": "bppv",
+   "name": "Posterior canal BPPV",
+   "short": "BPPV",
+   "tier": "other",
+   "clue": "Brief, positional episodes",
+   "clue_source": "grace3",
+   "status": "sourced"
+  },
+  {
+   "id": "periph",
+   "name": "Peripheral vestibular syndrome (e.g. vestibular neuritis)",
+   "short": "Peripheral",
+   "tier": "other",
+   "clue": "Continuous, peripheral HINTS",
+   "clue_source": "jfp_dizzy",
+   "status": "partial"
+  },
+  {
+   "id": "nonvest",
+   "name": "Non-vestibular cause (cardiac, orthostatic)",
+   "short": "Non-vestibular",
+   "tier": "other",
+   "clue": "See syncope",
+   "clue_source": null,
+   "status": "stub"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Classify by timing and triggers",
+   "timing": "First",
+   "description": "Decides which bedside test applies.",
+   "source": null,
+   "effects": {
+    "bppv": {
+     "type": "steer",
+     "text": "Triggered positional episodes.",
+     "source": "grace3"
+    },
+    "stroke": {
+     "type": "steer",
+     "text": "Continuous symptoms over 24 hours.",
+     "source": "grace3_pdf"
+    },
+    "periph": {
+     "type": "steer",
+     "text": "Continuous symptoms over 24 hours.",
+     "source": "grace3_pdf"
+    }
+   },
+   "evidence": [],
+   "id": "dizziness.s1",
+   "order": 1
+  },
+  {
+   "title": "Dix-Hallpike test",
+   "timing": "Positional episodes",
+   "description": "Diagnoses posterior canal BPPV.",
+   "source": null,
+   "effects": {
+    "bppv": {
+     "type": "conf",
+     "text": "Positive test diagnoses posterior canal BPPV; treat with Epley maneuver.",
+     "source": "grace3"
+    }
+   },
+   "evidence": [],
+   "id": "dizziness.s2",
+   "order": 2
+  },
+  {
+   "title": "HINTS exam by a trained clinician",
+   "timing": "Continuous dizziness",
+   "description": "Separates central from peripheral patterns.",
+   "source": null,
+   "effects": {
+    "stroke": {
+     "type": "rule",
+     "text": "A peripheral HINTS pattern helps rule out stroke, but only when performed by trained clinicians.",
+     "source": "jfp_dizzy"
+    },
+    "periph": {
+     "type": "conf",
+     "text": "Peripheral pattern supports a peripheral cause.",
+     "source": "jfp_dizzy"
+    }
+   },
+   "evidence": [],
+   "id": "dizziness.s3",
+   "order": 3
+  },
+  {
+   "title": "MRI",
+   "timing": "Central or equivocal HINTS",
+   "description": "Confirmatory test.",
+   "source": "grace3_pdf",
+   "effects": {
+    "stroke": {
+     "type": "conf",
+     "text": "MRI confirms; in the first 48 hours it misses about 1 in 5 strokes presenting as dizziness.",
+     "source": "sgem_grace3"
+    }
+   },
+   "evidence": [],
+   "id": "dizziness.s4",
+   "order": 4
+  }
+ ],
+ "rules": {
+  "stroke": {
+   "validation": "GRACE-3 (2023).",
+   "eliminate_when": [
+    {
+     "text": "Peripheral HINTS pattern in a patient with true acute vestibular syndrome, examined by a trained clinician.",
+     "source": "jfp_dizzy",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "HINTS done by untrained clinicians or in the wrong patients.",
+     "source": "grace3",
+     "inferred": false
+    },
+    {
+     "text": "An early negative MRI alone: about 80% sensitive in the first 48 hours.",
+     "source": "sgem_grace3",
+     "inferred": false
+    },
+    {
+     "text": "CT for positional dizziness.",
+     "source": "grace3",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "bppv": {
+   "validation": "GRACE-3 (2023).",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Confirmed rather than eliminated; positive Dix-Hallpike."
+  },
+  "periph": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Supported by a peripheral HINTS pattern."
+  },
+  "nonvest": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "See the syncope situation."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Training",
+   "text": "HINTS accuracy depends on examiner training, which most emergency physicians lack.",
+   "source": "grace3"
+  }
+ ]
+}

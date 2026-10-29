@@ -1,0 +1,147 @@
+{
+ "id": "ugib",
+ "title": "Upper gastrointestinal bleeding",
+ "setting": "Emergency department and hospital",
+ "population": "Adults with overt bleeding",
+ "priority": "GI bleeding causes more than half a million US admissions a year.",
+ "priority_source": "nursing_ugib",
+ "lead_guidelines": [
+  "acg_ugib"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "Vomiting red blood or coffee-ground material, or black stools; bleeding from esophagus, stomach or duodenum.",
+   "source": "nursing_ugib"
+  },
+  {
+   "label": "Vitals and labs",
+   "detail": "Inputs for the Glasgow-Blatchford score.",
+   "source": "jhm_ugib"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Not very low risk",
+   "detail": "Hospital care; endoscopy within 24 hours.",
+   "source": "acg_ugib"
+  },
+  {
+   "urgent": false,
+   "label": "Very low risk (Glasgow-Blatchford 0 to 1)",
+   "detail": "Outpatient follow-up rather than admission, if no other reason to stay.",
+   "source": "acg_ugib"
+  }
+ ],
+ "gate_note": "This situation is mostly risk triage; the cause is found at endoscopy rather than eliminated step by step.",
+ "gate_note_source": null,
+ "hypotheses": [
+  {
+   "id": "ulcer",
+   "name": "Peptic ulcer bleeding",
+   "short": "Ulcer",
+   "tier": "must_not_miss",
+   "clue": "Most common cause",
+   "clue_source": "nursing_ugib",
+   "status": "partial"
+  },
+  {
+   "id": "other_ugi",
+   "name": "Other upper GI source (varices, tears, others)",
+   "short": "Other upper GI",
+   "tier": "must_not_miss",
+   "clue": "Not sourced",
+   "clue_source": null,
+   "status": "stub"
+  },
+  {
+   "id": "needs_intervention",
+   "name": "Bleeding that needs hospital intervention",
+   "short": "Needs intervention",
+   "tier": "must_not_miss",
+   "clue": "Unstable or high score",
+   "clue_source": "jhm_ugib",
+   "status": "sourced"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Risk score",
+   "timing": "In the ED",
+   "description": "Glasgow-Blatchford score.",
+   "source": null,
+   "effects": {
+    "needs_intervention": {
+     "type": "rule",
+     "text": "Score 0 to 1 identifies very-low-risk patients; the score is about 99% sensitive for need for intervention.",
+     "source": "jhm_ugib"
+    }
+   },
+   "evidence": [],
+   "id": "ugib.s1",
+   "order": 1
+  },
+  {
+   "title": "Endoscopy",
+   "timing": "Within 24 hours for hospitalized patients",
+   "description": "Finds and treats the source.",
+   "source": "acg_ugib",
+   "effects": {
+    "ulcer": {
+     "type": "conf",
+     "text": "Endoscopic therapy for ulcers with active bleeding or a visible vessel.",
+     "source": "acg_ugib"
+    },
+    "other_ugi": {
+     "type": "conf",
+     "text": "Endoscopy identifies the source (non-ulcer routes not sourced).",
+     "source": null
+    }
+   },
+   "evidence": [],
+   "id": "ugib.s2",
+   "order": 2
+  }
+ ],
+ "rules": {
+  "needs_intervention": {
+   "validation": "ACG 2021, conditional recommendation, very low quality evidence.",
+   "eliminate_when": [
+    {
+     "text": "Glasgow-Blatchford score 0 to 1 with no other reason for admission.",
+     "source": "acg_ugib",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "The score without considering age, comorbidities and follow-up reliability.",
+     "source": "jhm_ugib",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "ulcer": {
+   "validation": "Diagnosed at endoscopy.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No pre-endoscopy exclusion rule."
+  },
+  "other_ugi": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Variceal bleeding guidance (AASLD/Baveno) not sourced."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Lower GI bleeding",
+   "text": "Lower GI bleeding has a separate ACG guideline, not included.",
+   "source": null
+  }
+ ]
+}

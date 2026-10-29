@@ -1,0 +1,355 @@
+{
+ "id": "dyspnea",
+ "title": "Acute shortness of breath",
+ "setting": "Emergency department",
+ "population": "Adults",
+ "priority": "Among the top ED reasons for visit in NHAMCS fact sheets.",
+ "priority_source": "nhamcs_2011",
+ "lead_guidelines": [
+  "nice_cg187",
+  "ash_vte"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "New or worsening breathlessness.",
+   "source": null
+  },
+  {
+   "label": "History",
+   "detail": "Known heart failure, lung disease, VTE risk factors.",
+   "source": null
+  },
+  {
+   "label": "Exam",
+   "detail": "Pain on inspiration and one-sided absent breath sounds point to pneumothorax; fever, localized pleuritic pain and dullness point to pneumonia.",
+   "source": "tw_cp_exam"
+  },
+  {
+   "label": "First tests",
+   "detail": "ECG, chest radiograph, natriuretic peptide.",
+   "source": null
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Respiratory failure or instability",
+   "detail": "Resuscitate first; the elimination route assumes a stabilized patient.",
+   "source": null
+  },
+  {
+   "urgent": false,
+   "label": "Stable",
+   "detail": "Work through heart, lung and clot causes in parallel.",
+   "source": null
+  }
+ ],
+ "gate_note": "Gate wording is a structural convention, not taken from a source.",
+ "gate_note_source": null,
+ "hypotheses": [
+  {
+   "id": "ahf",
+   "name": "Acute heart failure",
+   "short": "Heart failure",
+   "tier": "must_not_miss",
+   "clue": "Known heart disease",
+   "clue_source": null,
+   "status": "partial"
+  },
+  {
+   "id": "pe",
+   "name": "Pulmonary embolism",
+   "short": "PE",
+   "tier": "must_not_miss",
+   "clue": "Fast heart rate, dyspnea",
+   "clue_source": "aafp_cp",
+   "status": "sourced"
+  },
+  {
+   "id": "acs",
+   "name": "Acute coronary syndrome",
+   "short": "ACS",
+   "tier": "must_not_miss",
+   "clue": "Dyspnea as anginal equivalent",
+   "clue_source": "aha_cp_top",
+   "status": "partial"
+  },
+  {
+   "id": "ptx",
+   "name": "Pneumothorax",
+   "short": "Pneumothorax",
+   "tier": "must_not_miss",
+   "clue": "Pain on inspiration, absent breath sounds",
+   "clue_source": "tw_cp_exam",
+   "status": "partial"
+  },
+  {
+   "id": "pna",
+   "name": "Pneumonia",
+   "short": "Pneumonia",
+   "tier": "other",
+   "clue": "Fever, localized pleuritic pain",
+   "clue_source": "tw_cp_exam",
+   "status": "partial"
+  },
+  {
+   "id": "copd",
+   "name": "COPD or asthma exacerbation",
+   "short": "COPD/asthma",
+   "tier": "other",
+   "clue": "Known lung disease",
+   "clue_source": null,
+   "status": "stub"
+  }
+ ],
+ "steps": [
+  {
+   "title": "History and exam",
+   "timing": "First minutes",
+   "description": "Sets which causes are plausible.",
+   "source": null,
+   "effects": {
+    "ptx": {
+     "type": "steer",
+     "text": "Dyspnea, pain on inspiration, one-sided absent breath sounds.",
+     "source": "tw_cp_exam"
+    },
+    "pna": {
+     "type": "steer",
+     "text": "Fever, localized pleuritic pain, dullness, egophony.",
+     "source": "tw_cp_exam"
+    },
+    "pe": {
+     "type": "steer",
+     "text": "Fast heart rate and dyspnea.",
+     "source": "aafp_cp"
+    },
+    "acs": {
+     "type": "steer",
+     "text": "Shortness of breath counts as an anginal equivalent.",
+     "source": "aha_cp_top"
+    }
+   },
+   "evidence": [],
+   "id": "dyspnea.s1",
+   "order": 1
+  },
+  {
+   "title": "12-lead ECG",
+   "timing": "Early",
+   "description": "Screens for ischemia.",
+   "source": null,
+   "effects": {
+    "acs": {
+     "type": "blind",
+     "text": "Ischemic change escalates; one normal ECG does not rule ACS out.",
+     "source": "iatrox_cp"
+    }
+   },
+   "evidence": [],
+   "id": "dyspnea.s2",
+   "order": 2
+  },
+  {
+   "title": "Chest radiograph",
+   "timing": "Early",
+   "description": "Finds lung causes and changes PE probability.",
+   "source": null,
+   "effects": {
+    "ptx": {
+     "type": "rule",
+     "text": "Normal film with distress, pleuritic pain and hypoxia excludes pneumothorax.",
+     "source": "rcem_cxr"
+    },
+    "pna": {
+     "type": "conf",
+     "text": "Infiltrate confirms; a normal film makes pneumonia unlikely.",
+     "source": "rcem_cxr"
+    },
+    "pe": {
+     "type": "steer",
+     "text": "A normal film in a hypoxic, distressed patient raises PE probability.",
+     "source": "rcem_cxr"
+    },
+    "ahf": {
+     "type": "steer",
+     "text": "With echocardiography and judgment, helps in the natriuretic peptide grey zone.",
+     "source": "np_elderly"
+    }
+   },
+   "evidence": [],
+   "id": "dyspnea.s3",
+   "order": 3
+  },
+  {
+   "title": "Natriuretic peptide",
+   "timing": "Single measurement in new suspected heart failure",
+   "description": "Rule-out test for heart failure.",
+   "source": null,
+   "effects": {
+    "ahf": {
+     "type": "rule",
+     "text": "BNP below 100 ng/L or NT-proBNP below 300 ng/L rules out heart failure.",
+     "source": "nice_cg187"
+    }
+   },
+   "evidence": [],
+   "id": "dyspnea.s4",
+   "order": 4
+  },
+  {
+   "title": "PE route",
+   "timing": "In parallel if PE is open",
+   "description": "Wells or PERC, then D-dimer or CTPA (see chest pain).",
+   "source": null,
+   "effects": {
+    "pe": {
+     "type": "rule",
+     "text": "Low pre-test probability with negative D-dimer, or negative CTPA.",
+     "source": "ash_vte"
+    }
+   },
+   "evidence": [],
+   "id": "dyspnea.s5",
+   "order": 5
+  },
+  {
+   "title": "Echocardiography",
+   "timing": "If heart failure is not ruled out",
+   "description": "Confirms the cardiac abnormality.",
+   "source": null,
+   "effects": {
+    "ahf": {
+     "type": "conf",
+     "text": "Transthoracic echo confirms cardiac abnormalities.",
+     "source": "iatrox_ahf"
+    }
+   },
+   "evidence": [],
+   "id": "dyspnea.s6",
+   "order": 6
+  }
+ ],
+ "rules": {
+  "ahf": {
+   "validation": "NICE CG187 (thresholds match ESC 2021).",
+   "eliminate_when": [
+    {
+     "text": "BNP below 100 ng/L or NT-proBNP below 300 ng/L in new suspected acute heart failure.",
+     "source": "nice_cg187",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "The rule-out threshold in older patients, obesity or prior heart failure: false negatives of 1 in 10 to 1 in 5.",
+     "source": "np_ml",
+     "inferred": false
+    },
+    {
+     "text": "NT-proBNP rule-out above age 75: negative predictive value fell to about 88% in one cohort.",
+     "source": "np_elderly",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "pe": {
+   "validation": "ASH 2018 and ESC summaries.",
+   "eliminate_when": [
+    {
+     "text": "Low pre-test probability and negative D-dimer.",
+     "source": "ash_vte",
+     "inferred": false
+    },
+    {
+     "text": "Negative CTPA.",
+     "source": "evi_wells",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "D-dimer when probability is high.",
+     "source": "ash_vte",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "acs": {
+   "validation": "See chest pain situation.",
+   "eliminate_when": [
+    {
+     "text": "Low-risk class with non-ischemic ECG and negative serial troponin.",
+     "source": "aha_cp_top",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "One normal ECG.",
+     "source": "iatrox_cp",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "ptx": {
+   "validation": "Educational summary.",
+   "eliminate_when": [
+    {
+     "text": "Normal chest radiograph with distress, pleuritic pain and hypoxia.",
+     "source": "rcem_cxr",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "Exam alone.",
+     "source": "tw_cp_exam",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "pna": {
+   "validation": "Educational summary.",
+   "eliminate_when": [
+    {
+     "text": "Normal chest radiograph makes it unlikely.",
+     "source": "rcem_cxr",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "Exam alone.",
+     "source": "tw_cp_exam",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "copd": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No route sourced; GOLD and GINA guidance would be the next sources."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Grey zone",
+   "text": "Between rule-out and rule-in natriuretic peptide thresholds, about half of older patients have heart failure; echo and judgment decide.",
+   "source": "np_elderly"
+  },
+  {
+   "title": "Unsourced gate",
+   "text": "The stabilization gate and the COPD/asthma branch need sourcing.",
+   "source": null
+  }
+ ]
+}

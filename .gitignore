@@ -5,4 +5,4 @@ __pycache__/
 .pytest_cache/
 .claude/
 
-data/
+data/.DS_Store

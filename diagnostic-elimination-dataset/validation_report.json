@@ -1,0 +1,44 @@
+{
+ "stats": {
+  "situations": 12,
+  "hypotheses": 53,
+  "steps": 53,
+  "effects": 116,
+  "elimination_rules": 34,
+  "do_not_rely": 48,
+  "inferred_rules": 2,
+  "sources_used": 85,
+  "sources_unused": [
+   "acc_stroke_2019",
+   "ijem_stroke",
+   "ssc_2021_pmc"
+  ],
+  "unsourced_items": 19,
+  "hypothesis_status": {
+   "partial": 31,
+   "sourced": 12,
+   "stub": 10
+  }
+ },
+ "unsourced_items": [
+  "chest_pain.s7.er",
+  "chest_pain.gaps[3]",
+  "dyspnea.layer0[0]",
+  "dyspnea.layer0[1]",
+  "dyspnea.layer0[3]",
+  "dyspnea.gate[0]",
+  "dyspnea.gate[1]",
+  "dyspnea.gate_note",
+  "dyspnea.gaps[1]",
+  "lower_abdominal_pain.gaps[2]",
+  "fever_sepsis.gaps[1]",
+  "syncope.gaps[1]",
+  "syncope.gaps[2]",
+  "ugib.gate_note",
+  "ugib.s2.other_ugi",
+  "ugib.gaps[0]",
+  "focal_deficit.layer0[0]",
+  "focal_deficit.gaps[1]",
+  "flank_pain.gaps[0]"
+ ]
+}

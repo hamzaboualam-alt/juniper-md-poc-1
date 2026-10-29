@@ -1,0 +1,221 @@
+{
+ "id": "focal_deficit",
+ "title": "Acute focal neurologic deficit (suspected stroke)",
+ "setting": "Prehospital and emergency department",
+ "population": "Adults (the 2026 guideline also adds pediatric guidance, not encoded here)",
+ "priority": "Time-critical presentation with a 2026 guideline.",
+ "priority_source": null,
+ "lead_guidelines": [
+  "aha_stroke_2026_gc",
+  "aha_stroke_2026_pdf"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "Sudden weakness, numbness, speech or vision loss.",
+   "source": null
+  },
+  {
+   "label": "Timing",
+   "detail": "Time last known well decides treatment eligibility.",
+   "source": "aha_stroke_2026"
+  },
+  {
+   "label": "Bedside glucose",
+   "detail": "Checked before thrombolysis; severe hypoglycemia or hyperglycemia can mimic stroke.",
+   "source": "aha_stroke_2026_gc"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Within a treatment window",
+   "detail": "Stroke pathway immediately; brain imaging within 25 minutes; other tests must not delay reperfusion.",
+   "source": "medscape_stroke_2026"
+  },
+  {
+   "urgent": false,
+   "label": "Outside known windows",
+   "detail": "Still image urgently; the 2026 guideline widens some windows with perfusion imaging.",
+   "source": "pn_stroke_2026"
+  }
+ ],
+ "gate_note": "Verified against the 2026 AHA/ASA guideline, which replaced the 2018 guideline and 2019 update.",
+ "gate_note_source": "aha_stroke_2026",
+ "hypotheses": [
+  {
+   "id": "ais",
+   "name": "Acute ischemic stroke",
+   "short": "Ischemic stroke",
+   "tier": "must_not_miss",
+   "clue": "Sudden focal deficit",
+   "clue_source": null,
+   "status": "partial"
+  },
+  {
+   "id": "ich",
+   "name": "Intracranial hemorrhage",
+   "short": "Hemorrhage",
+   "tier": "must_not_miss",
+   "clue": "Sudden focal deficit",
+   "clue_source": null,
+   "status": "sourced"
+  },
+  {
+   "id": "hypo",
+   "name": "Hypoglycemia or severe hyperglycemia (stroke mimic)",
+   "short": "Glucose mimic",
+   "tier": "must_not_miss",
+   "clue": "Abnormal bedside glucose",
+   "clue_source": "aha_stroke_2026_gc",
+   "status": "sourced"
+  },
+  {
+   "id": "mimic",
+   "name": "Other stroke mimics",
+   "short": "Other mimic",
+   "tier": "other",
+   "clue": "Not sourced",
+   "clue_source": null,
+   "status": "stub"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Bedside glucose",
+   "timing": "Before thrombolysis",
+   "description": "Detects and urgently corrects severe hypoglycemia or hyperglycemia.",
+   "source": "aha_stroke_2026_gc",
+   "effects": {
+    "hypo": {
+     "type": "rule",
+     "text": "Normal glucose, or a disabling deficit that persists after correction, means glucose does not explain the deficit.",
+     "source": "medscape_stroke_2026"
+    }
+   },
+   "evidence": [],
+   "id": "focal_deficit.s1",
+   "order": 1
+  },
+  {
+   "title": "Brain imaging: noncontrast CT or MRI",
+   "timing": "Within 25 minutes of arrival",
+   "description": "Assesses ischemic burden and excludes hemorrhage before any reperfusion treatment (class 1, level A).",
+   "source": "aha_stroke_2026_gc",
+   "effects": {
+    "ich": {
+     "type": "rule",
+     "text": "Imaging without hemorrhage excludes intracranial hemorrhage before reperfusion.",
+     "source": "aha_stroke_2026_gc"
+    },
+    "ais": {
+     "type": "blind",
+     "text": "Mild to moderate early ischemic change neither precludes nor delays thrombolysis.",
+     "source": "medscape_stroke_2026"
+    }
+   },
+   "evidence": [],
+   "id": "focal_deficit.s2",
+   "order": 2
+  },
+  {
+   "title": "ECG and troponin",
+   "timing": "Baseline",
+   "description": "Recommended, but must not delay treatment.",
+   "source": null,
+   "effects": {
+    "ais": {
+     "type": "steer",
+     "text": "Baseline ECG and troponin must not delay IV thrombolysis or thrombectomy.",
+     "source": "emdocs_stroke_2026"
+    }
+   },
+   "evidence": [],
+   "id": "focal_deficit.s3",
+   "order": 3
+  },
+  {
+   "title": "Vascular and perfusion imaging",
+   "timing": "Suspected large vessel occlusion within 24 hours; extended windows",
+   "description": "CT/CTA or MRI/MRA as fast as possible for thrombectomy selection.",
+   "source": "emdocs_stroke_2026",
+   "effects": {
+    "ais": {
+     "type": "conf",
+     "text": "Perfusion imaging can select some unknown-onset patients for thrombolysis up to 9 hours.",
+     "source": "pn_stroke_2026"
+    }
+   },
+   "evidence": [],
+   "id": "focal_deficit.s4",
+   "order": 4
+  }
+ ],
+ "rules": {
+  "hypo": {
+   "validation": "2026 AHA/ASA guideline.",
+   "eliminate_when": [
+    {
+     "text": "Normal bedside glucose.",
+     "source": "aha_stroke_2026_gc",
+     "inferred": false
+    },
+    {
+     "text": "A disabling deficit persisting after glucose correction; thrombolysis is still recommended then.",
+     "source": "medscape_stroke_2026",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [],
+   "no_rule_note": null
+  },
+  "ich": {
+   "validation": "2026 AHA/ASA guideline, class 1, level A.",
+   "eliminate_when": [
+    {
+     "text": "Noncontrast CT or MRI without hemorrhage.",
+     "source": "aha_stroke_2026_gc",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [],
+   "no_rule_note": null
+  },
+  "ais": {
+   "validation": "2026 AHA/ASA guideline.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Delaying treatment for ECG, troponin or advanced imaging.",
+     "source": "emdocs_stroke_2026",
+     "inferred": false
+    },
+    {
+     "text": "Mild early ischemic change on CT as a reason to withhold thrombolysis.",
+     "source": "medscape_stroke_2026",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "Stroke is confirmed or treated, not eliminated, in this route."
+  },
+  "mimic": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Seizure, migraine and other mimics not sourced."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Pediatric stroke",
+   "text": "The 2026 guideline adds pediatric recommendations, not encoded here.",
+   "source": "aha_stroke_2026"
+  },
+  {
+   "title": "Other mimics",
+   "text": "Mimics other than glucose disorders are not sourced.",
+   "source": null
+  }
+ ]
+}

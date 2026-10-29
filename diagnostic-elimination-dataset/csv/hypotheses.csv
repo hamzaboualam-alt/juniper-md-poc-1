@@ -1,0 +1,54 @@
+situation_id,hypothesis_id,name,short_name,tier,clue,clue_source,status
+chest_pain,acs,Acute coronary syndrome,ACS,must_not_miss,"Sweating, fast breathing",aafp_cp,partial
+chest_pain,pe,Pulmonary embolism,PE,must_not_miss,"Fast heart rate, dyspnea",aafp_cp,sourced
+chest_pain,ad,Aortic dissection,Dissection,must_not_miss,"Abrupt, tearing pain; pulse or BP differential",mdcalc_addrs,sourced
+chest_pain,ptx,Pneumothorax,Pneumothorax,other,"Dyspnea, one-sided absent breath sounds",tw_cp_exam,partial
+chest_pain,pna,Pneumonia,Pneumonia,other,"Fever, localized pleuritic pain",tw_cp_exam,partial
+chest_pain,pc,Pericardial disease,Pericardial,other,"Positional pain, friction rub",radio_peri,partial
+chest_pain,er,Esophageal rupture,Esoph. rupture,other,Air under the skin,aafp_cp,stub
+chest_pain,nc,Common noncardiac causes,Noncardiac,other,"Chest wall tenderness, pain on inspiration",aafp_cp,stub
+dyspnea,ahf,Acute heart failure,Heart failure,must_not_miss,Known heart disease,,partial
+dyspnea,pe,Pulmonary embolism,PE,must_not_miss,"Fast heart rate, dyspnea",aafp_cp,sourced
+dyspnea,acs,Acute coronary syndrome,ACS,must_not_miss,Dyspnea as anginal equivalent,aha_cp_top,partial
+dyspnea,ptx,Pneumothorax,Pneumothorax,must_not_miss,"Pain on inspiration, absent breath sounds",tw_cp_exam,partial
+dyspnea,pna,Pneumonia,Pneumonia,other,"Fever, localized pleuritic pain",tw_cp_exam,partial
+dyspnea,copd,COPD or asthma exacerbation,COPD/asthma,other,Known lung disease,,stub
+lower_abdominal_pain,ectopic,Ectopic pregnancy,Ectopic,must_not_miss,"Positive hCG, pelvic pain",acr_pelvic_narr,sourced
+lower_abdominal_pain,appy,Appendicitis,Appendicitis,must_not_miss,Pain migrating to the right lower quadrant,aafp_pelvic,sourced
+lower_abdominal_pain,torsion,Ovarian torsion,Torsion,must_not_miss,One-sided pelvic pain,aafp_pelvic,partial
+lower_abdominal_pain,divert,Diverticulitis,Diverticulitis,other,Left lower quadrant tenderness,aafp_pelvic,partial
+lower_abdominal_pain,gyn,Ovarian cyst or pelvic inflammatory disease,Cyst or PID,other,Suspected gynecologic source,aafp_pelvic,partial
+lower_abdominal_pain,stone,Ureteral stone,Stone,other,Flank pain radiating; see flank pain,aafp_pelvic,partial
+headache,sah,Subarachnoid hemorrhage,SAH,must_not_miss,"Thunderclap onset, exertion, neck stiffness",acep_headache,sourced
+headache,men,Bacterial meningitis,Meningitis,must_not_miss,Fever and systemic signs,snnoop10,partial
+headache,sec,Other secondary headache,Other secondary,must_not_miss,Any SNNOOP10 red flag,snnoop10,partial
+headache,prim,"Primary headache (migraine, tension-type)",Primary,other,No red flags,jin_headache,partial
+fever_sepsis,sepsis,Sepsis,Sepsis,must_not_miss,Infection with organ dysfunction,ssc_2026_exec,partial
+fever_sepsis,men,Bacterial meningitis,Meningitis,must_not_miss,"Headache, neck stiffness; see headache",snnoop10,partial
+fever_sepsis,pna,Pneumonia,Pneumonia,other,Respiratory signs,tw_cp_exam,partial
+fever_sepsis,noninf,Non-infectious cause,Non-infectious,other,Not sourced,,stub
+syncope,card,Cardiac (arrhythmic or structural) syncope,Cardiac,must_not_miss,"Exertional or supine, palpitations, heart disease",esc_syncope_table,partial
+syncope,serious,Serious condition presenting as syncope,Serious other,must_not_miss,"New chest pain, breathlessness, abdominal pain or headache",esc_syncope_table,stub
+syncope,orth,Orthostatic hypotension,Orthostatic,other,Syncope on standing,esc_syncope_table,partial
+syncope,reflex,"Reflex (vasovagal, situational) syncope",Reflex,other,"Prodrome, typical triggers",esc_syncope_table,partial
+ugib,ulcer,Peptic ulcer bleeding,Ulcer,must_not_miss,Most common cause,nursing_ugib,partial
+ugib,other_ugi,"Other upper GI source (varices, tears, others)",Other upper GI,must_not_miss,Not sourced,,stub
+ugib,needs_intervention,Bleeding that needs hospital intervention,Needs intervention,must_not_miss,Unstable or high score,jhm_ugib,sourced
+leg_swelling,dvt,Deep vein thrombosis,DVT,must_not_miss,"Swelling, risk factors",ash_slides,sourced
+leg_swelling,alt,Alternative diagnosis,Alternative,other,Another cause as likely,ash_slides,stub
+dizziness,stroke,Posterior circulation stroke,Stroke,must_not_miss,Continuous dizziness with central signs,grace3_pdf,partial
+dizziness,bppv,Posterior canal BPPV,BPPV,other,"Brief, positional episodes",grace3,sourced
+dizziness,periph,Peripheral vestibular syndrome (e.g. vestibular neuritis),Peripheral,other,"Continuous, peripheral HINTS",jfp_dizzy,partial
+dizziness,nonvest,"Non-vestibular cause (cardiac, orthostatic)",Non-vestibular,other,See syncope,,stub
+focal_deficit,ais,Acute ischemic stroke,Ischemic stroke,must_not_miss,Sudden focal deficit,,partial
+focal_deficit,ich,Intracranial hemorrhage,Hemorrhage,must_not_miss,Sudden focal deficit,,sourced
+focal_deficit,hypo,Hypoglycemia or severe hyperglycemia (stroke mimic),Glucose mimic,must_not_miss,Abnormal bedside glucose,aha_stroke_2026_gc,sourced
+focal_deficit,mimic,Other stroke mimics,Other mimic,other,Not sourced,,stub
+low_back_pain,ces,Cauda equina syndrome,Cauda equina,must_not_miss,"Retention, saddle anesthesia",lbp_imaging,partial
+low_back_pain,malig,Spinal malignancy,Malignancy,must_not_miss,Cancer history,acr_lbp,partial
+low_back_pain,infx,Spinal infection,Infection,must_not_miss,Infection red flags,acr_lbp,partial
+low_back_pain,fx,Vertebral fracture,Fracture,must_not_miss,Fracture red flags,acr_lbp,partial
+low_back_pain,mech,Uncomplicated mechanical back pain,Mechanical,other,No red flags,applied_rad_lbp,partial
+flank_pain,stone,Ureteral stone,Stone,other,"Colicky pain, hematuria",acr_flank_old,sourced
+flank_pain,pyelo,Pyelonephritis or infected obstruction,Infection,must_not_miss,"Fever, infection signs",acr_flank_narr,stub
+flank_pain,alt_abd,"Other abdominal cause (appendicitis, diverticulitis, ovarian torsion)",Other abdominal,must_not_miss,Atypical features,acr_flank_old,partial

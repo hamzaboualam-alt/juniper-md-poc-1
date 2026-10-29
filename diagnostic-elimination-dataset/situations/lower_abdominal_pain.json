@@ -1,0 +1,286 @@
+{
+ "id": "lower_abdominal_pain",
+ "title": "Acute lower abdominal or pelvic pain",
+ "setting": "Emergency department",
+ "population": "Adults, including women of reproductive age",
+ "priority": "Abdominal pain is the leading ED reason for visit in NHAMCS fact sheets.",
+ "priority_source": "nhamcs_2011",
+ "lead_guidelines": [
+  "acr_rlq",
+  "acr_pelvic_2023"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "Pain in the lower abdomen or pelvis; its location narrows the list.",
+   "source": "aafp_pelvic"
+  },
+  {
+   "label": "Pregnancy status",
+   "detail": "Urine or serum beta-hCG is the first step in women who could be pregnant.",
+   "source": "hopkins_pelvic"
+  },
+  {
+   "label": "Exam clues",
+   "detail": "Migration from the umbilicus to the right lower quadrant suggests appendicitis; left lower quadrant tenderness suggests diverticulitis.",
+   "source": "aafp_pelvic"
+  },
+  {
+   "label": "Patient group",
+   "detail": "Adult, child or pregnant; this changes which imaging comes first.",
+   "source": "acr_rlq"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Positive pregnancy test with pain",
+   "detail": "Ectopic pregnancy must be considered; ultrasound first.",
+   "source": "acr_pelvic_narr"
+  },
+  {
+   "urgent": false,
+   "label": "Not pregnant",
+   "detail": "Choose imaging by suspected source: gynecologic or not.",
+   "source": "acr_pelvic_2023"
+  }
+ ],
+ "gate_note": "Urgent causes to consider first in women of reproductive age include ectopic pregnancy, ruptured ovarian cyst, ovarian torsion, appendicitis and pelvic inflammatory disease.",
+ "gate_note_source": "aafp_pelvic",
+ "hypotheses": [
+  {
+   "id": "ectopic",
+   "name": "Ectopic pregnancy",
+   "short": "Ectopic",
+   "tier": "must_not_miss",
+   "clue": "Positive hCG, pelvic pain",
+   "clue_source": "acr_pelvic_narr",
+   "status": "sourced"
+  },
+  {
+   "id": "appy",
+   "name": "Appendicitis",
+   "short": "Appendicitis",
+   "tier": "must_not_miss",
+   "clue": "Pain migrating to the right lower quadrant",
+   "clue_source": "aafp_pelvic",
+   "status": "sourced"
+  },
+  {
+   "id": "torsion",
+   "name": "Ovarian torsion",
+   "short": "Torsion",
+   "tier": "must_not_miss",
+   "clue": "One-sided pelvic pain",
+   "clue_source": "aafp_pelvic",
+   "status": "partial"
+  },
+  {
+   "id": "divert",
+   "name": "Diverticulitis",
+   "short": "Diverticulitis",
+   "tier": "other",
+   "clue": "Left lower quadrant tenderness",
+   "clue_source": "aafp_pelvic",
+   "status": "partial"
+  },
+  {
+   "id": "gyn",
+   "name": "Ovarian cyst or pelvic inflammatory disease",
+   "short": "Cyst or PID",
+   "tier": "other",
+   "clue": "Suspected gynecologic source",
+   "clue_source": "aafp_pelvic",
+   "status": "partial"
+  },
+  {
+   "id": "stone",
+   "name": "Ureteral stone",
+   "short": "Stone",
+   "tier": "other",
+   "clue": "Flank pain radiating; see flank pain",
+   "clue_source": "aafp_pelvic",
+   "status": "partial"
+  }
+ ],
+ "steps": [
+  {
+   "title": "History and exam",
+   "timing": "First minutes",
+   "description": "Location and migration of pain narrow the list.",
+   "source": null,
+   "effects": {
+    "appy": {
+     "type": "steer",
+     "text": "Periumbilical pain migrating to the right lower quadrant.",
+     "source": "aafp_pelvic"
+    },
+    "divert": {
+     "type": "steer",
+     "text": "Left lower quadrant tenderness.",
+     "source": "aafp_pelvic"
+    },
+    "torsion": {
+     "type": "steer",
+     "text": "Right- or left-sided pelvic pain keeps torsion on the list.",
+     "source": "aafp_pelvic"
+    },
+    "stone": {
+     "type": "steer",
+     "text": "Right-sided pelvic pain can also be a stone.",
+     "source": "aafp_pelvic"
+    }
+   },
+   "evidence": [],
+   "id": "lower_abdominal_pain.s1",
+   "order": 1
+  },
+  {
+   "title": "Pregnancy test",
+   "timing": "Before imaging, in anyone who could be pregnant",
+   "description": "Decides whether pregnancy causes are possible and which imaging is safe.",
+   "source": null,
+   "effects": {
+    "ectopic": {
+     "type": "rule",
+     "text": "A negative serum beta-hCG essentially excludes acute ectopic pregnancy.",
+     "source": "acr_pelvic_narr"
+    }
+   },
+   "evidence": [],
+   "id": "lower_abdominal_pain.s2",
+   "order": 2
+  },
+  {
+   "title": "Pelvic ultrasound with Doppler",
+   "timing": "Suspected gynecologic cause, or pregnant",
+   "description": "Transabdominal plus transvaginal ultrasound is the usual first imaging.",
+   "source": null,
+   "effects": {
+    "ectopic": {
+     "type": "conf",
+     "text": "First-line imaging when hCG is positive.",
+     "source": "acr_pelvic_2023"
+    },
+    "torsion": {
+     "type": "conf",
+     "text": "Ultrasound with Doppler is the initial study for gynecologic causes.",
+     "source": "acr_pelvic_2023"
+    },
+    "gyn": {
+     "type": "conf",
+     "text": "Characterizes cysts and complications of pelvic inflammatory disease.",
+     "source": "hopkins_pelvic"
+    },
+    "appy": {
+     "type": "steer",
+     "text": "First choice in children and pregnancy; often inconclusive in pregnancy, then MRI.",
+     "source": "acr_rlq"
+    }
+   },
+   "evidence": [],
+   "id": "lower_abdominal_pain.s3",
+   "order": 3
+  },
+  {
+   "title": "Contrast CT",
+   "timing": "Nonpregnant adults with a suspected non-gynecologic cause",
+   "description": "Most accurate test for appendicitis and other bowel causes.",
+   "source": null,
+   "effects": {
+    "appy": {
+     "type": "rule",
+     "text": "CT is the most accurate study for appendicitis and its alternatives.",
+     "source": "acr_rlq"
+    },
+    "divert": {
+     "type": "conf",
+     "text": "CT with IV contrast is best for gastrointestinal causes such as diverticulitis.",
+     "source": "hopkins_pelvic"
+    }
+   },
+   "evidence": [
+    {
+     "text": "Cochrane review: at 43% prevalence, a positive CT means about a 92% chance of appendicitis and a negative CT about 4%.",
+     "source": "cochrane_appy"
+    }
+   ],
+   "id": "lower_abdominal_pain.s4",
+   "order": 4
+  }
+ ],
+ "rules": {
+  "ectopic": {
+   "validation": "ACR Appropriateness Criteria.",
+   "eliminate_when": [
+    {
+     "text": "Negative serum beta-hCG.",
+     "source": "acr_pelvic_narr",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [],
+   "no_rule_note": null
+  },
+  "appy": {
+   "validation": "ACR criteria for test choice; Cochrane diagnostic review for accuracy.",
+   "eliminate_when": [
+    {
+     "text": "Negative CT in an adult: at a 43% prevalence the probability of appendicitis falls to about 4% (Cochrane review). A strong reduction, not certainty.",
+     "source": "cochrane_appy",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "A single inconclusive ultrasound in pregnancy; most are inconclusive, so MRI follows.",
+     "source": "acr_rlq",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "torsion": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No explicit exclusion rule extracted; ultrasound with Doppler is the first study."
+  },
+  "divert": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No explicit exclusion rule extracted."
+  },
+  "gyn": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No explicit exclusion rule extracted."
+  },
+  "stone": {
+   "validation": "See flank pain situation.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Route lives in the flank pain situation."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Upper abdominal pain",
+   "text": "Right upper quadrant and epigastric pain are not covered; ultrasound is the usual first test for right upper quadrant pain.",
+   "source": "hosp_abd_imaging"
+  },
+  {
+   "title": "Operator dependence",
+   "text": "Ultrasound performance depends on operator training.",
+   "source": "hosp_abd_imaging"
+  },
+  {
+   "title": "Clinical scores",
+   "text": "Scores such as Alvarado were not sourced in this pass.",
+   "source": null
+  }
+ ]
+}

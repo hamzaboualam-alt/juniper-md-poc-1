@@ -1,100 +1,73 @@
-"""Difficulty levers. Every lever raises the cost of reaching the answer; none
-changes the answer, so the grader is untouched by the preset.
+"""Difficulty levers for the elimination game. The doctor never sees the
+hypothesis board on any preset; the levers hide prices, narrow the case pool
+to decoys, cap spend, or put a whole clinic day on the clock. None changes
+the answer, so the grader is identical across presets.
 """
 from __future__ import annotations
 
-import difflib
-import hashlib
-import re
 from dataclasses import asdict, dataclass
 
-from .data import Dataset, Patient
+
+@dataclass(frozen=True)
+class ShiftRules:
+    """A clinic day: a queue of patients, a clock, and what each outcome is worth.
+
+    Test minutes come from the tests themselves; test spend is subtracted from
+    the day's earnings, so thoroughness on one patient is paid for twice: in
+    money and in the patients still waiting. Fees are on the hospital-charge
+    scale of app/prices.py: the dearest safe route in the pool (aortic
+    dissection, stroke in the window) costs about $7,500, so a correct
+    diagnosis must be worth more than that or the right call never pays.
+    """
+
+    day_minutes: int = 480
+    patients: int = 6
+    minutes_per_handover: int = 2
+    fee_correct: int = 10_000
+    fee_referred: int = 2_000  # committed to "cannot determine" with the dangerous causes excluded
+    penalty_wrong: int = 10_000
+    penalty_wrong_urgent: int = 20_000
+    penalty_unseen: int = 2_500
+    penalty_unseen_urgent: int = 10_000
 
 
 @dataclass(frozen=True)
 class Difficulty:
     name: str
-    max_questions: int = 20
-    # all: any patient. hard: the rule-based reference differential itself ranks
-    # another condition first AND gives the truth under 25%, so the textbook
-    # picture points elsewhere (about 22% of DDXPlus patients).
+    # Whether test prices are shown. Hidden, spend is still graded.
+    show_prices: bool = True
+    # all: every case variant. traps: only variants whose opening picture points
+    # at a decoy hypothesis.
     case_pool: str = "all"
-    # Probability that a question first gets "I'm not sure". Asking again gets the
-    # real answer, so the information is recoverable but costs a turn.
-    patient_recall: float = 0.0
-    # Whether the doctor is shown the list of candidate conditions. Hidden, the
-    # doctor must name the condition in free text, which is normalised against the
-    # list; an unrecognised name is graded as a miss.
-    show_candidates: bool = True
-    # Whether the doctor is told how many clues the patient has on record.
-    show_clue_count: bool = False
+    # Situations in play; empty means all five.
+    situations: tuple[str, ...] = ()
+    # Spend above which the case is closed as over budget (0 = no cap).
+    budget_usd: float = 0.0
+    shift: ShiftRules | None = None
     description: str = ""
 
+    @property
+    def mode(self) -> str:
+        return "shift" if self.shift else "case"
+
     def as_dict(self) -> dict:
-        return asdict(self)
+        return asdict(self) | {"mode": self.mode}
 
 
 PRESETS: dict[str, Difficulty] = {
-    "warmup": Difficulty(
-        "warmup", max_questions=20, description="20 questions, any patient, candidate list shown."
-    ),
     "standard": Difficulty(
-        "standard", max_questions=12, description="12 questions, any patient, candidate list shown."
+        "standard", description="One patient, any case. Prices shown. The doctor builds the differential from scratch."
     ),
-    "hard": Difficulty(
-        "hard", max_questions=8, case_pool="hard", patient_recall=0.25, show_candidates=False,
-        description="8 questions, misleading cases only, patient unsure 25% of the time, no candidate list.",
+    "traps": Difficulty(
+        "traps", case_pool="traps",
+        description="One patient, decoy cases only: the opening picture points at the wrong condition.",
     ),
-    "brutal": Difficulty(
-        "brutal", max_questions=6, case_pool="hard", patient_recall=0.35, show_candidates=False,
-        description="6 questions, misleading cases only, patient unsure 35% of the time, no candidate list.",
+    "blind": Difficulty(
+        "blind", show_prices=False, case_pool="traps",
+        description="Decoy cases with prices hidden; spend is still graded against the cheapest safe route.",
+    ),
+    "clinic-day": Difficulty(
+        "clinic-day", shift=ShiftRules(),
+        description="An 8-hour shift with 6 patients waiting. Test minutes and prices are real; correct +10,000, wrong -10,000 (urgent -20,000), unseen -2,500 (urgent -10,000), spend subtracted.",
     ),
 }
-
-
-def truth_stats(patient: Patient) -> tuple[int | None, float]:
-    """(rank of the true condition in the reference differential, its probability)."""
-    for i, (name, p) in enumerate(patient.differential, 1):
-        if name == patient.pathology:
-            return i, p
-    return None, 0.0
-
-
-def is_hard_case(patient: Patient) -> bool:
-    rank, p = truth_stats(patient)
-    return rank != 1 and p < 0.25
-
-
-def eligible(ds: Dataset, d: Difficulty) -> list[Patient]:
-    if d.case_pool == "hard":
-        return [p for p in ds.patients if is_hard_case(p)]
-    return ds.patients
-
-
-def unsure(case_id: str, code: str, p: float) -> bool:
-    """Deterministic per (case, question), so a replay reproduces the same hesitations."""
-    if p <= 0:
-        return False
-    h = hashlib.sha256(f"{case_id}:{code}".encode()).digest()
-    return int.from_bytes(h[:4], "big") / 2**32 < p
-
-
-def _norm(s: str) -> str:
-    return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
-
-
-def normalise_condition(name: str | None, ds: Dataset) -> str | None:
-    """Map a free-text condition name onto the dataset's spelling, or None."""
-    if not name:
-        return None
-    if name in ds.conditions:
-        return name
-    wanted = _norm(name)
-    by_norm = {_norm(c): c for c in ds.conditions}
-    if wanted in by_norm:
-        return by_norm[wanted]
-    for n, c in by_norm.items():
-        if wanted and (wanted in n or n in wanted):
-            return c
-    close = difflib.get_close_matches(wanted, list(by_norm), n=1, cutoff=0.85)
-    return by_norm[close[0]] if close else None

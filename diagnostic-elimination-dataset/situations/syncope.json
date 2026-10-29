@@ -1,0 +1,277 @@
+{
+ "id": "syncope",
+ "title": "Syncope (transient loss of consciousness)",
+ "setting": "Emergency department",
+ "population": "Adults",
+ "priority": "Common ED presentation with its own US and European guidelines.",
+ "priority_source": null,
+ "lead_guidelines": [
+  "acc_syncope_2017",
+  "acc_esc_syncope"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "The event",
+   "detail": "Prodrome, position (standing, sitting, supine), exertion, palpitations, triggers such as pain, cough, micturition or prolonged standing.",
+   "source": "esc_syncope_table"
+  },
+  {
+   "label": "History",
+   "detail": "Structural heart disease or prior myocardial infarction, family history of sudden cardiac death at a young age.",
+   "source": "esc_syncope_table"
+  },
+  {
+   "label": "Exam",
+   "detail": "Physical examination including lying and standing blood pressure.",
+   "source": "syncope_risk_review"
+  },
+  {
+   "label": "12-lead ECG",
+   "detail": "Useful in the initial evaluation (class I).",
+   "source": "acc_syncope_2017"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Any high-risk feature",
+   "detail": "New chest discomfort, breathlessness, abdominal pain or headache; syncope during exertion or supine; palpitations right before syncope; structural heart disease. Evaluate in hospital or with ECG monitoring.",
+   "source": "esc_syncope_table"
+  },
+  {
+   "urgent": false,
+   "label": "Low-risk features only",
+   "detail": "Typical reflex prodrome or trigger, or syncope on standing up. Likely reflex or orthostatic; discharge can be considered.",
+   "source": "sec_syncope"
+  }
+ ],
+ "gate_note": "Not all high-risk patients need admission; risk scores may be reasonable but are not better than clinical judgment.",
+ "gate_note_source": "aafp_syncope",
+ "hypotheses": [
+  {
+   "id": "card",
+   "name": "Cardiac (arrhythmic or structural) syncope",
+   "short": "Cardiac",
+   "tier": "must_not_miss",
+   "clue": "Exertional or supine, palpitations, heart disease",
+   "clue_source": "esc_syncope_table",
+   "status": "partial"
+  },
+  {
+   "id": "serious",
+   "name": "Serious condition presenting as syncope",
+   "short": "Serious other",
+   "tier": "must_not_miss",
+   "clue": "New chest pain, breathlessness, abdominal pain or headache",
+   "clue_source": "esc_syncope_table",
+   "status": "stub"
+  },
+  {
+   "id": "orth",
+   "name": "Orthostatic hypotension",
+   "short": "Orthostatic",
+   "tier": "other",
+   "clue": "Syncope on standing",
+   "clue_source": "esc_syncope_table",
+   "status": "partial"
+  },
+  {
+   "id": "reflex",
+   "name": "Reflex (vasovagal, situational) syncope",
+   "short": "Reflex",
+   "tier": "other",
+   "clue": "Prodrome, typical triggers",
+   "clue_source": "esc_syncope_table",
+   "status": "partial"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Event history",
+   "timing": "First minutes",
+   "description": "Separates low-risk reflex patterns from high-risk features.",
+   "source": null,
+   "effects": {
+    "card": {
+     "type": "steer",
+     "text": "Exertion, supine position, sudden palpitations, or no or very short prodrome with heart disease.",
+     "source": "esc_syncope_table"
+    },
+    "serious": {
+     "type": "steer",
+     "text": "New chest discomfort, breathlessness, abdominal pain or headache is a major high-risk feature.",
+     "source": "esc_syncope_table"
+    },
+    "orth": {
+     "type": "steer",
+     "text": "Syncope on standing up from lying or sitting.",
+     "source": "esc_syncope_table"
+    },
+    "reflex": {
+     "type": "steer",
+     "text": "Prodrome of light-headedness, warmth, sweating or nausea; pain, crowded hot places, cough or micturition triggers.",
+     "source": "esc_syncope_table"
+    }
+   },
+   "evidence": [],
+   "id": "syncope.s1",
+   "order": 1
+  },
+  {
+   "title": "Exam with lying and standing blood pressure",
+   "timing": "Initial evaluation",
+   "description": "Part of the standard initial evaluation.",
+   "source": null,
+   "effects": {
+    "orth": {
+     "type": "steer",
+     "text": "Lying and standing BP is the bedside test for orthostatic causes.",
+     "source": "syncope_risk_review"
+    },
+    "card": {
+     "type": "steer",
+     "text": "Findings of structural heart disease are high risk.",
+     "source": "esc_syncope_table"
+    }
+   },
+   "evidence": [],
+   "id": "syncope.s2",
+   "order": 2
+  },
+  {
+   "title": "12-lead ECG",
+   "timing": "Initial evaluation",
+   "description": "Class I in the initial evaluation.",
+   "source": "acc_syncope_2017",
+   "effects": {
+    "card": {
+     "type": "steer",
+     "text": "An abnormal ECG turns minor features into high-risk ones.",
+     "source": "esc_syncope_table"
+    }
+   },
+   "evidence": [],
+   "id": "syncope.s3",
+   "order": 3
+  },
+  {
+   "title": "Risk stratification and disposition",
+   "timing": "After history, exam and ECG",
+   "description": "Sorts patients into high, intermediate and low risk.",
+   "source": null,
+   "effects": {
+    "card": {
+     "type": "steer",
+     "text": "Low-risk features only: discharge from the ED is recommended for patients without recurrence.",
+     "source": "sec_syncope"
+    },
+    "reflex": {
+     "type": "steer",
+     "text": "Low-risk patients mostly have reflex syncope with a good prognosis.",
+     "source": "sec_syncope"
+    }
+   },
+   "evidence": [],
+   "id": "syncope.s4",
+   "order": 4
+  },
+  {
+   "title": "Targeted tests only when suspected",
+   "timing": "Selected patients",
+   "description": "Routine labs, cardiac imaging and carotid imaging are not useful without a specific reason.",
+   "source": null,
+   "effects": {
+    "card": {
+     "type": "conf",
+     "text": "ECG monitoring in high-risk patients with suspected arrhythmia; cardiac imaging only if a cardiac cause is suspected.",
+     "source": "acc_esc_syncope"
+    },
+    "reflex": {
+     "type": "conf",
+     "text": "Tilt testing when reflex syncope is suspected.",
+     "source": "acc_esc_syncope"
+    },
+    "orth": {
+     "type": "conf",
+     "text": "Tilt testing when an orthostatic cause is suspected.",
+     "source": "acc_esc_syncope"
+    }
+   },
+   "evidence": [],
+   "id": "syncope.s5",
+   "order": 5
+  }
+ ],
+ "rules": {
+  "card": {
+   "validation": "ESC 2018 and ACC/AHA/HRS 2017 summaries.",
+   "eliminate_when": [
+    {
+     "text": "Only low-risk features after history, exam and ECG: ESC 2018 recommends discharge from the ED (class I, level B). Treating this disposition as elimination is the inferred part.",
+     "source": "sec_syncope",
+     "inferred": true
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "Routine comprehensive laboratory testing.",
+     "source": "acc_syncope_2017",
+     "inferred": false
+    },
+    {
+     "text": "Routine cardiac imaging without a suspected cardiac cause.",
+     "source": "acc_syncope_2017",
+     "inferred": false
+    },
+    {
+     "text": "Risk scores as better than clinical judgment.",
+     "source": "aafp_syncope",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "serious": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Route depends on the underlying condition (for example PE or dissection); see the chest pain situation."
+  },
+  "orth": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Carotid imaging without focal neurologic findings.",
+     "source": "acc_syncope_2017",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No elimination threshold extracted; orthostatic criteria are in the ESC guideline."
+  },
+  "reflex": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Diagnosis is clinical; tilt testing when suspected."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Two guidelines",
+   "text": "US (2017) and European (2018) guidelines overlap but differ in detail.",
+   "source": "acc_esc_syncope"
+  },
+  {
+   "title": "Intermediate risk",
+   "text": "Patients with neither high- nor low-risk features have no single sourced pathway here.",
+   "source": null
+  },
+  {
+   "title": "Orthostatic thresholds",
+   "text": "Exact blood pressure criteria were not extracted in this pass.",
+   "source": null
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+situation_id,title,text,source_id
+chest_pain,Local resources,"Some sites cannot run acute troponin, so the pathway cannot be applied as written.",cchcs_cp
+chest_pain,Which PE score,"Wells, revised Geneva and YEARS lead to the same next steps, but protocols differ.",iatrox_pe
+chest_pain,US versus Europe on dissection,ESC 2024 sends ADD-RS 2 or more to CT regardless of D-dimer; AHA guidance lacks consensus on the ADD-RS cut-off and on D-dimer.,aas_review_2025
+chest_pain,Parallel hypotheses,"No source found on prioritizing ACS, PE and dissection work-ups run at the same time.",
+dyspnea,Grey zone,"Between rule-out and rule-in natriuretic peptide thresholds, about half of older patients have heart failure; echo and judgment decide.",np_elderly
+dyspnea,Unsourced gate,The stabilization gate and the COPD/asthma branch need sourcing.,
+lower_abdominal_pain,Upper abdominal pain,Right upper quadrant and epigastric pain are not covered; ultrasound is the usual first test for right upper quadrant pain.,hosp_abd_imaging
+lower_abdominal_pain,Operator dependence,Ultrasound performance depends on operator training.,hosp_abd_imaging
+lower_abdominal_pain,Clinical scores,Scores such as Alvarado were not sourced in this pass.,
+headache,Rule validation,Early reviews noted the Ottawa SAH rule had mainly Canadian validation; check local validity.,rebel_ottawa
+headache,CT/LP versus CT/CTA,ACEP recommends shared decision making between the two second-line strategies.,acep_headache
+headache,Red-flag evidence,Most red flags lack prospective data on specificity.,snnoop10
+fever_sepsis,2021 leftovers,Lactate and procalcitonin steps still cite the 2021 edition and need checking against 2026.,ssc_2021
+fever_sepsis,Children,The 2026 pediatric Surviving Sepsis guideline is separate and not included.,
+syncope,Two guidelines,US (2017) and European (2018) guidelines overlap but differ in detail.,acc_esc_syncope
+syncope,Intermediate risk,Patients with neither high- nor low-risk features have no single sourced pathway here.,
+syncope,Orthostatic thresholds,Exact blood pressure criteria were not extracted in this pass.,
+ugib,Lower GI bleeding,"Lower GI bleeding has a separate ACG guideline, not included.",
+leg_swelling,Score cut-offs,Exact Wells DVT cut-offs differ between versions; prevalence bands are used instead.,ash_vte_pmc
+leg_swelling,Distal DVT,The clinical relevance of calf-vein clots found on ultrasound is uncertain.,jama_vte
+dizziness,Training,"HINTS accuracy depends on examiner training, which most emergency physicians lack.",grace3
+focal_deficit,Pediatric stroke,"The 2026 guideline adds pediatric recommendations, not encoded here.",aha_stroke_2026
+focal_deficit,Other mimics,Mimics other than glucose disorders are not sourced.,
+low_back_pain,Red-flag evidence,Many red flags lack empirical support; validated thresholds are missing.,lbp_imaging
+flank_pain,Vascular causes,Aortic aneurysm as a flank pain mimic was not sourced.,

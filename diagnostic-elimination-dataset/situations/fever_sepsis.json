@@ -1,0 +1,232 @@
+{
+ "id": "fever_sepsis",
+ "title": "Fever in an adult (suspected sepsis)",
+ "setting": "Emergency department and wards",
+ "population": "Adults",
+ "priority": "Fever is among the top ED reasons for visit in NHAMCS fact sheets.",
+ "priority_source": "nhamcs_2011",
+ "lead_guidelines": [
+  "ssc_2026",
+  "ssc_2026_exec"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Signs of infection and vital signs",
+   "detail": "Screened with NEWS/NEWS2, MEWS or SIRS rather than qSOFA alone.",
+   "source": "epocrates_ssc_2026"
+  },
+  {
+   "label": "Sepsis certainty",
+   "detail": "The 2026 guideline grades suspected sepsis as definite, probable, possible or unlikely.",
+   "source": "ssc_2026_exec"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Probable or definite sepsis, or shock",
+   "detail": "Treat as an emergency: antimicrobials within 1 hour of recognition.",
+   "source": "umem_ssc_2026"
+  },
+  {
+   "urgent": false,
+   "label": "Possible sepsis without shock",
+   "detail": "Time-limited investigation; if infection is likely, antimicrobials within 3 hours.",
+   "source": "umem_ssc_2026"
+  }
+ ],
+ "gate_note": "Updated to the 2026 Surviving Sepsis Campaign guideline, which replaced the 2021 edition.",
+ "gate_note_source": "ssc_2026",
+ "hypotheses": [
+  {
+   "id": "sepsis",
+   "name": "Sepsis",
+   "short": "Sepsis",
+   "tier": "must_not_miss",
+   "clue": "Infection with organ dysfunction",
+   "clue_source": "ssc_2026_exec",
+   "status": "partial"
+  },
+  {
+   "id": "men",
+   "name": "Bacterial meningitis",
+   "short": "Meningitis",
+   "tier": "must_not_miss",
+   "clue": "Headache, neck stiffness; see headache",
+   "clue_source": "snnoop10",
+   "status": "partial"
+  },
+  {
+   "id": "pna",
+   "name": "Pneumonia",
+   "short": "Pneumonia",
+   "tier": "other",
+   "clue": "Respiratory signs",
+   "clue_source": "tw_cp_exam",
+   "status": "partial"
+  },
+  {
+   "id": "noninf",
+   "name": "Non-infectious cause",
+   "short": "Non-infectious",
+   "tier": "other",
+   "clue": "Not sourced",
+   "clue_source": null,
+   "status": "stub"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Screening tool",
+   "timing": "At triage",
+   "description": "NEWS/NEWS2, MEWS or SIRS rather than qSOFA alone (strong recommendation).",
+   "source": "epocrates_ssc_2026",
+   "effects": {
+    "sepsis": {
+     "type": "blind",
+     "text": "A negative qSOFA alone does not rule sepsis out.",
+     "source": "epocrates_ssc_2026"
+    }
+   },
+   "evidence": [],
+   "id": "fever_sepsis.s1",
+   "order": 1
+  },
+  {
+   "title": "Grade the certainty",
+   "timing": "After screening",
+   "description": "Definite, probable, possible or unlikely sepsis, using the guideline's standard language.",
+   "source": "ssc_2026_exec",
+   "effects": {
+    "sepsis": {
+     "type": "steer",
+     "text": "Sets urgency: 1 hour for probable or definite, a time-limited work-up for possible.",
+     "source": "umem_ssc_2026"
+    }
+   },
+   "evidence": [],
+   "id": "fever_sepsis.s2",
+   "order": 2
+  },
+  {
+   "title": "Time-limited investigation",
+   "timing": "Possible sepsis without shock",
+   "description": "Search for infection within a set time before committing to antimicrobials.",
+   "source": null,
+   "effects": {
+    "sepsis": {
+     "type": "steer",
+     "text": "If infection becomes likely, antimicrobials within 3 hours; the guideline does not state a formal exclusion test.",
+     "source": "umem_ssc_2026"
+    },
+    "noninf": {
+     "type": "steer",
+     "text": "The 2026 guideline addresses noninfectious causes in possible sepsis without shock; details not extracted.",
+     "source": "ssc_2026"
+    }
+   },
+   "evidence": [],
+   "id": "fever_sepsis.s3",
+   "order": 3
+  },
+  {
+   "title": "Blood lactate",
+   "timing": "Suspected sepsis",
+   "description": "Suggested in the 2021 edition; re-check against 2026.",
+   "source": null,
+   "effects": {
+    "sepsis": {
+     "type": "steer",
+     "text": "Elevated lactate supports sepsis and guides resuscitation (2021 statement).",
+     "source": "ssc_2021"
+    }
+   },
+   "evidence": [],
+   "id": "fever_sepsis.s4",
+   "order": 4
+  },
+  {
+   "title": "Source search",
+   "timing": "In parallel",
+   "description": "Chest film; lumbar puncture when meningitis is suspected.",
+   "source": null,
+   "effects": {
+    "pna": {
+     "type": "conf",
+     "text": "Infiltrate on chest film confirms.",
+     "source": "rcem_cxr"
+    },
+    "men": {
+     "type": "conf",
+     "text": "CSF examination is the diagnostic test.",
+     "source": "aafp_idsa_mening"
+    }
+   },
+   "evidence": [],
+   "id": "fever_sepsis.s5",
+   "order": 5
+  }
+ ],
+ "rules": {
+  "sepsis": {
+   "validation": "Surviving Sepsis Campaign 2026 (lactate and procalcitonin statements still from 2021).",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "A negative qSOFA alone.",
+     "source": "epocrates_ssc_2026",
+     "inferred": false
+    },
+    {
+     "text": "Procalcitonin to decide whether to start antimicrobials (2021 statement; re-check).",
+     "source": "ssc_2021",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No formal exclusion test. The 2026 guideline grades certainty and uses a time-limited investigation for possible sepsis."
+  },
+  "men": {
+   "validation": "See headache situation.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Delaying antibiotics for CT.",
+     "source": "ebm_lp",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "Diagnosis depends on CSF examination."
+  },
+  "pna": {
+   "validation": "Educational summary.",
+   "eliminate_when": [
+    {
+     "text": "Normal chest radiograph makes it unlikely.",
+     "source": "rcem_cxr",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [],
+   "no_rule_note": null
+  },
+  "noninf": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Named in the 2026 guideline; statements not extracted."
+  }
+ },
+ "gaps": [
+  {
+   "title": "2021 leftovers",
+   "text": "Lactate and procalcitonin steps still cite the 2021 edition and need checking against 2026.",
+   "source": "ssc_2021"
+  },
+  {
+   "title": "Children",
+   "text": "The 2026 pediatric Surviving Sepsis guideline is separate and not included.",
+   "source": null
+  }
+ ]
+}
