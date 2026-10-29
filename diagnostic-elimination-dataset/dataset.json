@@ -1,0 +1,4016 @@
+{
+ "name": "Diagnosis-by-elimination routes",
+ "version": "0.2.0",
+ "last_verified": "2026-10-21",
+ "effect_types": {
+  "rule": "Can eliminate",
+  "conf": "Can confirm",
+  "steer": "Shifts suspicion",
+  "blind": "Cannot decide it"
+ },
+ "sources": {
+  "nhamcs_2011": {
+   "title": "NHAMCS 2011 Emergency Department fact sheet",
+   "url": "https://Www.Cdc.gov/nchs/data/ahcd/NHAMCS_2011_ed_factsheet.pdf",
+   "publisher": "CDC / NCHS",
+   "year": 2011,
+   "kind": "survey fact sheet",
+   "tier": "epidemiology",
+   "notes": "Used only to prioritize which situations to build."
+  },
+  "stern_s2d": {
+   "title": "Symptom to Diagnosis: An Evidence-Based Guide, 3rd ed. (Stern, Cifu, Altkorn)",
+   "url": "https://mheducation.com/highered/product/symptom-diagnosis-evidence-based-guide-third-edition-stern-cifu/9780071803458.html",
+   "publisher": "McGraw-Hill",
+   "year": 2014,
+   "kind": "textbook",
+   "tier": "textbook",
+   "notes": "Structure reference only; copyrighted, not reproduced."
+  },
+  "aha_cp_top": {
+   "title": "Top Things to Know: 2021 Guideline for the Evaluation and Diagnosis of Chest Pain",
+   "url": "https://professional.heart.org/en/science-news/2021-guideline-for-the-evaluation-and-diagnosis-of-chest-pain/top-things-to-know",
+   "publisher": "AHA/ACC",
+   "year": 2021,
+   "kind": "guideline key points",
+   "tier": "primary_guideline_summary",
+   "notes": ""
+  },
+  "aha_cp_rec": {
+   "title": "2021 Chest Pain Guideline recommendation text: chest radiography and biomarkers",
+   "url": "https://eguideline.guidelinecentral.com/i/1421858/15",
+   "publisher": "AHA/ACC via Guideline Central",
+   "year": 2021,
+   "kind": "guideline recommendations",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "aafp_cp": {
+   "title": "Chest Pain Evaluation: Updated Guidelines From the AHA/ACC",
+   "url": "https://www.aafp.org/afp/2023/0200/practice-guidelines-chest-pain-evaluation",
+   "publisher": "AAFP",
+   "year": 2023,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acc_ed_cp": {
+   "title": "ACC guidance for ED evaluation of acute chest pain (news summary)",
+   "url": "https://community.the-hospitalist.org/index.php/content/acc-issues-guidance-ed-evaluation-acute-chest-pain",
+   "publisher": "The Hospitalist",
+   "year": 2022,
+   "kind": "news summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "iatrox_cp": {
+   "title": "Chest pain of recent onset (US clinical guidance summary)",
+   "url": "https://www.iatrox.com/clinical-guidance/us/chest-pain-recent-onset",
+   "publisher": "iatroX",
+   "year": 2026,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "tw_cp_exam": {
+   "title": "Excerpts from the 2021 chest pain guideline: physical examination table",
+   "url": "https://www.tomwademd.net/links-to-and-excerpts-from-2021-aha-acc-ase-chest-saem-scct-scmr-guideline-for-the-evaluation-and-diagnosis-of-chest-pain/",
+   "publisher": "tomwademd.net",
+   "year": 2021,
+   "kind": "guideline excerpts",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "cchcs_cp": {
+   "title": "Acute Chest Pain Care Guide",
+   "url": "https://cchcs.ca.gov/wp-content/uploads/sites/60/AcuteChestPainCareGuide.pdf",
+   "publisher": "California Correctional Health Care Services",
+   "year": null,
+   "kind": "local care guide",
+   "tier": "local_adaptation",
+   "notes": ""
+  },
+  "rcem_cxr": {
+   "title": "Chest X-ray in chest pain syndromes",
+   "url": "https://www.rcemlearning.co.uk/modules/chest-pain-syndromes/lessons/investigations-58/topic/chest-xray-cxr/",
+   "publisher": "RCEM Learning",
+   "year": null,
+   "kind": "educational module",
+   "tier": "educational",
+   "notes": ""
+  },
+  "evi_wells": {
+   "title": "Wells score for pulmonary embolism (summary of ESC 2019 approach)",
+   "url": "https://www.evigrade.com/en/calculators/wells-pe",
+   "publisher": "Evigrade",
+   "year": null,
+   "kind": "calculator page",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "wikem_wells": {
+   "title": "Wells PE score",
+   "url": "https://wikem.org/wiki/Wells_PE_score_calculator/de",
+   "publisher": "WikEM",
+   "year": null,
+   "kind": "wiki",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "oep_vte": {
+   "title": "Venous thromboembolism and pulmonary embolism study guide",
+   "url": "https://open-exam-prep.com/study-guides/uk-mrcp-part1/respiratory-vascular-pleural/pulmonary-embolism-vte",
+   "publisher": "Open Exam Prep",
+   "year": null,
+   "kind": "study guide",
+   "tier": "educational",
+   "notes": ""
+  },
+  "iatrox_pe": {
+   "title": "Wells, PERC, YEARS, age-adjusted D-dimer: PE diagnostic overview",
+   "url": "https://www.iatrox.com/blog/wells-score-perc-years-age-adjusted-d-dimer-pe-diagnostic-algorithm-2026",
+   "publisher": "iatroX",
+   "year": 2026,
+   "kind": "blog summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "mdcalc_addrs": {
+   "title": "Aortic Dissection Detection Risk Score (ADD-RS)",
+   "url": "https://www.mdcalc.com/calc/4060/aortic-dissection-detection-risk-score-add-rs",
+   "publisher": "MDCalc",
+   "year": null,
+   "kind": "calculator page",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "litfl_addrs": {
+   "title": "Aortic Dissection Detection Risk Score (ADD-RS)",
+   "url": "https://litfl.com/aortic-dissection-detection-risk-score-add-rs/",
+   "publisher": "LITFL",
+   "year": null,
+   "kind": "educational page",
+   "tier": "educational",
+   "notes": ""
+  },
+  "rcem_addrs": {
+   "title": "The ADD-RS and D-dimer",
+   "url": "https://www.rcemlearning.co.uk/modules/acute-aortic-dissection/lessons/clinical-assessment-21/topic/the-aortic-dissection-detection-risk-score-add-rs-and-d-dimer/",
+   "publisher": "RCEM Learning",
+   "year": null,
+   "kind": "educational module",
+   "tier": "educational",
+   "notes": ""
+  },
+  "advised": {
+   "title": "Diagnostic accuracy of ADD-RS plus D-dimer for acute aortic syndromes: the ADvISED study",
+   "url": "https://folia.unifr.ch/global/documents/18165",
+   "publisher": "Nazerian et al., Circulation",
+   "year": 2018,
+   "kind": "prospective multicenter study",
+   "tier": "primary_study",
+   "notes": ""
+  },
+  "addrs_meta": {
+   "title": "Accuracy of ADD-RS alone or with D-dimer: systematic review and meta-analysis",
+   "url": "https://esc365.escardio.org/journal/9130",
+   "publisher": "Eur Heart J Acute Cardiovasc Care",
+   "year": 2019,
+   "kind": "meta-analysis",
+   "tier": "systematic_review",
+   "notes": ""
+  },
+  "ebm_addrs": {
+   "title": "ADD-RS rapid reference (cites chest radiography study in low-probability AAS)",
+   "url": "https://foamed.ebmedicine.net/rapid-reference/aortic-dissection-detection-risk-score-add-rs/",
+   "publisher": "EB Medicine",
+   "year": null,
+   "kind": "reference page",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "esc_peri_comments": {
+   "title": "Comments on the 2015 ESC Guidelines for the Diagnosis and Management of Pericardial Diseases",
+   "url": "https://www.revespcardiol.org/en-comments-on-the-2015-esc-articulo-S1885585715004314",
+   "publisher": "Rev Esp Cardiol",
+   "year": 2015,
+   "kind": "guideline commentary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "radio_peri": {
+   "title": "Pericarditis",
+   "url": "https://radiopaedia.org/articles/pericarditis?lang=gb",
+   "publisher": "Radiopaedia",
+   "year": null,
+   "kind": "educational article",
+   "tier": "educational",
+   "notes": ""
+  },
+  "peri_book": {
+   "title": "Acute pericarditis and myopericarditis (chapter)",
+   "url": "https://books.akademisyen.net/index.php/akya/catalog/download/1595/1620/36433?inline=1",
+   "publisher": "Akademisyen",
+   "year": null,
+   "kind": "book chapter",
+   "tier": "educational",
+   "notes": ""
+  },
+  "acep_headache": {
+   "title": "ACEP Clinical Policy: Acute Headache (2019)",
+   "url": "https://acep.org/patient-care/clinical-policies/headache",
+   "publisher": "ACEP",
+   "year": 2019,
+   "kind": "clinical policy",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "mdcalc_acep_headache": {
+   "title": "ACEP acute headache guideline summary",
+   "url": "https://www.mdcalc.com/guidelines/acep/headache",
+   "publisher": "MDCalc",
+   "year": 2019,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "rebel_ottawa": {
+   "title": "The Ottawa SAH clinical decision rule (literature review)",
+   "url": "https://rebelem.com/the-ottawa-sah-clinical-decision-rule/",
+   "publisher": "REBEL EM",
+   "year": null,
+   "kind": "review blog",
+   "tier": "educational",
+   "notes": ""
+  },
+  "snnoop10": {
+   "title": "Red and orange flags for secondary headaches in clinical practice: SNNOOP10 list",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6340385",
+   "publisher": "Do et al., Neurology",
+   "year": 2019,
+   "kind": "narrative review",
+   "tier": "systematic_review",
+   "notes": ""
+  },
+  "jin_headache": {
+   "title": "Diagnostic workup of primary and secondary headache (review)",
+   "url": "https://www.imrpress.com/journal/JIN/23/2/10.31083/j.jin2302043/htm",
+   "publisher": "J Integr Neurosci",
+   "year": 2024,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "aafp_idsa_mening": {
+   "title": "Management of Bacterial Meningitis: New Guidelines from the IDSA",
+   "url": "https://www.aafp.org/afp/2005/0515/p2003.html",
+   "publisher": "AAFP summary of IDSA 2004",
+   "year": 2005,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": "Underlying IDSA guideline dates from 2004; check for updates."
+  },
+  "cam_ct_study": {
+   "title": "Cranial imaging before lumbar puncture in adults with community-acquired meningitis",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5850549/",
+   "publisher": "Open Forum Infect Dis",
+   "year": 2018,
+   "kind": "cohort study",
+   "tier": "primary_study",
+   "notes": ""
+  },
+  "ebm_lp": {
+   "title": "Lumbar puncture: risk factors for brain stem herniation in suspected bacterial meningitis",
+   "url": "https://www.ebmconsult.com/articles/lumbar-punture-lp-risk-factors-brain-stem-herniation",
+   "publisher": "EBM Consult",
+   "year": null,
+   "kind": "reference page",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acc_syncope_2017": {
+   "title": "2017 ACC/AHA/HRS Guideline for Syncope: ten points to remember",
+   "url": "https://acc.org/Latest-in-Cardiology/ten-points-to-remember/2017/03/07/23/36/2017-ACC-AHA-HRS-Guideline-for-Syncope",
+   "publisher": "ACC",
+   "year": 2017,
+   "kind": "guideline key points",
+   "tier": "primary_guideline_summary",
+   "notes": ""
+  },
+  "aafp_syncope": {
+   "title": "Syncope Evaluation and Treatment Guidelines from ACC, AHA, and HRS",
+   "url": "https://www.aafp.org/afp/2018/0401/p478",
+   "publisher": "AAFP",
+   "year": 2018,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "esc_syncope_table": {
+   "title": "High- and low-risk criteria for syncope at initial evaluation (adapted from ESC 2018)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7400488/table/euaa065-T2",
+   "publisher": "Europace",
+   "year": 2020,
+   "kind": "adapted guideline table",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acc_esc_syncope": {
+   "title": "2018 ESC Guidelines for Syncope: key points",
+   "url": "https://www.acc.org/latest-in-cardiology/ten-points-to-remember/2018/04/04/14/28/2018-esc-guidelines-for-syncope",
+   "publisher": "ACC",
+   "year": 2018,
+   "kind": "guideline key points",
+   "tier": "primary_guideline_summary",
+   "notes": ""
+  },
+  "sec_syncope": {
+   "title": "Comments on the 2018 ESC Guidelines for Syncope",
+   "url": "https://www.revespcardiol.org/en-comments-on-the-2018-esc-guidelines-for-articulo-S188558571830361X",
+   "publisher": "Rev Esp Cardiol",
+   "year": 2018,
+   "kind": "guideline commentary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "syncope_risk_review": {
+   "title": "Risk stratification of syncope: current guidelines and beyond",
+   "url": "https://ricerca.unich.it/retrieve/e4233f18-ab59-2860-e053-6605fe0a460a/1-s2.0-S1566070221001594-main.pdf",
+   "publisher": "Auton Neurosci",
+   "year": 2021,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "nice_cg187": {
+   "title": "NICE CG187 Acute heart failure: diagnosis and management (recommendation text)",
+   "url": "https://prep.medthority.com/nice/conditions-and-diseases/cardiovascular-conditions/heart-failure/cg187",
+   "publisher": "NICE via Medthority",
+   "year": 2023,
+   "kind": "guideline recommendations",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "iatrox_ahf": {
+   "title": "Acute heart failure (NICE CG187 summary)",
+   "url": "https://www.iatrox.com/guidelines/acute-heart-failure",
+   "publisher": "iatroX",
+   "year": 2026,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "np_ml": {
+   "title": "Clinical decision support using machine learning and natriuretic peptides for acute heart failure",
+   "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11214585/",
+   "publisher": "Eur Heart J Digit Health",
+   "year": 2024,
+   "kind": "study (cites ESC 2021 thresholds)",
+   "tier": "primary_study",
+   "notes": ""
+  },
+  "np_elderly": {
+   "title": "Refining the diagnosis of acute heart failure in the elderly (editorial)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11631232",
+   "publisher": "ESC Heart Failure",
+   "year": 2024,
+   "kind": "editorial",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acr_rlq": {
+   "title": "ACR Appropriateness Criteria: Right Lower Quadrant Pain, Suspected Appendicitis",
+   "url": "https://pure.psu.edu/en/publications/acr-appropriateness-criteria-right-lower-quadrant-pain-suspected-/",
+   "publisher": "ACR",
+   "year": null,
+   "kind": "appropriateness criteria abstract",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "acr_pelvic_2023": {
+   "title": "ACR Appropriateness Criteria: Acute Pelvic Pain in the Reproductive Age Group, 2023 update",
+   "url": "https://research.bidmc.org/radiology-research/publications/acr-appropriateness-criteria-acute-pelvic-pain-reproductive-age-group-2023-update",
+   "publisher": "ACR",
+   "year": 2024,
+   "kind": "appropriateness criteria abstract",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "acr_pelvic_narr": {
+   "title": "ACR Appropriateness Criteria: Acute Pelvic Pain in the Reproductive Age Group (narrative, earlier version)",
+   "url": "https://widionline.xray.ufl.edu/admin/getmedia/3ee8f18e-a156-4fbe-97f4-53f869b7b3ef/Acute-Pelvic-Pain-in-the-Reproductive-Age-Group.pdf",
+   "publisher": "ACR",
+   "year": null,
+   "kind": "appropriateness criteria narrative",
+   "tier": "primary_guideline",
+   "notes": "Older edition; the 2023 update keeps hCG-first triage."
+  },
+  "hopkins_pelvic": {
+   "title": "Acute pelvic pain in reproductive age group: imaging appropriateness",
+   "url": "https://hopkinsmedicine.org/imaging/provider-information/order-wisely/acute-pelvic-pain",
+   "publisher": "Johns Hopkins Medicine",
+   "year": 2023,
+   "kind": "institutional summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "aafp_pelvic": {
+   "title": "Evaluation of Acute Pelvic Pain in Women",
+   "url": "https://www.aafp.org/afp/2010/0715/p141",
+   "publisher": "AAFP",
+   "year": 2010,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "hosp_abd_imaging": {
+   "title": "Choosing CT or ultrasound for acute abdominal pain",
+   "url": "https://community.the-hospitalist.org/content/choosing-ct-or-ultrasound-acute-abdominal-pain",
+   "publisher": "The Hospitalist",
+   "year": null,
+   "kind": "news report",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acg_ugib": {
+   "title": "ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/33929377/",
+   "publisher": "ACG, Am J Gastroenterol",
+   "year": 2021,
+   "kind": "guideline abstract",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "jhm_ugib": {
+   "title": "Clinical guideline highlights for the hospitalist: upper GI and ulcer bleeding",
+   "url": "https://mdedge.com/content/clinical-guideline-highlights-hospitalist-management-upper-gastrointestinal-and-ulcer",
+   "publisher": "J Hosp Med",
+   "year": 2021,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "nursing_ugib": {
+   "title": "Upper GI and ulcer bleeding: ACG guideline summary",
+   "url": "https://nursingcenter.com/clinical-resources/guideline-summaries/upper-gi-and-ulcer-bleeding",
+   "publisher": "NursingCenter",
+   "year": 2023,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "ash_vte": {
+   "title": "ASH 2018 guidelines for management of VTE: diagnosis of venous thromboembolism",
+   "url": "https://pubmed.ncbi.nlm.nih.gov/30482764/",
+   "publisher": "American Society of Hematology",
+   "year": 2018,
+   "kind": "guideline abstract",
+   "tier": "primary_guideline",
+   "notes": "Reviewed by an ASH expert group in February 2022."
+  },
+  "ash_vte_pmc": {
+   "title": "ASH 2018 VTE diagnosis guideline (full text)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/",
+   "publisher": "American Society of Hematology",
+   "year": 2018,
+   "kind": "guideline full text",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "ash_slides": {
+   "title": "ASH teaching slide set: diagnosis of VTE",
+   "url": "https://www.hematology.org:443/-/media/hematology/files/clinicians/guidelines/vte/ash-teaching-slide-setvtediagnosispdffinal71923.pdf",
+   "publisher": "American Society of Hematology",
+   "year": 2023,
+   "kind": "teaching slides",
+   "tier": "primary_guideline_summary",
+   "notes": ""
+  },
+  "jama_vte": {
+   "title": "Prevention and management of VTE (JAMA clinical guidelines synopsis)",
+   "url": "https://medstaff.chsbuffalo.org/wp-content/uploads/2019/12/Prevention-and-Management-of-Venous-Thromboembolism.pdf",
+   "publisher": "JAMA",
+   "year": 2019,
+   "kind": "guideline synopsis",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "grace3": {
+   "title": "GRACE-3: Acute dizziness and vertigo in the emergency department (abstract)",
+   "url": "https://www.pubmed.ncbi.nlm.nih.gov/37166022/",
+   "publisher": "SAEM, Acad Emerg Med",
+   "year": 2023,
+   "kind": "guideline abstract",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "grace3_pdf": {
+   "title": "GRACE-3 full guideline",
+   "url": "https://emcrit.org/wp-content/uploads/2023/09/Academic-Emergency-Medicine-2023-Edlow.pdf",
+   "publisher": "SAEM, Acad Emerg Med",
+   "year": 2023,
+   "kind": "guideline full text",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "sgem_grace3": {
+   "title": "SGEM#403: the GRACE-3 guidelines",
+   "url": "https://thesgem.com/2023/05/sgem403-unos-dos-tres-vertigo-the-grace-3-guidelines/",
+   "publisher": "SGEM",
+   "year": 2023,
+   "kind": "podcast summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "jfp_dizzy": {
+   "title": "Standardizing your approach to dizziness and vertigo",
+   "url": "https://www.mdedge.com/content/standardizing-your-approach-dizziness-and-vertigo/page/0/3",
+   "publisher": "J Fam Pract",
+   "year": null,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "aha_stroke_2026": {
+   "title": "Top Things to Know: 2026 Guideline for the Early Management of Patients With Acute Ischemic Stroke",
+   "url": "https://professional.heart.org/en/science-news/2026-guideline-for-the-early-management-of-patients-with-acute-ischemic-stroke/top-things-to-know",
+   "publisher": "AHA/ASA",
+   "year": 2026,
+   "kind": "guideline key points",
+   "tier": "primary_guideline_summary",
+   "notes": "Replaces the 2018 guideline and 2019 update."
+  },
+  "emdocs_stroke_2026": {
+   "title": "2026 guideline update: early management of acute ischemic stroke (ED focus)",
+   "url": "https://www.emdocs.net/2026-guideline-update-early-management-of-acute-ischemic-stroke",
+   "publisher": "emDOCs",
+   "year": 2026,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acc_stroke_2019": {
+   "title": "2019 update to the AHA/ASA acute ischemic stroke guideline: key points",
+   "url": "https://www.acc.org/latest-in-cardiology/ten-points-to-remember/2019/11/06/15/31/guidelines-for-the-early-management-of-ais",
+   "publisher": "ACC",
+   "year": 2019,
+   "kind": "guideline key points",
+   "tier": "primary_guideline_summary",
+   "notes": "SUPERSEDED by the 2026 AHA/ASA guideline; claims citing this must be re-verified."
+  },
+  "pn_stroke_2026": {
+   "title": "Guidelines for the management of acute ischemic stroke published (2026 guideline news)",
+   "url": "https://practicalneurology.com/news/guidelines-for-the-management-of-acute-ischemic-stroke-published/2485579/",
+   "publisher": "Practical Neurology",
+   "year": 2026,
+   "kind": "guideline news summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "ijem_stroke": {
+   "title": "Management of acute ischemic stroke in the ED (review)",
+   "url": "https://biomedcentral-intjem.publicaciones.saludcastillayleon.es/counter/pdf/10.1186/s12245-024-00780-5.pdf",
+   "publisher": "Int J Emerg Med",
+   "year": 2024,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "acr_lbp": {
+   "title": "ACR Appropriateness Criteria: Low Back Pain (abstract)",
+   "url": "https://profiles.wustl.edu/en/publications/acr-appropriateness-criteria-low-back-pain/",
+   "publisher": "ACR",
+   "year": null,
+   "kind": "appropriateness criteria abstract",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "ajnr_lbp": {
+   "title": "ACR Appropriateness Criteria: low back pain (AJNR summary)",
+   "url": "https://www.ajnr.org/content/28/5/990",
+   "publisher": "AJNR",
+   "year": 2007,
+   "kind": "criteria summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "lbp_imaging": {
+   "title": "When is imaging appropriate for a patient with low back pain?",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7529135",
+   "publisher": "J Gen Intern Med",
+   "year": 2020,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "applied_rad_lbp": {
+   "title": "An image-based review of the ACR Appropriateness Criteria for Low Back Pain",
+   "url": "https://appliedradiology.com/articles/an-image-based-review-of-the-acr-appropriateness-criteria-for-low-back-pain",
+   "publisher": "Applied Radiology",
+   "year": null,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": "Reviews the 2015 edition of the criteria."
+  },
+  "acr_flank": {
+   "title": "ACR Appropriateness Criteria: Acute Onset Flank Pain, Suspicion of Stone Disease (Urolithiasis)",
+   "url": "https://mdanderson.elsevierpure.com/en/publications/acr-appropriateness-criteria-acute-onset-flank-pain-suspicion-of--2",
+   "publisher": "ACR",
+   "year": null,
+   "kind": "appropriateness criteria abstract",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "acr_flank_narr": {
+   "title": "ACR Appropriateness Criteria: Acute Onset Flank Pain (narrative)",
+   "url": "https://acsearch.acr.org/docs/69362/Narrative",
+   "publisher": "ACR",
+   "year": null,
+   "kind": "appropriateness criteria narrative",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "acr_flank_old": {
+   "title": "ACR Appropriateness Criteria: Acute Onset Flank Pain (older edition text)",
+   "url": "https://corpora.tika.apache.org/base/docs/govdocs1/024/024632.html",
+   "publisher": "ACR",
+   "year": null,
+   "kind": "appropriateness criteria (older edition)",
+   "tier": "primary_guideline",
+   "notes": "Older edition; used only for the alternative-diagnosis point."
+  },
+  "ssc_2021": {
+   "title": "Surviving Sepsis Campaign Guidelines 2021",
+   "url": "https://sccm.org/sepsisguidelines",
+   "publisher": "SCCM / ESICM",
+   "year": 2021,
+   "kind": "guideline recommendations",
+   "tier": "primary_guideline",
+   "notes": "SUPERSEDED by the 2026 edition; claims citing this must be re-verified."
+  },
+  "ssc_2021_pmc": {
+   "title": "Surviving sepsis campaign: international guidelines 2021 (full text)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/8486643/",
+   "publisher": "Intensive Care Med",
+   "year": 2021,
+   "kind": "guideline full text",
+   "tier": "primary_guideline",
+   "notes": "SUPERSEDED by the 2026 edition."
+  },
+  "aha_stroke_2026_gc": {
+   "title": "2026 AHA/ASA Early Management of Acute Ischemic Stroke: recommendation summary",
+   "url": "https://www.guidelinecentral.com/guideline/7091/",
+   "publisher": "AHA/ASA via Guideline Central",
+   "year": 2026,
+   "kind": "guideline recommendations",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "aha_stroke_2026_pdf": {
+   "title": "2026 Guideline for the Early Management of Patients With Acute Ischemic Stroke (full text)",
+   "url": "https://www.ahajournals.org/doi/pdf/10.1161/STR.0000000000000513",
+   "publisher": "AHA/ASA, Stroke",
+   "year": 2026,
+   "kind": "guideline full text",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "medscape_stroke_2026": {
+   "title": "Acute ischemic stroke early management: 2026 AHA/ASA guideline summary",
+   "url": "https://reference.medscape.com/cc2/p10/acute-ischemic-stroke-aha-asa-guideline-2026a1000tea",
+   "publisher": "Medscape",
+   "year": 2026,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "esc_aortic_2024": {
+   "title": "2024 ESC Guidelines for the management of peripheral arterial and aortic diseases",
+   "url": "https://academic.oup.com/eurheartj/article/45/36/3538/7738955",
+   "publisher": "ESC, Eur Heart J",
+   "year": 2024,
+   "kind": "guideline full text",
+   "tier": "primary_guideline",
+   "notes": ""
+  },
+  "ecr_esc_aortic": {
+   "title": "Commentary on the 2024 ESC guidelines on peripheral arterial and aortic diseases",
+   "url": "https://www.ecrjournal.com/articles/commentary-2024-european-society-cardiology-guidelines-peripheral-arterial-and-aortic?language_content_entity=en",
+   "publisher": "European Cardiology Review",
+   "year": 2024,
+   "kind": "guideline commentary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "aas_review_2025": {
+   "title": "Systematic review citing 2024 ESC aortic guideline and PROFUNDUS study",
+   "url": "https://www.researchgate.net/publication/388121949_2024_ESC_Guidelines_for_the_management_of_peripheral_arterial_and_aortic_diseases",
+   "publisher": "ResearchGate record",
+   "year": 2025,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": "Record title is ambiguous; claims used are attributed to the ESC 2024 guideline and the PROFUNDUS study."
+  },
+  "chest_at9_dvt": {
+   "title": "Diagnosis of DVT: Antithrombotic Therapy and Prevention of Thrombosis, 9th ed (ACCP)",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3278048",
+   "publisher": "American College of Chest Physicians",
+   "year": 2012,
+   "kind": "guideline abstract",
+   "tier": "primary_guideline",
+   "notes": "Older guideline; consistent with ASH 2018 on serial or whole-leg ultrasound."
+  },
+  "mdedge_dvt": {
+   "title": "Diagnosis of DVT (summary of ACCP guideline)",
+   "url": "https://mdedge.com/content/diagnosis-dvt",
+   "publisher": "MDedge",
+   "year": 2012,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "cochrane_appy": {
+   "title": "Computed tomography for diagnosis of acute appendicitis in adults (Cochrane DTA review summary)",
+   "url": "https://colorectal.cochrane.org/news/computed-tomography-diagnosis-acute-appendicitis-adults",
+   "publisher": "Cochrane Colorectal",
+   "year": 2019,
+   "kind": "diagnostic accuracy review",
+   "tier": "systematic_review",
+   "notes": ""
+  },
+  "relias_nephro": {
+   "title": "Nephrolithiasis: imaging options and controversies (cites meta-analysis of unenhanced CT)",
+   "url": "https://www.reliasmedia.com/articles/122508-nephrolithiasis-imaging-options-and-controversies",
+   "publisher": "Relias Media",
+   "year": null,
+   "kind": "review",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "bestbets_ldct": {
+   "title": "Investigating flank pain: can we stay low? (low-dose CT)",
+   "url": "https://bestbets.org/bets/bet.php?id=2324",
+   "publisher": "BestBETs",
+   "year": null,
+   "kind": "best evidence topic",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "flank_alt_study": {
+   "title": "Acute flank pain: unenhanced helical CT versus ultrasound for causes other than ureterolithiasis",
+   "url": "https://link.springer.com/doi/10.1007/s10140-002-0213-z",
+   "publisher": "Emerg Radiol",
+   "year": 2002,
+   "kind": "comparative study",
+   "tier": "primary_study",
+   "notes": ""
+  },
+  "ssc_2026": {
+   "title": "Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026",
+   "url": "https://www.sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-management-of-sepsis-and-septic-shock-2026",
+   "publisher": "SCCM / ESICM",
+   "year": 2026,
+   "kind": "guideline page",
+   "tier": "primary_guideline",
+   "notes": "Replaces the 2021 edition."
+  },
+  "ssc_2026_exec": {
+   "title": "Executive summary of the 2026 Surviving Sepsis Campaign guidelines",
+   "url": "https://www.synapsesocial.com/papers/69c37b41b34aaaeb1a67d83d",
+   "publisher": "Crit Care Med (via Synapse)",
+   "year": 2026,
+   "kind": "guideline executive summary",
+   "tier": "primary_guideline_summary",
+   "notes": ""
+  },
+  "umem_ssc_2026": {
+   "title": "Bullet points for the 2026 Surviving Sepsis Campaign guidelines",
+   "url": "https://www.medschool.umaryland.edu/em/cme/umem-educational-pearls/?id=5041",
+   "publisher": "University of Maryland EM",
+   "year": 2026,
+   "kind": "guideline summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  },
+  "epocrates_ssc_2026": {
+   "title": "Sepsis care gets sharper and more selective in major 2026 guideline update",
+   "url": "https://epocrates.com/online/article/sepsis-care-gets-sharper-and-more-selective-in-major-2026-guideline-update",
+   "publisher": "Epocrates",
+   "year": 2026,
+   "kind": "news summary",
+   "tier": "secondary_summary",
+   "notes": ""
+  }
+ },
+ "situations": [
+  {
+   "id": "chest_pain",
+   "title": "Acute chest pain",
+   "setting": "Emergency department or clinic",
+   "population": "Adults",
+   "priority": "Second most common ED reason for visit in NHAMCS fact sheets.",
+   "priority_source": "nhamcs_2011",
+   "lead_guidelines": [
+    "aha_cp_top",
+    "aha_cp_rec",
+    "esc_aortic_2024"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "Pain, pressure, tightness or discomfort in the chest, shoulders, arms, neck, back, upper abdomen or jaw; shortness of breath and fatigue count as equivalents.",
+     "source": "aha_cp_top"
+    },
+    {
+     "label": "History",
+     "detail": "Pain characteristics, accompanying symptoms and cardiac risk factors.",
+     "source": "cchcs_cp"
+    },
+    {
+     "label": "Vitals and exam",
+     "detail": "Sweating and fast breathing lean toward ACS, fast heart rate and dyspnea toward PE, air under the skin toward esophageal rupture; chest wall tenderness or pain on inspiration leans noncardiac.",
+     "source": "aafp_cp"
+    },
+    {
+     "label": "12-lead ECG",
+     "detail": "Recorded and read within 10 minutes of arrival.",
+     "source": "aafp_cp"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Unstable or ECG emergency",
+     "detail": "Ongoing ischemic discomfort, dynamic ECG change, hemodynamic instability or serious arrhythmia: emergency escalation.",
+     "source": "iatrox_cp"
+    },
+    {
+     "urgent": false,
+     "label": "Stable, ECG non-diagnostic",
+     "detail": "Work through the hypotheses, must-not-miss first, with serial high-sensitivity troponin.",
+     "source": "iatrox_cp"
+    }
+   ],
+   "gate_note": "One normal ECG or one early troponin does not rule out ACS; patient characteristics must not be used to dismiss the complaint.",
+   "gate_note_source": "iatrox_cp",
+   "hypotheses": [
+    {
+     "id": "acs",
+     "name": "Acute coronary syndrome",
+     "short": "ACS",
+     "tier": "must_not_miss",
+     "clue": "Sweating, fast breathing",
+     "clue_source": "aafp_cp",
+     "status": "partial"
+    },
+    {
+     "id": "pe",
+     "name": "Pulmonary embolism",
+     "short": "PE",
+     "tier": "must_not_miss",
+     "clue": "Fast heart rate, dyspnea",
+     "clue_source": "aafp_cp",
+     "status": "sourced"
+    },
+    {
+     "id": "ad",
+     "name": "Aortic dissection",
+     "short": "Dissection",
+     "tier": "must_not_miss",
+     "clue": "Abrupt, tearing pain; pulse or BP differential",
+     "clue_source": "mdcalc_addrs",
+     "status": "sourced"
+    },
+    {
+     "id": "ptx",
+     "name": "Pneumothorax",
+     "short": "Pneumothorax",
+     "tier": "other",
+     "clue": "Dyspnea, one-sided absent breath sounds",
+     "clue_source": "tw_cp_exam",
+     "status": "partial"
+    },
+    {
+     "id": "pna",
+     "name": "Pneumonia",
+     "short": "Pneumonia",
+     "tier": "other",
+     "clue": "Fever, localized pleuritic pain",
+     "clue_source": "tw_cp_exam",
+     "status": "partial"
+    },
+    {
+     "id": "pc",
+     "name": "Pericardial disease",
+     "short": "Pericardial",
+     "tier": "other",
+     "clue": "Positional pain, friction rub",
+     "clue_source": "radio_peri",
+     "status": "partial"
+    },
+    {
+     "id": "er",
+     "name": "Esophageal rupture",
+     "short": "Esoph. rupture",
+     "tier": "other",
+     "clue": "Air under the skin",
+     "clue_source": "aafp_cp",
+     "status": "stub"
+    },
+    {
+     "id": "nc",
+     "name": "Common noncardiac causes",
+     "short": "Noncardiac",
+     "tier": "other",
+     "clue": "Chest wall tenderness, pain on inspiration",
+     "clue_source": "aafp_cp",
+     "status": "stub"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Focused history and exam",
+     "timing": "First minutes",
+     "description": "Sets pre-test probability and picks the hypotheses to chase.",
+     "source": null,
+     "effects": {
+      "acs": {
+       "type": "steer",
+       "text": "Sweating and fast breathing raise suspicion.",
+       "source": "aafp_cp"
+      },
+      "pe": {
+       "type": "steer",
+       "text": "Fast heart rate and dyspnea raise suspicion.",
+       "source": "aafp_cp"
+      },
+      "ad": {
+       "type": "steer",
+       "text": "Abrupt, severe or tearing pain, pulse or BP differential, perfusion deficit.",
+       "source": "mdcalc_addrs"
+      },
+      "ptx": {
+       "type": "steer",
+       "text": "Dyspnea, pain on inspiration, absent breath sounds on one side.",
+       "source": "tw_cp_exam"
+      },
+      "pna": {
+       "type": "steer",
+       "text": "Fever, localized pleuritic pain, dullness to percussion.",
+       "source": "tw_cp_exam"
+      },
+      "pc": {
+       "type": "steer",
+       "text": "Pleuritic, positional pain easing when leaning forward; friction rub.",
+       "source": "radio_peri"
+      },
+      "er": {
+       "type": "steer",
+       "text": "Air under the skin.",
+       "source": "aafp_cp"
+      },
+      "nc": {
+       "type": "steer",
+       "text": "Chest wall tenderness or pain on inspiration points here.",
+       "source": "aafp_cp"
+      }
+     },
+     "evidence": [],
+     "id": "chest_pain.s1",
+     "order": 1
+    },
+    {
+     "title": "12-lead ECG",
+     "timing": "Within 10 minutes of arrival",
+     "description": "Best initial test; triggers the emergency pathway when ischemic.",
+     "source": "acc_ed_cp",
+     "effects": {
+      "acs": {
+       "type": "blind",
+       "text": "Ischemic or dynamic change escalates; one normal ECG does not rule ACS out.",
+       "source": "iatrox_cp"
+      },
+      "pc": {
+       "type": "steer",
+       "text": "New widespread ST elevation or PR depression counts toward the two-of-four criteria.",
+       "source": "radio_peri"
+      }
+     },
+     "evidence": [],
+     "id": "chest_pain.s2",
+     "order": 2
+    },
+    {
+     "title": "Chest radiograph",
+     "timing": "After clinical assessment and ECG",
+     "description": "Class 1 recommendation to look for other cardiac, pulmonary and thoracic causes.",
+     "source": "aha_cp_rec",
+     "effects": {
+      "ptx": {
+       "type": "rule",
+       "text": "Normal film with distress, pleuritic pain and hypoxia excludes it; absent vascular markings is diagnostic.",
+       "source": "rcem_cxr"
+      },
+      "pna": {
+       "type": "conf",
+       "text": "Infiltrate or consolidation confirms; a normal film makes it unlikely.",
+       "source": "rcem_cxr"
+      },
+      "acs": {
+       "type": "blind",
+       "text": "No specific finding for ACS.",
+       "source": "rcem_cxr"
+      },
+      "pe": {
+       "type": "steer",
+       "text": "Often normal; with other causes excluded, a normal film raises PE probability.",
+       "source": "rcem_cxr"
+      },
+      "ad": {
+       "type": "blind",
+       "text": "Mediastinal widening helps, but a film cannot rule out aortic syndromes at low probability.",
+       "source": "ebm_addrs"
+      },
+      "er": {
+       "type": "steer",
+       "text": "Air in the mediastinum contributes.",
+       "source": "rcem_cxr"
+      },
+      "pc": {
+       "type": "blind",
+       "text": "Recommended but does not establish the diagnosis.",
+       "source": "esc_peri_comments"
+      }
+     },
+     "evidence": [],
+     "id": "chest_pain.s3",
+     "order": 3
+    },
+    {
+     "title": "Serial high-sensitivity troponin and risk class",
+     "timing": "Early, repeated per assay protocol",
+     "description": "Feeds the clinical decision pathway (low, intermediate, high risk).",
+     "source": "aha_cp_rec",
+     "effects": {
+      "acs": {
+       "type": "rule",
+       "text": "Low-risk class with non-ischemic ECG and negative serial troponin: no further acute testing.",
+       "source": "aha_cp_top"
+      },
+      "pc": {
+       "type": "blind",
+       "text": "Recommended in suspected pericarditis but not diagnostic.",
+       "source": "esc_peri_comments"
+      }
+     },
+     "evidence": [],
+     "id": "chest_pain.s4",
+     "order": 4
+    },
+    {
+     "title": "Pre-test scoring of what is left",
+     "timing": "In parallel, for open must-not-miss causes",
+     "description": "A validated score sets the probability band that selects the next test.",
+     "source": null,
+     "effects": {
+      "pe": {
+       "type": "steer",
+       "text": "Wells two-level score; PERC first if suspicion is very low.",
+       "source": "oep_vte"
+      },
+      "ad": {
+       "type": "steer",
+       "text": "ADD-RS 0 to 3: above 1 goes straight to imaging, 1 or less to D-dimer.",
+       "source": "mdcalc_addrs"
+      }
+     },
+     "evidence": [
+      {
+       "text": "PE incidence is about 12% in the Wells unlikely band and about 37% in the likely band.",
+       "source": "wikem_wells"
+      },
+      {
+       "text": "About 95% of patients with acute aortic dissection score intermediate or high on ADD-RS.",
+       "source": "rcem_addrs"
+      },
+      {
+       "text": "Meta-analysis: ADD-RS of 1 or more is about 94% sensitive alone and close to 100% with D-dimer; the best threshold depends on setting.",
+       "source": "addrs_meta"
+      }
+     ],
+     "id": "chest_pain.s5",
+     "order": 5
+    },
+    {
+     "title": "D-dimer",
+     "timing": "Only at low or intermediate probability",
+     "description": "Rule-out blood test; never confirms.",
+     "source": null,
+     "effects": {
+      "pe": {
+       "type": "rule",
+       "text": "Wells 4 or less and D-dimer below the age-adjusted cutoff.",
+       "source": "evi_wells"
+      },
+      "ad": {
+       "type": "rule",
+       "text": "ADD-RS 1 or less and D-dimer below 500 ng/mL (FEU): consider stopping; not externally validated.",
+       "source": "mdcalc_addrs"
+      }
+     },
+     "evidence": [],
+     "id": "chest_pain.s6",
+     "order": 6
+    },
+    {
+     "title": "Definitive imaging for what remains",
+     "timing": "For hypotheses not yet eliminated",
+     "description": "Settles what earlier steps could not.",
+     "source": null,
+     "effects": {
+      "pe": {
+       "type": "rule",
+       "text": "CT pulmonary angiography: positive confirms, negative excludes.",
+       "source": "evi_wells"
+      },
+      "ad": {
+       "type": "conf",
+       "text": "ECG-gated contrast CT from neck to pelvis is the recommended first-line imaging.",
+       "source": "ecr_esc_aortic"
+      },
+      "pc": {
+       "type": "conf",
+       "text": "Echocardiography: new or worsening effusion counts toward criteria.",
+       "source": "esc_peri_comments"
+      },
+      "er": {
+       "type": "blind",
+       "text": "Confirmation route not yet sourced.",
+       "source": null
+      }
+     },
+     "evidence": [
+      {
+       "text": "ESC 2024 recommends a multiparametric diagnostic algorithm using ADD-RS (class I, level B).",
+       "source": "ecr_esc_aortic"
+      }
+     ],
+     "id": "chest_pain.s7",
+     "order": 7
+    },
+    {
+     "title": "If the dangerous causes are eliminated",
+     "timing": "Last",
+     "description": "Noncardiac causes become the working diagnosis.",
+     "source": null,
+     "effects": {
+      "nc": {
+       "type": "steer",
+       "text": "Chest wall pain, reflux esophagitis and costochondritis are most common in primary care.",
+       "source": "cchcs_cp"
+      },
+      "acs": {
+       "type": "steer",
+       "text": "Low-risk patients do not need urgent stress testing or imaging.",
+       "source": "aha_cp_top"
+      }
+     },
+     "evidence": [],
+     "id": "chest_pain.s8",
+     "order": 8
+    }
+   ],
+   "rules": {
+    "acs": {
+     "validation": "Sourced to AHA/ACC 2021 summaries.",
+     "eliminate_when": [
+      {
+       "text": "Low-risk class on the clinical decision pathway: non-ischemic ECG and negative serial high-sensitivity troponin.",
+       "source": "aha_cp_top",
+       "inferred": false
+      },
+      {
+       "text": "Low-risk patients gain nothing from stress testing or imaging within 30 days.",
+       "source": "aafp_cp",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "One normal ECG or one early troponin.",
+       "source": "iatrox_cp",
+       "inferred": false
+      },
+      {
+       "text": "The chest radiograph.",
+       "source": "rcem_cxr",
+       "inferred": false
+      },
+      {
+       "text": "Dismissing the complaint because of sex, age, race, language or anxiety history.",
+       "source": "iatrox_cp",
+       "inferred": false
+      },
+      {
+       "text": "Assuming acute troponin is available everywhere.",
+       "source": "cchcs_cp",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "pe": {
+     "validation": "Secondary summaries of ESC and NICE; verify against originals.",
+     "eliminate_when": [
+      {
+       "text": "Very low suspicion and all eight PERC criteria met.",
+       "source": "oep_vte",
+       "inferred": false
+      },
+      {
+       "text": "Wells 4 or less and D-dimer below the age-adjusted cutoff.",
+       "source": "evi_wells",
+       "inferred": false
+      },
+      {
+       "text": "Negative CT pulmonary angiography.",
+       "source": "evi_wells",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "D-dimer when clinical probability is high.",
+       "source": "iatrox_pe",
+       "inferred": false
+      },
+      {
+       "text": "A normal chest radiograph.",
+       "source": "rcem_cxr",
+       "inferred": false
+      },
+      {
+       "text": "The standard Wells route in unstable or pregnant patients.",
+       "source": "evi_wells",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "ad": {
+     "validation": "ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation.",
+     "eliminate_when": [
+      {
+       "text": "ADD-RS 1 or less and D-dimer below 500 ng/mL (FEU): consider stopping the work-up.",
+       "source": "mdcalc_addrs",
+       "inferred": false
+      },
+      {
+       "text": "In ADvISED this strategy missed about 0.3% of acute aortic syndromes.",
+       "source": "advised",
+       "inferred": false
+      },
+      {
+       "text": "In the later PROFUNDUS study, ADD-RS 1 or less with negative D-dimer had a 0.2% failure rate.",
+       "source": "aas_review_2025",
+       "inferred": false
+      },
+      {
+       "text": "Negative ECG-gated contrast CT, the first-line imaging in ESC 2024 (class I, level C).",
+       "source": "ecr_esc_aortic",
+       "inferred": true
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "D-dimer alone.",
+       "source": "advised",
+       "inferred": false
+      },
+      {
+       "text": "ADD-RS of 0 as proof.",
+       "source": "litfl_addrs",
+       "inferred": false
+      },
+      {
+       "text": "Chest radiography.",
+       "source": "ebm_addrs",
+       "inferred": false
+      },
+      {
+       "text": "A D-dimer threshold in the wrong units (assumes FEU).",
+       "source": "mdcalc_addrs",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "ptx": {
+     "validation": "Educational summary of the guideline.",
+     "eliminate_when": [
+      {
+       "text": "Normal chest radiograph with respiratory distress, pleuritic pain and hypoxia.",
+       "source": "rcem_cxr",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "Exam findings alone.",
+       "source": "tw_cp_exam",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "pna": {
+     "validation": "Educational summary of the guideline.",
+     "eliminate_when": [
+      {
+       "text": "Normal chest radiograph makes it unlikely, not impossible.",
+       "source": "rcem_cxr",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "Exam findings alone.",
+       "source": "tw_cp_exam",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "pc": {
+     "validation": "Diagnostic criteria only; no exclusion rule found.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "A normal ECG: without ST elevation the diagnosis is easily missed.",
+       "source": "peri_book",
+       "inferred": false
+      },
+      {
+       "text": "Chest film, markers or troponin as diagnostic; only ECG and echo help establish it.",
+       "source": "esc_peri_comments",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No formal exclusion rule found. Diagnosis needs at least two of four criteria."
+    },
+    "er": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No elimination rule sourced yet."
+    },
+    "nc": {
+     "validation": "Diagnosis of exclusion.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Chest wall tenderness alone.",
+       "source": "aafp_cp",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "Not eliminated; it is what remains."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Local resources",
+     "text": "Some sites cannot run acute troponin, so the pathway cannot be applied as written.",
+     "source": "cchcs_cp"
+    },
+    {
+     "title": "Which PE score",
+     "text": "Wells, revised Geneva and YEARS lead to the same next steps, but protocols differ.",
+     "source": "iatrox_pe"
+    },
+    {
+     "title": "US versus Europe on dissection",
+     "text": "ESC 2024 sends ADD-RS 2 or more to CT regardless of D-dimer; AHA guidance lacks consensus on the ADD-RS cut-off and on D-dimer.",
+     "source": "aas_review_2025"
+    },
+    {
+     "title": "Parallel hypotheses",
+     "text": "No source found on prioritizing ACS, PE and dissection work-ups run at the same time.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "dyspnea",
+   "title": "Acute shortness of breath",
+   "setting": "Emergency department",
+   "population": "Adults",
+   "priority": "Among the top ED reasons for visit in NHAMCS fact sheets.",
+   "priority_source": "nhamcs_2011",
+   "lead_guidelines": [
+    "nice_cg187",
+    "ash_vte"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "New or worsening breathlessness.",
+     "source": null
+    },
+    {
+     "label": "History",
+     "detail": "Known heart failure, lung disease, VTE risk factors.",
+     "source": null
+    },
+    {
+     "label": "Exam",
+     "detail": "Pain on inspiration and one-sided absent breath sounds point to pneumothorax; fever, localized pleuritic pain and dullness point to pneumonia.",
+     "source": "tw_cp_exam"
+    },
+    {
+     "label": "First tests",
+     "detail": "ECG, chest radiograph, natriuretic peptide.",
+     "source": null
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Respiratory failure or instability",
+     "detail": "Resuscitate first; the elimination route assumes a stabilized patient.",
+     "source": null
+    },
+    {
+     "urgent": false,
+     "label": "Stable",
+     "detail": "Work through heart, lung and clot causes in parallel.",
+     "source": null
+    }
+   ],
+   "gate_note": "Gate wording is a structural convention, not taken from a source.",
+   "gate_note_source": null,
+   "hypotheses": [
+    {
+     "id": "ahf",
+     "name": "Acute heart failure",
+     "short": "Heart failure",
+     "tier": "must_not_miss",
+     "clue": "Known heart disease",
+     "clue_source": null,
+     "status": "partial"
+    },
+    {
+     "id": "pe",
+     "name": "Pulmonary embolism",
+     "short": "PE",
+     "tier": "must_not_miss",
+     "clue": "Fast heart rate, dyspnea",
+     "clue_source": "aafp_cp",
+     "status": "sourced"
+    },
+    {
+     "id": "acs",
+     "name": "Acute coronary syndrome",
+     "short": "ACS",
+     "tier": "must_not_miss",
+     "clue": "Dyspnea as anginal equivalent",
+     "clue_source": "aha_cp_top",
+     "status": "partial"
+    },
+    {
+     "id": "ptx",
+     "name": "Pneumothorax",
+     "short": "Pneumothorax",
+     "tier": "must_not_miss",
+     "clue": "Pain on inspiration, absent breath sounds",
+     "clue_source": "tw_cp_exam",
+     "status": "partial"
+    },
+    {
+     "id": "pna",
+     "name": "Pneumonia",
+     "short": "Pneumonia",
+     "tier": "other",
+     "clue": "Fever, localized pleuritic pain",
+     "clue_source": "tw_cp_exam",
+     "status": "partial"
+    },
+    {
+     "id": "copd",
+     "name": "COPD or asthma exacerbation",
+     "short": "COPD/asthma",
+     "tier": "other",
+     "clue": "Known lung disease",
+     "clue_source": null,
+     "status": "stub"
+    }
+   ],
+   "steps": [
+    {
+     "title": "History and exam",
+     "timing": "First minutes",
+     "description": "Sets which causes are plausible.",
+     "source": null,
+     "effects": {
+      "ptx": {
+       "type": "steer",
+       "text": "Dyspnea, pain on inspiration, one-sided absent breath sounds.",
+       "source": "tw_cp_exam"
+      },
+      "pna": {
+       "type": "steer",
+       "text": "Fever, localized pleuritic pain, dullness, egophony.",
+       "source": "tw_cp_exam"
+      },
+      "pe": {
+       "type": "steer",
+       "text": "Fast heart rate and dyspnea.",
+       "source": "aafp_cp"
+      },
+      "acs": {
+       "type": "steer",
+       "text": "Shortness of breath counts as an anginal equivalent.",
+       "source": "aha_cp_top"
+      }
+     },
+     "evidence": [],
+     "id": "dyspnea.s1",
+     "order": 1
+    },
+    {
+     "title": "12-lead ECG",
+     "timing": "Early",
+     "description": "Screens for ischemia.",
+     "source": null,
+     "effects": {
+      "acs": {
+       "type": "blind",
+       "text": "Ischemic change escalates; one normal ECG does not rule ACS out.",
+       "source": "iatrox_cp"
+      }
+     },
+     "evidence": [],
+     "id": "dyspnea.s2",
+     "order": 2
+    },
+    {
+     "title": "Chest radiograph",
+     "timing": "Early",
+     "description": "Finds lung causes and changes PE probability.",
+     "source": null,
+     "effects": {
+      "ptx": {
+       "type": "rule",
+       "text": "Normal film with distress, pleuritic pain and hypoxia excludes pneumothorax.",
+       "source": "rcem_cxr"
+      },
+      "pna": {
+       "type": "conf",
+       "text": "Infiltrate confirms; a normal film makes pneumonia unlikely.",
+       "source": "rcem_cxr"
+      },
+      "pe": {
+       "type": "steer",
+       "text": "A normal film in a hypoxic, distressed patient raises PE probability.",
+       "source": "rcem_cxr"
+      },
+      "ahf": {
+       "type": "steer",
+       "text": "With echocardiography and judgment, helps in the natriuretic peptide grey zone.",
+       "source": "np_elderly"
+      }
+     },
+     "evidence": [],
+     "id": "dyspnea.s3",
+     "order": 3
+    },
+    {
+     "title": "Natriuretic peptide",
+     "timing": "Single measurement in new suspected heart failure",
+     "description": "Rule-out test for heart failure.",
+     "source": null,
+     "effects": {
+      "ahf": {
+       "type": "rule",
+       "text": "BNP below 100 ng/L or NT-proBNP below 300 ng/L rules out heart failure.",
+       "source": "nice_cg187"
+      }
+     },
+     "evidence": [],
+     "id": "dyspnea.s4",
+     "order": 4
+    },
+    {
+     "title": "PE route",
+     "timing": "In parallel if PE is open",
+     "description": "Wells or PERC, then D-dimer or CTPA (see chest pain).",
+     "source": null,
+     "effects": {
+      "pe": {
+       "type": "rule",
+       "text": "Low pre-test probability with negative D-dimer, or negative CTPA.",
+       "source": "ash_vte"
+      }
+     },
+     "evidence": [],
+     "id": "dyspnea.s5",
+     "order": 5
+    },
+    {
+     "title": "Echocardiography",
+     "timing": "If heart failure is not ruled out",
+     "description": "Confirms the cardiac abnormality.",
+     "source": null,
+     "effects": {
+      "ahf": {
+       "type": "conf",
+       "text": "Transthoracic echo confirms cardiac abnormalities.",
+       "source": "iatrox_ahf"
+      }
+     },
+     "evidence": [],
+     "id": "dyspnea.s6",
+     "order": 6
+    }
+   ],
+   "rules": {
+    "ahf": {
+     "validation": "NICE CG187 (thresholds match ESC 2021).",
+     "eliminate_when": [
+      {
+       "text": "BNP below 100 ng/L or NT-proBNP below 300 ng/L in new suspected acute heart failure.",
+       "source": "nice_cg187",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "The rule-out threshold in older patients, obesity or prior heart failure: false negatives of 1 in 10 to 1 in 5.",
+       "source": "np_ml",
+       "inferred": false
+      },
+      {
+       "text": "NT-proBNP rule-out above age 75: negative predictive value fell to about 88% in one cohort.",
+       "source": "np_elderly",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "pe": {
+     "validation": "ASH 2018 and ESC summaries.",
+     "eliminate_when": [
+      {
+       "text": "Low pre-test probability and negative D-dimer.",
+       "source": "ash_vte",
+       "inferred": false
+      },
+      {
+       "text": "Negative CTPA.",
+       "source": "evi_wells",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "D-dimer when probability is high.",
+       "source": "ash_vte",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "acs": {
+     "validation": "See chest pain situation.",
+     "eliminate_when": [
+      {
+       "text": "Low-risk class with non-ischemic ECG and negative serial troponin.",
+       "source": "aha_cp_top",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "One normal ECG.",
+       "source": "iatrox_cp",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "ptx": {
+     "validation": "Educational summary.",
+     "eliminate_when": [
+      {
+       "text": "Normal chest radiograph with distress, pleuritic pain and hypoxia.",
+       "source": "rcem_cxr",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "Exam alone.",
+       "source": "tw_cp_exam",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "pna": {
+     "validation": "Educational summary.",
+     "eliminate_when": [
+      {
+       "text": "Normal chest radiograph makes it unlikely.",
+       "source": "rcem_cxr",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "Exam alone.",
+       "source": "tw_cp_exam",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "copd": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No route sourced; GOLD and GINA guidance would be the next sources."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Grey zone",
+     "text": "Between rule-out and rule-in natriuretic peptide thresholds, about half of older patients have heart failure; echo and judgment decide.",
+     "source": "np_elderly"
+    },
+    {
+     "title": "Unsourced gate",
+     "text": "The stabilization gate and the COPD/asthma branch need sourcing.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "lower_abdominal_pain",
+   "title": "Acute lower abdominal or pelvic pain",
+   "setting": "Emergency department",
+   "population": "Adults, including women of reproductive age",
+   "priority": "Abdominal pain is the leading ED reason for visit in NHAMCS fact sheets.",
+   "priority_source": "nhamcs_2011",
+   "lead_guidelines": [
+    "acr_rlq",
+    "acr_pelvic_2023"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "Pain in the lower abdomen or pelvis; its location narrows the list.",
+     "source": "aafp_pelvic"
+    },
+    {
+     "label": "Pregnancy status",
+     "detail": "Urine or serum beta-hCG is the first step in women who could be pregnant.",
+     "source": "hopkins_pelvic"
+    },
+    {
+     "label": "Exam clues",
+     "detail": "Migration from the umbilicus to the right lower quadrant suggests appendicitis; left lower quadrant tenderness suggests diverticulitis.",
+     "source": "aafp_pelvic"
+    },
+    {
+     "label": "Patient group",
+     "detail": "Adult, child or pregnant; this changes which imaging comes first.",
+     "source": "acr_rlq"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Positive pregnancy test with pain",
+     "detail": "Ectopic pregnancy must be considered; ultrasound first.",
+     "source": "acr_pelvic_narr"
+    },
+    {
+     "urgent": false,
+     "label": "Not pregnant",
+     "detail": "Choose imaging by suspected source: gynecologic or not.",
+     "source": "acr_pelvic_2023"
+    }
+   ],
+   "gate_note": "Urgent causes to consider first in women of reproductive age include ectopic pregnancy, ruptured ovarian cyst, ovarian torsion, appendicitis and pelvic inflammatory disease.",
+   "gate_note_source": "aafp_pelvic",
+   "hypotheses": [
+    {
+     "id": "ectopic",
+     "name": "Ectopic pregnancy",
+     "short": "Ectopic",
+     "tier": "must_not_miss",
+     "clue": "Positive hCG, pelvic pain",
+     "clue_source": "acr_pelvic_narr",
+     "status": "sourced"
+    },
+    {
+     "id": "appy",
+     "name": "Appendicitis",
+     "short": "Appendicitis",
+     "tier": "must_not_miss",
+     "clue": "Pain migrating to the right lower quadrant",
+     "clue_source": "aafp_pelvic",
+     "status": "sourced"
+    },
+    {
+     "id": "torsion",
+     "name": "Ovarian torsion",
+     "short": "Torsion",
+     "tier": "must_not_miss",
+     "clue": "One-sided pelvic pain",
+     "clue_source": "aafp_pelvic",
+     "status": "partial"
+    },
+    {
+     "id": "divert",
+     "name": "Diverticulitis",
+     "short": "Diverticulitis",
+     "tier": "other",
+     "clue": "Left lower quadrant tenderness",
+     "clue_source": "aafp_pelvic",
+     "status": "partial"
+    },
+    {
+     "id": "gyn",
+     "name": "Ovarian cyst or pelvic inflammatory disease",
+     "short": "Cyst or PID",
+     "tier": "other",
+     "clue": "Suspected gynecologic source",
+     "clue_source": "aafp_pelvic",
+     "status": "partial"
+    },
+    {
+     "id": "stone",
+     "name": "Ureteral stone",
+     "short": "Stone",
+     "tier": "other",
+     "clue": "Flank pain radiating; see flank pain",
+     "clue_source": "aafp_pelvic",
+     "status": "partial"
+    }
+   ],
+   "steps": [
+    {
+     "title": "History and exam",
+     "timing": "First minutes",
+     "description": "Location and migration of pain narrow the list.",
+     "source": null,
+     "effects": {
+      "appy": {
+       "type": "steer",
+       "text": "Periumbilical pain migrating to the right lower quadrant.",
+       "source": "aafp_pelvic"
+      },
+      "divert": {
+       "type": "steer",
+       "text": "Left lower quadrant tenderness.",
+       "source": "aafp_pelvic"
+      },
+      "torsion": {
+       "type": "steer",
+       "text": "Right- or left-sided pelvic pain keeps torsion on the list.",
+       "source": "aafp_pelvic"
+      },
+      "stone": {
+       "type": "steer",
+       "text": "Right-sided pelvic pain can also be a stone.",
+       "source": "aafp_pelvic"
+      }
+     },
+     "evidence": [],
+     "id": "lower_abdominal_pain.s1",
+     "order": 1
+    },
+    {
+     "title": "Pregnancy test",
+     "timing": "Before imaging, in anyone who could be pregnant",
+     "description": "Decides whether pregnancy causes are possible and which imaging is safe.",
+     "source": null,
+     "effects": {
+      "ectopic": {
+       "type": "rule",
+       "text": "A negative serum beta-hCG essentially excludes acute ectopic pregnancy.",
+       "source": "acr_pelvic_narr"
+      }
+     },
+     "evidence": [],
+     "id": "lower_abdominal_pain.s2",
+     "order": 2
+    },
+    {
+     "title": "Pelvic ultrasound with Doppler",
+     "timing": "Suspected gynecologic cause, or pregnant",
+     "description": "Transabdominal plus transvaginal ultrasound is the usual first imaging.",
+     "source": null,
+     "effects": {
+      "ectopic": {
+       "type": "conf",
+       "text": "First-line imaging when hCG is positive.",
+       "source": "acr_pelvic_2023"
+      },
+      "torsion": {
+       "type": "conf",
+       "text": "Ultrasound with Doppler is the initial study for gynecologic causes.",
+       "source": "acr_pelvic_2023"
+      },
+      "gyn": {
+       "type": "conf",
+       "text": "Characterizes cysts and complications of pelvic inflammatory disease.",
+       "source": "hopkins_pelvic"
+      },
+      "appy": {
+       "type": "steer",
+       "text": "First choice in children and pregnancy; often inconclusive in pregnancy, then MRI.",
+       "source": "acr_rlq"
+      }
+     },
+     "evidence": [],
+     "id": "lower_abdominal_pain.s3",
+     "order": 3
+    },
+    {
+     "title": "Contrast CT",
+     "timing": "Nonpregnant adults with a suspected non-gynecologic cause",
+     "description": "Most accurate test for appendicitis and other bowel causes.",
+     "source": null,
+     "effects": {
+      "appy": {
+       "type": "rule",
+       "text": "CT is the most accurate study for appendicitis and its alternatives.",
+       "source": "acr_rlq"
+      },
+      "divert": {
+       "type": "conf",
+       "text": "CT with IV contrast is best for gastrointestinal causes such as diverticulitis.",
+       "source": "hopkins_pelvic"
+      }
+     },
+     "evidence": [
+      {
+       "text": "Cochrane review: at 43% prevalence, a positive CT means about a 92% chance of appendicitis and a negative CT about 4%.",
+       "source": "cochrane_appy"
+      }
+     ],
+     "id": "lower_abdominal_pain.s4",
+     "order": 4
+    }
+   ],
+   "rules": {
+    "ectopic": {
+     "validation": "ACR Appropriateness Criteria.",
+     "eliminate_when": [
+      {
+       "text": "Negative serum beta-hCG.",
+       "source": "acr_pelvic_narr",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [],
+     "no_rule_note": null
+    },
+    "appy": {
+     "validation": "ACR criteria for test choice; Cochrane diagnostic review for accuracy.",
+     "eliminate_when": [
+      {
+       "text": "Negative CT in an adult: at a 43% prevalence the probability of appendicitis falls to about 4% (Cochrane review). A strong reduction, not certainty.",
+       "source": "cochrane_appy",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "A single inconclusive ultrasound in pregnancy; most are inconclusive, so MRI follows.",
+       "source": "acr_rlq",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "torsion": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No explicit exclusion rule extracted; ultrasound with Doppler is the first study."
+    },
+    "divert": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No explicit exclusion rule extracted."
+    },
+    "gyn": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No explicit exclusion rule extracted."
+    },
+    "stone": {
+     "validation": "See flank pain situation.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Route lives in the flank pain situation."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Upper abdominal pain",
+     "text": "Right upper quadrant and epigastric pain are not covered; ultrasound is the usual first test for right upper quadrant pain.",
+     "source": "hosp_abd_imaging"
+    },
+    {
+     "title": "Operator dependence",
+     "text": "Ultrasound performance depends on operator training.",
+     "source": "hosp_abd_imaging"
+    },
+    {
+     "title": "Clinical scores",
+     "text": "Scores such as Alvarado were not sourced in this pass.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "headache",
+   "title": "Acute nontraumatic headache",
+   "setting": "Emergency department",
+   "population": "Adults",
+   "priority": "Among the top five ED reasons for visit in NHAMCS fact sheets.",
+   "priority_source": "nhamcs_2011",
+   "lead_guidelines": [
+    "acep_headache",
+    "snnoop10"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "New or different headache; how fast it reached peak intensity (peak within 1 hour matters for the SAH rule).",
+     "source": "acep_headache"
+    },
+    {
+     "label": "History: red flags",
+     "detail": "SNNOOP10: systemic symptoms including fever, cancer history, neurologic deficit, sudden onset, onset after 65, new or changed pattern, positional, triggered by cough or exertion, papilledema, progressive, pregnancy, painful eye with autonomic features, trauma, immune compromise, painkiller overuse or new drug.",
+     "source": "snnoop10"
+    },
+    {
+     "label": "Exam",
+     "detail": "Full neurologic exam, level of consciousness, neck pain or stiffness, limited neck flexion, papilledema, fever.",
+     "source": "acep_headache"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Neurologic deficit or decreased consciousness",
+     "detail": "A red flag for a secondary cause; the ACEP rule-out tools below do not apply because they assume a normal neurologic exam.",
+     "source": "acep_headache"
+    },
+    {
+     "urgent": false,
+     "label": "Alert, normal neurologic exam",
+     "detail": "Screen red flags, then apply the SAH rule if the headache peaked within 1 hour.",
+     "source": "acep_headache"
+    }
+   ],
+   "gate_note": "Most headaches are primary, but secondary causes must be screened for first.",
+   "gate_note_source": "jin_headache",
+   "hypotheses": [
+    {
+     "id": "sah",
+     "name": "Subarachnoid hemorrhage",
+     "short": "SAH",
+     "tier": "must_not_miss",
+     "clue": "Thunderclap onset, exertion, neck stiffness",
+     "clue_source": "acep_headache",
+     "status": "sourced"
+    },
+    {
+     "id": "men",
+     "name": "Bacterial meningitis",
+     "short": "Meningitis",
+     "tier": "must_not_miss",
+     "clue": "Fever and systemic signs",
+     "clue_source": "snnoop10",
+     "status": "partial"
+    },
+    {
+     "id": "sec",
+     "name": "Other secondary headache",
+     "short": "Other secondary",
+     "tier": "must_not_miss",
+     "clue": "Any SNNOOP10 red flag",
+     "clue_source": "snnoop10",
+     "status": "partial"
+    },
+    {
+     "id": "prim",
+     "name": "Primary headache (migraine, tension-type)",
+     "short": "Primary",
+     "tier": "other",
+     "clue": "No red flags",
+     "clue_source": "jin_headache",
+     "status": "partial"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Red-flag history (SNNOOP10)",
+     "timing": "First minutes",
+     "description": "Structured screen of every new or different headache.",
+     "source": null,
+     "effects": {
+      "sah": {
+       "type": "steer",
+       "text": "Sudden or thunderclap onset is a red flag.",
+       "source": "snnoop10"
+      },
+      "men": {
+       "type": "steer",
+       "text": "Fever and systemic symptoms are a red flag.",
+       "source": "snnoop10"
+      },
+      "sec": {
+       "type": "steer",
+       "text": "Each flag raises suspicion, but specificity is not validated.",
+       "source": "snnoop10"
+      },
+      "prim": {
+       "type": "steer",
+       "text": "With no red flags, primary headache becomes more likely.",
+       "source": "jin_headache"
+      }
+     },
+     "evidence": [],
+     "id": "headache.s1",
+     "order": 1
+    },
+    {
+     "title": "Neurologic exam",
+     "timing": "First minutes",
+     "description": "Decides which rules can be used.",
+     "source": null,
+     "effects": {
+      "sah": {
+       "type": "blind",
+       "text": "Neck stiffness is strongly associated, but no single sign rules SAH out.",
+       "source": "acep_headache"
+      },
+      "men": {
+       "type": "steer",
+       "text": "Abnormal consciousness or focal deficit means CT before lumbar puncture.",
+       "source": "cam_ct_study"
+      },
+      "sec": {
+       "type": "steer",
+       "text": "A deficit or papilledema is a red flag.",
+       "source": "snnoop10"
+      }
+     },
+     "evidence": [],
+     "id": "headache.s2",
+     "order": 2
+    },
+    {
+     "title": "Ottawa SAH rule",
+     "timing": "Alert patients, normal neuro exam, peak within 1 hour",
+     "description": "Six features: age 40 or older, neck pain or stiffness, witnessed loss of consciousness, onset with exertion, thunderclap onset, limited neck flexion.",
+     "source": null,
+     "effects": {
+      "sah": {
+       "type": "rule",
+       "text": "None present: high sensitivity supports ruling SAH out; any present only means investigate (low specificity).",
+       "source": "acep_headache"
+      }
+     },
+     "evidence": [],
+     "id": "headache.s3",
+     "order": 3
+    },
+    {
+     "title": "Noncontrast head CT",
+     "timing": "As early as possible",
+     "description": "First imaging test for suspected SAH and before LP in at-risk patients.",
+     "source": null,
+     "effects": {
+      "sah": {
+       "type": "rule",
+       "text": "Normal CT within 6 hours of onset, with normal neuro exam, rules out nontraumatic SAH.",
+       "source": "acep_headache"
+      },
+      "men": {
+       "type": "steer",
+       "text": "Only needed before LP if immunocompromised, CNS disease, new seizure, papilledema, abnormal consciousness or focal deficit.",
+       "source": "cam_ct_study"
+      }
+     },
+     "evidence": [],
+     "id": "headache.s4",
+     "order": 4
+    },
+    {
+     "title": "Lumbar puncture or CT angiography",
+     "timing": "If still at risk after a negative CT",
+     "description": "Second-line test chosen with the patient.",
+     "source": null,
+     "effects": {
+      "sah": {
+       "type": "rule",
+       "text": "LP or CTA safely rules out SAH in a patient still at risk after a negative CT.",
+       "source": "mdcalc_acep_headache"
+      },
+      "men": {
+       "type": "conf",
+       "text": "Diagnosis depends on CSF examination; blood cultures and LP should be done promptly.",
+       "source": "aafp_idsa_mening"
+      }
+     },
+     "evidence": [],
+     "id": "headache.s5",
+     "order": 5
+    },
+    {
+     "title": "If no red flags and secondary causes are excluded",
+     "timing": "Last",
+     "description": "Primary headache becomes the working diagnosis.",
+     "source": null,
+     "effects": {
+      "prim": {
+       "type": "steer",
+       "text": "Diagnosis of exclusion once red flags are absent or answered.",
+       "source": "jin_headache"
+      }
+     },
+     "evidence": [],
+     "id": "headache.s6",
+     "order": 6
+    }
+   ],
+   "rules": {
+    "sah": {
+     "validation": "ACEP 2019 clinical policy.",
+     "eliminate_when": [
+      {
+       "text": "Ottawa SAH rule negative in an alert patient with normal neuro exam and peak within 1 hour.",
+       "source": "acep_headache",
+       "inferred": false
+      },
+      {
+       "text": "Normal noncontrast CT within 6 hours of onset with normal neuro exam.",
+       "source": "acep_headache",
+       "inferred": false
+      },
+      {
+       "text": "Negative LP or CTA after a negative CT in a patient still at risk.",
+       "source": "mdcalc_acep_headache",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "A single sign or symptom.",
+       "source": "acep_headache",
+       "inferred": false
+      },
+      {
+       "text": "The Ottawa rule outside its population (abnormal neuro exam, slower peak).",
+       "source": "acep_headache",
+       "inferred": false
+      },
+      {
+       "text": "A positive Ottawa rule as proof; it has low specificity.",
+       "source": "acep_headache",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "men": {
+     "validation": "IDSA 2004 via secondary summaries; check for newer guidance.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Delaying antibiotics for CT; cultures and antibiotics come first when CT is needed.",
+       "source": "ebm_lp",
+       "inferred": false
+      },
+      {
+       "text": "A normal head CT as proof that LP is safe in every patient.",
+       "source": "ebm_lp",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No formal exclusion rule sourced; diagnosis depends on CSF examination."
+    },
+    "sec": {
+     "validation": "Red flags from a narrative review.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Imaging everyone; many scans find nothing relevant.",
+       "source": "snnoop10",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No single elimination rule; each secondary cause needs its own route."
+    },
+    "prim": {
+     "validation": "Diagnosis of exclusion.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Not eliminated; it is what remains when red flags are absent."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Rule validation",
+     "text": "Early reviews noted the Ottawa SAH rule had mainly Canadian validation; check local validity.",
+     "source": "rebel_ottawa"
+    },
+    {
+     "title": "CT/LP versus CT/CTA",
+     "text": "ACEP recommends shared decision making between the two second-line strategies.",
+     "source": "acep_headache"
+    },
+    {
+     "title": "Red-flag evidence",
+     "text": "Most red flags lack prospective data on specificity.",
+     "source": "snnoop10"
+    }
+   ]
+  },
+  {
+   "id": "fever_sepsis",
+   "title": "Fever in an adult (suspected sepsis)",
+   "setting": "Emergency department and wards",
+   "population": "Adults",
+   "priority": "Fever is among the top ED reasons for visit in NHAMCS fact sheets.",
+   "priority_source": "nhamcs_2011",
+   "lead_guidelines": [
+    "ssc_2026",
+    "ssc_2026_exec"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Signs of infection and vital signs",
+     "detail": "Screened with NEWS/NEWS2, MEWS or SIRS rather than qSOFA alone.",
+     "source": "epocrates_ssc_2026"
+    },
+    {
+     "label": "Sepsis certainty",
+     "detail": "The 2026 guideline grades suspected sepsis as definite, probable, possible or unlikely.",
+     "source": "ssc_2026_exec"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Probable or definite sepsis, or shock",
+     "detail": "Treat as an emergency: antimicrobials within 1 hour of recognition.",
+     "source": "umem_ssc_2026"
+    },
+    {
+     "urgent": false,
+     "label": "Possible sepsis without shock",
+     "detail": "Time-limited investigation; if infection is likely, antimicrobials within 3 hours.",
+     "source": "umem_ssc_2026"
+    }
+   ],
+   "gate_note": "Updated to the 2026 Surviving Sepsis Campaign guideline, which replaced the 2021 edition.",
+   "gate_note_source": "ssc_2026",
+   "hypotheses": [
+    {
+     "id": "sepsis",
+     "name": "Sepsis",
+     "short": "Sepsis",
+     "tier": "must_not_miss",
+     "clue": "Infection with organ dysfunction",
+     "clue_source": "ssc_2026_exec",
+     "status": "partial"
+    },
+    {
+     "id": "men",
+     "name": "Bacterial meningitis",
+     "short": "Meningitis",
+     "tier": "must_not_miss",
+     "clue": "Headache, neck stiffness; see headache",
+     "clue_source": "snnoop10",
+     "status": "partial"
+    },
+    {
+     "id": "pna",
+     "name": "Pneumonia",
+     "short": "Pneumonia",
+     "tier": "other",
+     "clue": "Respiratory signs",
+     "clue_source": "tw_cp_exam",
+     "status": "partial"
+    },
+    {
+     "id": "noninf",
+     "name": "Non-infectious cause",
+     "short": "Non-infectious",
+     "tier": "other",
+     "clue": "Not sourced",
+     "clue_source": null,
+     "status": "stub"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Screening tool",
+     "timing": "At triage",
+     "description": "NEWS/NEWS2, MEWS or SIRS rather than qSOFA alone (strong recommendation).",
+     "source": "epocrates_ssc_2026",
+     "effects": {
+      "sepsis": {
+       "type": "blind",
+       "text": "A negative qSOFA alone does not rule sepsis out.",
+       "source": "epocrates_ssc_2026"
+      }
+     },
+     "evidence": [],
+     "id": "fever_sepsis.s1",
+     "order": 1
+    },
+    {
+     "title": "Grade the certainty",
+     "timing": "After screening",
+     "description": "Definite, probable, possible or unlikely sepsis, using the guideline's standard language.",
+     "source": "ssc_2026_exec",
+     "effects": {
+      "sepsis": {
+       "type": "steer",
+       "text": "Sets urgency: 1 hour for probable or definite, a time-limited work-up for possible.",
+       "source": "umem_ssc_2026"
+      }
+     },
+     "evidence": [],
+     "id": "fever_sepsis.s2",
+     "order": 2
+    },
+    {
+     "title": "Time-limited investigation",
+     "timing": "Possible sepsis without shock",
+     "description": "Search for infection within a set time before committing to antimicrobials.",
+     "source": null,
+     "effects": {
+      "sepsis": {
+       "type": "steer",
+       "text": "If infection becomes likely, antimicrobials within 3 hours; the guideline does not state a formal exclusion test.",
+       "source": "umem_ssc_2026"
+      },
+      "noninf": {
+       "type": "steer",
+       "text": "The 2026 guideline addresses noninfectious causes in possible sepsis without shock; details not extracted.",
+       "source": "ssc_2026"
+      }
+     },
+     "evidence": [],
+     "id": "fever_sepsis.s3",
+     "order": 3
+    },
+    {
+     "title": "Blood lactate",
+     "timing": "Suspected sepsis",
+     "description": "Suggested in the 2021 edition; re-check against 2026.",
+     "source": null,
+     "effects": {
+      "sepsis": {
+       "type": "steer",
+       "text": "Elevated lactate supports sepsis and guides resuscitation (2021 statement).",
+       "source": "ssc_2021"
+      }
+     },
+     "evidence": [],
+     "id": "fever_sepsis.s4",
+     "order": 4
+    },
+    {
+     "title": "Source search",
+     "timing": "In parallel",
+     "description": "Chest film; lumbar puncture when meningitis is suspected.",
+     "source": null,
+     "effects": {
+      "pna": {
+       "type": "conf",
+       "text": "Infiltrate on chest film confirms.",
+       "source": "rcem_cxr"
+      },
+      "men": {
+       "type": "conf",
+       "text": "CSF examination is the diagnostic test.",
+       "source": "aafp_idsa_mening"
+      }
+     },
+     "evidence": [],
+     "id": "fever_sepsis.s5",
+     "order": 5
+    }
+   ],
+   "rules": {
+    "sepsis": {
+     "validation": "Surviving Sepsis Campaign 2026 (lactate and procalcitonin statements still from 2021).",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "A negative qSOFA alone.",
+       "source": "epocrates_ssc_2026",
+       "inferred": false
+      },
+      {
+       "text": "Procalcitonin to decide whether to start antimicrobials (2021 statement; re-check).",
+       "source": "ssc_2021",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No formal exclusion test. The 2026 guideline grades certainty and uses a time-limited investigation for possible sepsis."
+    },
+    "men": {
+     "validation": "See headache situation.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Delaying antibiotics for CT.",
+       "source": "ebm_lp",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "Diagnosis depends on CSF examination."
+    },
+    "pna": {
+     "validation": "Educational summary.",
+     "eliminate_when": [
+      {
+       "text": "Normal chest radiograph makes it unlikely.",
+       "source": "rcem_cxr",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [],
+     "no_rule_note": null
+    },
+    "noninf": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Named in the 2026 guideline; statements not extracted."
+    }
+   },
+   "gaps": [
+    {
+     "title": "2021 leftovers",
+     "text": "Lactate and procalcitonin steps still cite the 2021 edition and need checking against 2026.",
+     "source": "ssc_2021"
+    },
+    {
+     "title": "Children",
+     "text": "The 2026 pediatric Surviving Sepsis guideline is separate and not included.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "syncope",
+   "title": "Syncope (transient loss of consciousness)",
+   "setting": "Emergency department",
+   "population": "Adults",
+   "priority": "Common ED presentation with its own US and European guidelines.",
+   "priority_source": null,
+   "lead_guidelines": [
+    "acc_syncope_2017",
+    "acc_esc_syncope"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "The event",
+     "detail": "Prodrome, position (standing, sitting, supine), exertion, palpitations, triggers such as pain, cough, micturition or prolonged standing.",
+     "source": "esc_syncope_table"
+    },
+    {
+     "label": "History",
+     "detail": "Structural heart disease or prior myocardial infarction, family history of sudden cardiac death at a young age.",
+     "source": "esc_syncope_table"
+    },
+    {
+     "label": "Exam",
+     "detail": "Physical examination including lying and standing blood pressure.",
+     "source": "syncope_risk_review"
+    },
+    {
+     "label": "12-lead ECG",
+     "detail": "Useful in the initial evaluation (class I).",
+     "source": "acc_syncope_2017"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Any high-risk feature",
+     "detail": "New chest discomfort, breathlessness, abdominal pain or headache; syncope during exertion or supine; palpitations right before syncope; structural heart disease. Evaluate in hospital or with ECG monitoring.",
+     "source": "esc_syncope_table"
+    },
+    {
+     "urgent": false,
+     "label": "Low-risk features only",
+     "detail": "Typical reflex prodrome or trigger, or syncope on standing up. Likely reflex or orthostatic; discharge can be considered.",
+     "source": "sec_syncope"
+    }
+   ],
+   "gate_note": "Not all high-risk patients need admission; risk scores may be reasonable but are not better than clinical judgment.",
+   "gate_note_source": "aafp_syncope",
+   "hypotheses": [
+    {
+     "id": "card",
+     "name": "Cardiac (arrhythmic or structural) syncope",
+     "short": "Cardiac",
+     "tier": "must_not_miss",
+     "clue": "Exertional or supine, palpitations, heart disease",
+     "clue_source": "esc_syncope_table",
+     "status": "partial"
+    },
+    {
+     "id": "serious",
+     "name": "Serious condition presenting as syncope",
+     "short": "Serious other",
+     "tier": "must_not_miss",
+     "clue": "New chest pain, breathlessness, abdominal pain or headache",
+     "clue_source": "esc_syncope_table",
+     "status": "stub"
+    },
+    {
+     "id": "orth",
+     "name": "Orthostatic hypotension",
+     "short": "Orthostatic",
+     "tier": "other",
+     "clue": "Syncope on standing",
+     "clue_source": "esc_syncope_table",
+     "status": "partial"
+    },
+    {
+     "id": "reflex",
+     "name": "Reflex (vasovagal, situational) syncope",
+     "short": "Reflex",
+     "tier": "other",
+     "clue": "Prodrome, typical triggers",
+     "clue_source": "esc_syncope_table",
+     "status": "partial"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Event history",
+     "timing": "First minutes",
+     "description": "Separates low-risk reflex patterns from high-risk features.",
+     "source": null,
+     "effects": {
+      "card": {
+       "type": "steer",
+       "text": "Exertion, supine position, sudden palpitations, or no or very short prodrome with heart disease.",
+       "source": "esc_syncope_table"
+      },
+      "serious": {
+       "type": "steer",
+       "text": "New chest discomfort, breathlessness, abdominal pain or headache is a major high-risk feature.",
+       "source": "esc_syncope_table"
+      },
+      "orth": {
+       "type": "steer",
+       "text": "Syncope on standing up from lying or sitting.",
+       "source": "esc_syncope_table"
+      },
+      "reflex": {
+       "type": "steer",
+       "text": "Prodrome of light-headedness, warmth, sweating or nausea; pain, crowded hot places, cough or micturition triggers.",
+       "source": "esc_syncope_table"
+      }
+     },
+     "evidence": [],
+     "id": "syncope.s1",
+     "order": 1
+    },
+    {
+     "title": "Exam with lying and standing blood pressure",
+     "timing": "Initial evaluation",
+     "description": "Part of the standard initial evaluation.",
+     "source": null,
+     "effects": {
+      "orth": {
+       "type": "steer",
+       "text": "Lying and standing BP is the bedside test for orthostatic causes.",
+       "source": "syncope_risk_review"
+      },
+      "card": {
+       "type": "steer",
+       "text": "Findings of structural heart disease are high risk.",
+       "source": "esc_syncope_table"
+      }
+     },
+     "evidence": [],
+     "id": "syncope.s2",
+     "order": 2
+    },
+    {
+     "title": "12-lead ECG",
+     "timing": "Initial evaluation",
+     "description": "Class I in the initial evaluation.",
+     "source": "acc_syncope_2017",
+     "effects": {
+      "card": {
+       "type": "steer",
+       "text": "An abnormal ECG turns minor features into high-risk ones.",
+       "source": "esc_syncope_table"
+      }
+     },
+     "evidence": [],
+     "id": "syncope.s3",
+     "order": 3
+    },
+    {
+     "title": "Risk stratification and disposition",
+     "timing": "After history, exam and ECG",
+     "description": "Sorts patients into high, intermediate and low risk.",
+     "source": null,
+     "effects": {
+      "card": {
+       "type": "steer",
+       "text": "Low-risk features only: discharge from the ED is recommended for patients without recurrence.",
+       "source": "sec_syncope"
+      },
+      "reflex": {
+       "type": "steer",
+       "text": "Low-risk patients mostly have reflex syncope with a good prognosis.",
+       "source": "sec_syncope"
+      }
+     },
+     "evidence": [],
+     "id": "syncope.s4",
+     "order": 4
+    },
+    {
+     "title": "Targeted tests only when suspected",
+     "timing": "Selected patients",
+     "description": "Routine labs, cardiac imaging and carotid imaging are not useful without a specific reason.",
+     "source": null,
+     "effects": {
+      "card": {
+       "type": "conf",
+       "text": "ECG monitoring in high-risk patients with suspected arrhythmia; cardiac imaging only if a cardiac cause is suspected.",
+       "source": "acc_esc_syncope"
+      },
+      "reflex": {
+       "type": "conf",
+       "text": "Tilt testing when reflex syncope is suspected.",
+       "source": "acc_esc_syncope"
+      },
+      "orth": {
+       "type": "conf",
+       "text": "Tilt testing when an orthostatic cause is suspected.",
+       "source": "acc_esc_syncope"
+      }
+     },
+     "evidence": [],
+     "id": "syncope.s5",
+     "order": 5
+    }
+   ],
+   "rules": {
+    "card": {
+     "validation": "ESC 2018 and ACC/AHA/HRS 2017 summaries.",
+     "eliminate_when": [
+      {
+       "text": "Only low-risk features after history, exam and ECG: ESC 2018 recommends discharge from the ED (class I, level B). Treating this disposition as elimination is the inferred part.",
+       "source": "sec_syncope",
+       "inferred": true
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "Routine comprehensive laboratory testing.",
+       "source": "acc_syncope_2017",
+       "inferred": false
+      },
+      {
+       "text": "Routine cardiac imaging without a suspected cardiac cause.",
+       "source": "acc_syncope_2017",
+       "inferred": false
+      },
+      {
+       "text": "Risk scores as better than clinical judgment.",
+       "source": "aafp_syncope",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "serious": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Route depends on the underlying condition (for example PE or dissection); see the chest pain situation."
+    },
+    "orth": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Carotid imaging without focal neurologic findings.",
+       "source": "acc_syncope_2017",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No elimination threshold extracted; orthostatic criteria are in the ESC guideline."
+    },
+    "reflex": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Diagnosis is clinical; tilt testing when suspected."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Two guidelines",
+     "text": "US (2017) and European (2018) guidelines overlap but differ in detail.",
+     "source": "acc_esc_syncope"
+    },
+    {
+     "title": "Intermediate risk",
+     "text": "Patients with neither high- nor low-risk features have no single sourced pathway here.",
+     "source": null
+    },
+    {
+     "title": "Orthostatic thresholds",
+     "text": "Exact blood pressure criteria were not extracted in this pass.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "ugib",
+   "title": "Upper gastrointestinal bleeding",
+   "setting": "Emergency department and hospital",
+   "population": "Adults with overt bleeding",
+   "priority": "GI bleeding causes more than half a million US admissions a year.",
+   "priority_source": "nursing_ugib",
+   "lead_guidelines": [
+    "acg_ugib"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "Vomiting red blood or coffee-ground material, or black stools; bleeding from esophagus, stomach or duodenum.",
+     "source": "nursing_ugib"
+    },
+    {
+     "label": "Vitals and labs",
+     "detail": "Inputs for the Glasgow-Blatchford score.",
+     "source": "jhm_ugib"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Not very low risk",
+     "detail": "Hospital care; endoscopy within 24 hours.",
+     "source": "acg_ugib"
+    },
+    {
+     "urgent": false,
+     "label": "Very low risk (Glasgow-Blatchford 0 to 1)",
+     "detail": "Outpatient follow-up rather than admission, if no other reason to stay.",
+     "source": "acg_ugib"
+    }
+   ],
+   "gate_note": "This situation is mostly risk triage; the cause is found at endoscopy rather than eliminated step by step.",
+   "gate_note_source": null,
+   "hypotheses": [
+    {
+     "id": "ulcer",
+     "name": "Peptic ulcer bleeding",
+     "short": "Ulcer",
+     "tier": "must_not_miss",
+     "clue": "Most common cause",
+     "clue_source": "nursing_ugib",
+     "status": "partial"
+    },
+    {
+     "id": "other_ugi",
+     "name": "Other upper GI source (varices, tears, others)",
+     "short": "Other upper GI",
+     "tier": "must_not_miss",
+     "clue": "Not sourced",
+     "clue_source": null,
+     "status": "stub"
+    },
+    {
+     "id": "needs_intervention",
+     "name": "Bleeding that needs hospital intervention",
+     "short": "Needs intervention",
+     "tier": "must_not_miss",
+     "clue": "Unstable or high score",
+     "clue_source": "jhm_ugib",
+     "status": "sourced"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Risk score",
+     "timing": "In the ED",
+     "description": "Glasgow-Blatchford score.",
+     "source": null,
+     "effects": {
+      "needs_intervention": {
+       "type": "rule",
+       "text": "Score 0 to 1 identifies very-low-risk patients; the score is about 99% sensitive for need for intervention.",
+       "source": "jhm_ugib"
+      }
+     },
+     "evidence": [],
+     "id": "ugib.s1",
+     "order": 1
+    },
+    {
+     "title": "Endoscopy",
+     "timing": "Within 24 hours for hospitalized patients",
+     "description": "Finds and treats the source.",
+     "source": "acg_ugib",
+     "effects": {
+      "ulcer": {
+       "type": "conf",
+       "text": "Endoscopic therapy for ulcers with active bleeding or a visible vessel.",
+       "source": "acg_ugib"
+      },
+      "other_ugi": {
+       "type": "conf",
+       "text": "Endoscopy identifies the source (non-ulcer routes not sourced).",
+       "source": null
+      }
+     },
+     "evidence": [],
+     "id": "ugib.s2",
+     "order": 2
+    }
+   ],
+   "rules": {
+    "needs_intervention": {
+     "validation": "ACG 2021, conditional recommendation, very low quality evidence.",
+     "eliminate_when": [
+      {
+       "text": "Glasgow-Blatchford score 0 to 1 with no other reason for admission.",
+       "source": "acg_ugib",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "The score without considering age, comorbidities and follow-up reliability.",
+       "source": "jhm_ugib",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "ulcer": {
+     "validation": "Diagnosed at endoscopy.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No pre-endoscopy exclusion rule."
+    },
+    "other_ugi": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Variceal bleeding guidance (AASLD/Baveno) not sourced."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Lower GI bleeding",
+     "text": "Lower GI bleeding has a separate ACG guideline, not included.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "leg_swelling",
+   "title": "Unilateral leg swelling or pain (suspected DVT)",
+   "setting": "ED or outpatient",
+   "population": "Adults",
+   "priority": "High-volume VTE presentation with a GRADE guideline.",
+   "priority_source": null,
+   "lead_guidelines": [
+    "ash_vte"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "One-sided leg swelling or pain.",
+     "source": "ash_slides"
+    },
+    {
+     "label": "History",
+     "detail": "Prior DVT or PE, cancer, recent immobilization; whether another diagnosis is as likely.",
+     "source": "ash_slides"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Breathlessness or chest pain",
+     "detail": "Treat as suspected PE and use that route.",
+     "source": "ash_vte"
+    },
+    {
+     "urgent": false,
+     "label": "Leg symptoms only",
+     "detail": "Estimate pre-test probability, then test.",
+     "source": "ash_vte"
+    }
+   ],
+   "gate_note": "Diagnostic strategy depends on the estimated pre-test probability.",
+   "gate_note_source": "ash_vte",
+   "hypotheses": [
+    {
+     "id": "dvt",
+     "name": "Deep vein thrombosis",
+     "short": "DVT",
+     "tier": "must_not_miss",
+     "clue": "Swelling, risk factors",
+     "clue_source": "ash_slides",
+     "status": "sourced"
+    },
+    {
+     "id": "alt",
+     "name": "Alternative diagnosis",
+     "short": "Alternative",
+     "tier": "other",
+     "clue": "Another cause as likely",
+     "clue_source": "ash_slides",
+     "status": "stub"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Pre-test probability (Wells for DVT)",
+     "timing": "First",
+     "description": "Low, intermediate or high; DVT prevalence about 10% or less, 25% and 50% or more.",
+     "source": null,
+     "effects": {
+      "dvt": {
+       "type": "steer",
+       "text": "Sets which test comes first.",
+       "source": "ash_vte_pmc"
+      },
+      "alt": {
+       "type": "steer",
+       "text": "An alternative diagnosis being as likely lowers the score.",
+       "source": "ash_slides"
+      }
+     },
+     "evidence": [],
+     "id": "leg_swelling.s1",
+     "order": 1
+    },
+    {
+     "title": "Highly sensitive D-dimer",
+     "timing": "Low pre-test probability",
+     "description": "Rule-out test.",
+     "source": null,
+     "effects": {
+      "dvt": {
+       "type": "rule",
+       "text": "Negative D-dimer at low pre-test probability: no further testing.",
+       "source": "ash_vte"
+      }
+     },
+     "evidence": [],
+     "id": "leg_swelling.s2",
+     "order": 2
+    },
+    {
+     "title": "Compression ultrasound",
+     "timing": "High probability, or positive D-dimer",
+     "description": "Proximal or whole-leg ultrasound.",
+     "source": null,
+     "effects": {
+      "dvt": {
+       "type": "rule",
+       "text": "Positive scan confirms; a negative whole-leg scan or negative serial proximal scans end the work-up.",
+       "source": "mdedge_dvt"
+      }
+     },
+     "evidence": [],
+     "id": "leg_swelling.s3",
+     "order": 3
+    }
+   ],
+   "rules": {
+    "dvt": {
+     "validation": "ASH 2018 GRADE guideline (reviewed 2022).",
+     "eliminate_when": [
+      {
+       "text": "Low pre-test probability and negative highly sensitive D-dimer.",
+       "source": "ash_vte",
+       "inferred": false
+      },
+      {
+       "text": "Negative whole-leg ultrasound, negative serial proximal ultrasound, or negative D-dimer after a negative proximal scan: no further testing.",
+       "source": "mdedge_dvt",
+       "inferred": false
+      },
+      {
+       "text": "ASH 2018: at intermediate or high probability, proximal or whole-limb ultrasound first, with a one-week repeat after a negative scan in higher-prevalence groups.",
+       "source": "jama_vte",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "D-dimer as the first test at high probability; imaging is warranted.",
+       "source": "ash_vte",
+       "inferred": false
+      },
+      {
+       "text": "A single negative proximal scan when the D-dimer is positive; repeat at one week or scan the whole leg.",
+       "source": "chest_at9_dvt",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "alt": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Specific alternatives (cellulitis, ruptured Baker cyst) not sourced."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Score cut-offs",
+     "text": "Exact Wells DVT cut-offs differ between versions; prevalence bands are used instead.",
+     "source": "ash_vte_pmc"
+    },
+    {
+     "title": "Distal DVT",
+     "text": "The clinical relevance of calf-vein clots found on ultrasound is uncertain.",
+     "source": "jama_vte"
+    }
+   ]
+  },
+  {
+   "id": "dizziness",
+   "title": "Acute dizziness or vertigo",
+   "setting": "Emergency department",
+   "population": "Adults, symptoms under 2 weeks",
+   "priority": "Common ED complaint with a 2023 GRADE guideline.",
+   "priority_source": null,
+   "lead_guidelines": [
+    "grace3",
+    "grace3_pdf"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Timing and triggers",
+     "detail": "Continuous for more than 24 hours (acute vestibular syndrome), triggered by position, or spontaneous episodes.",
+     "source": "grace3_pdf"
+    },
+    {
+     "label": "Exam",
+     "detail": "Nystagmus, HINTS (head impulse, nystagmus, test of skew), gait, Dix-Hallpike when positional.",
+     "source": "grace3"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Continuous dizziness (acute vestibular syndrome)",
+     "detail": "Stroke must be excluded with HINTS by a trained examiner, then MRI if central or equivocal.",
+     "source": "grace3_pdf"
+    },
+    {
+     "urgent": false,
+     "label": "Positional (triggered) episodes",
+     "detail": "Dix-Hallpike for posterior canal BPPV; no CT and no routine MRI.",
+     "source": "grace3"
+    }
+   ],
+   "gate_note": "Untrained clinicians apply and interpret HINTS inaccurately; GRACE-3 recommends training.",
+   "gate_note_source": "grace3",
+   "hypotheses": [
+    {
+     "id": "stroke",
+     "name": "Posterior circulation stroke",
+     "short": "Stroke",
+     "tier": "must_not_miss",
+     "clue": "Continuous dizziness with central signs",
+     "clue_source": "grace3_pdf",
+     "status": "partial"
+    },
+    {
+     "id": "bppv",
+     "name": "Posterior canal BPPV",
+     "short": "BPPV",
+     "tier": "other",
+     "clue": "Brief, positional episodes",
+     "clue_source": "grace3",
+     "status": "sourced"
+    },
+    {
+     "id": "periph",
+     "name": "Peripheral vestibular syndrome (e.g. vestibular neuritis)",
+     "short": "Peripheral",
+     "tier": "other",
+     "clue": "Continuous, peripheral HINTS",
+     "clue_source": "jfp_dizzy",
+     "status": "partial"
+    },
+    {
+     "id": "nonvest",
+     "name": "Non-vestibular cause (cardiac, orthostatic)",
+     "short": "Non-vestibular",
+     "tier": "other",
+     "clue": "See syncope",
+     "clue_source": null,
+     "status": "stub"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Classify by timing and triggers",
+     "timing": "First",
+     "description": "Decides which bedside test applies.",
+     "source": null,
+     "effects": {
+      "bppv": {
+       "type": "steer",
+       "text": "Triggered positional episodes.",
+       "source": "grace3"
+      },
+      "stroke": {
+       "type": "steer",
+       "text": "Continuous symptoms over 24 hours.",
+       "source": "grace3_pdf"
+      },
+      "periph": {
+       "type": "steer",
+       "text": "Continuous symptoms over 24 hours.",
+       "source": "grace3_pdf"
+      }
+     },
+     "evidence": [],
+     "id": "dizziness.s1",
+     "order": 1
+    },
+    {
+     "title": "Dix-Hallpike test",
+     "timing": "Positional episodes",
+     "description": "Diagnoses posterior canal BPPV.",
+     "source": null,
+     "effects": {
+      "bppv": {
+       "type": "conf",
+       "text": "Positive test diagnoses posterior canal BPPV; treat with Epley maneuver.",
+       "source": "grace3"
+      }
+     },
+     "evidence": [],
+     "id": "dizziness.s2",
+     "order": 2
+    },
+    {
+     "title": "HINTS exam by a trained clinician",
+     "timing": "Continuous dizziness",
+     "description": "Separates central from peripheral patterns.",
+     "source": null,
+     "effects": {
+      "stroke": {
+       "type": "rule",
+       "text": "A peripheral HINTS pattern helps rule out stroke, but only when performed by trained clinicians.",
+       "source": "jfp_dizzy"
+      },
+      "periph": {
+       "type": "conf",
+       "text": "Peripheral pattern supports a peripheral cause.",
+       "source": "jfp_dizzy"
+      }
+     },
+     "evidence": [],
+     "id": "dizziness.s3",
+     "order": 3
+    },
+    {
+     "title": "MRI",
+     "timing": "Central or equivocal HINTS",
+     "description": "Confirmatory test.",
+     "source": "grace3_pdf",
+     "effects": {
+      "stroke": {
+       "type": "conf",
+       "text": "MRI confirms; in the first 48 hours it misses about 1 in 5 strokes presenting as dizziness.",
+       "source": "sgem_grace3"
+      }
+     },
+     "evidence": [],
+     "id": "dizziness.s4",
+     "order": 4
+    }
+   ],
+   "rules": {
+    "stroke": {
+     "validation": "GRACE-3 (2023).",
+     "eliminate_when": [
+      {
+       "text": "Peripheral HINTS pattern in a patient with true acute vestibular syndrome, examined by a trained clinician.",
+       "source": "jfp_dizzy",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "HINTS done by untrained clinicians or in the wrong patients.",
+       "source": "grace3",
+       "inferred": false
+      },
+      {
+       "text": "An early negative MRI alone: about 80% sensitive in the first 48 hours.",
+       "source": "sgem_grace3",
+       "inferred": false
+      },
+      {
+       "text": "CT for positional dizziness.",
+       "source": "grace3",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "bppv": {
+     "validation": "GRACE-3 (2023).",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Confirmed rather than eliminated; positive Dix-Hallpike."
+    },
+    "periph": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Supported by a peripheral HINTS pattern."
+    },
+    "nonvest": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "See the syncope situation."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Training",
+     "text": "HINTS accuracy depends on examiner training, which most emergency physicians lack.",
+     "source": "grace3"
+    }
+   ]
+  },
+  {
+   "id": "focal_deficit",
+   "title": "Acute focal neurologic deficit (suspected stroke)",
+   "setting": "Prehospital and emergency department",
+   "population": "Adults (the 2026 guideline also adds pediatric guidance, not encoded here)",
+   "priority": "Time-critical presentation with a 2026 guideline.",
+   "priority_source": null,
+   "lead_guidelines": [
+    "aha_stroke_2026_gc",
+    "aha_stroke_2026_pdf"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "Sudden weakness, numbness, speech or vision loss.",
+     "source": null
+    },
+    {
+     "label": "Timing",
+     "detail": "Time last known well decides treatment eligibility.",
+     "source": "aha_stroke_2026"
+    },
+    {
+     "label": "Bedside glucose",
+     "detail": "Checked before thrombolysis; severe hypoglycemia or hyperglycemia can mimic stroke.",
+     "source": "aha_stroke_2026_gc"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Within a treatment window",
+     "detail": "Stroke pathway immediately; brain imaging within 25 minutes; other tests must not delay reperfusion.",
+     "source": "medscape_stroke_2026"
+    },
+    {
+     "urgent": false,
+     "label": "Outside known windows",
+     "detail": "Still image urgently; the 2026 guideline widens some windows with perfusion imaging.",
+     "source": "pn_stroke_2026"
+    }
+   ],
+   "gate_note": "Verified against the 2026 AHA/ASA guideline, which replaced the 2018 guideline and 2019 update.",
+   "gate_note_source": "aha_stroke_2026",
+   "hypotheses": [
+    {
+     "id": "ais",
+     "name": "Acute ischemic stroke",
+     "short": "Ischemic stroke",
+     "tier": "must_not_miss",
+     "clue": "Sudden focal deficit",
+     "clue_source": null,
+     "status": "partial"
+    },
+    {
+     "id": "ich",
+     "name": "Intracranial hemorrhage",
+     "short": "Hemorrhage",
+     "tier": "must_not_miss",
+     "clue": "Sudden focal deficit",
+     "clue_source": null,
+     "status": "sourced"
+    },
+    {
+     "id": "hypo",
+     "name": "Hypoglycemia or severe hyperglycemia (stroke mimic)",
+     "short": "Glucose mimic",
+     "tier": "must_not_miss",
+     "clue": "Abnormal bedside glucose",
+     "clue_source": "aha_stroke_2026_gc",
+     "status": "sourced"
+    },
+    {
+     "id": "mimic",
+     "name": "Other stroke mimics",
+     "short": "Other mimic",
+     "tier": "other",
+     "clue": "Not sourced",
+     "clue_source": null,
+     "status": "stub"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Bedside glucose",
+     "timing": "Before thrombolysis",
+     "description": "Detects and urgently corrects severe hypoglycemia or hyperglycemia.",
+     "source": "aha_stroke_2026_gc",
+     "effects": {
+      "hypo": {
+       "type": "rule",
+       "text": "Normal glucose, or a disabling deficit that persists after correction, means glucose does not explain the deficit.",
+       "source": "medscape_stroke_2026"
+      }
+     },
+     "evidence": [],
+     "id": "focal_deficit.s1",
+     "order": 1
+    },
+    {
+     "title": "Brain imaging: noncontrast CT or MRI",
+     "timing": "Within 25 minutes of arrival",
+     "description": "Assesses ischemic burden and excludes hemorrhage before any reperfusion treatment (class 1, level A).",
+     "source": "aha_stroke_2026_gc",
+     "effects": {
+      "ich": {
+       "type": "rule",
+       "text": "Imaging without hemorrhage excludes intracranial hemorrhage before reperfusion.",
+       "source": "aha_stroke_2026_gc"
+      },
+      "ais": {
+       "type": "blind",
+       "text": "Mild to moderate early ischemic change neither precludes nor delays thrombolysis.",
+       "source": "medscape_stroke_2026"
+      }
+     },
+     "evidence": [],
+     "id": "focal_deficit.s2",
+     "order": 2
+    },
+    {
+     "title": "ECG and troponin",
+     "timing": "Baseline",
+     "description": "Recommended, but must not delay treatment.",
+     "source": null,
+     "effects": {
+      "ais": {
+       "type": "steer",
+       "text": "Baseline ECG and troponin must not delay IV thrombolysis or thrombectomy.",
+       "source": "emdocs_stroke_2026"
+      }
+     },
+     "evidence": [],
+     "id": "focal_deficit.s3",
+     "order": 3
+    },
+    {
+     "title": "Vascular and perfusion imaging",
+     "timing": "Suspected large vessel occlusion within 24 hours; extended windows",
+     "description": "CT/CTA or MRI/MRA as fast as possible for thrombectomy selection.",
+     "source": "emdocs_stroke_2026",
+     "effects": {
+      "ais": {
+       "type": "conf",
+       "text": "Perfusion imaging can select some unknown-onset patients for thrombolysis up to 9 hours.",
+       "source": "pn_stroke_2026"
+      }
+     },
+     "evidence": [],
+     "id": "focal_deficit.s4",
+     "order": 4
+    }
+   ],
+   "rules": {
+    "hypo": {
+     "validation": "2026 AHA/ASA guideline.",
+     "eliminate_when": [
+      {
+       "text": "Normal bedside glucose.",
+       "source": "aha_stroke_2026_gc",
+       "inferred": false
+      },
+      {
+       "text": "A disabling deficit persisting after glucose correction; thrombolysis is still recommended then.",
+       "source": "medscape_stroke_2026",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [],
+     "no_rule_note": null
+    },
+    "ich": {
+     "validation": "2026 AHA/ASA guideline, class 1, level A.",
+     "eliminate_when": [
+      {
+       "text": "Noncontrast CT or MRI without hemorrhage.",
+       "source": "aha_stroke_2026_gc",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [],
+     "no_rule_note": null
+    },
+    "ais": {
+     "validation": "2026 AHA/ASA guideline.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Delaying treatment for ECG, troponin or advanced imaging.",
+       "source": "emdocs_stroke_2026",
+       "inferred": false
+      },
+      {
+       "text": "Mild early ischemic change on CT as a reason to withhold thrombolysis.",
+       "source": "medscape_stroke_2026",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "Stroke is confirmed or treated, not eliminated, in this route."
+    },
+    "mimic": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Seizure, migraine and other mimics not sourced."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Pediatric stroke",
+     "text": "The 2026 guideline adds pediatric recommendations, not encoded here.",
+     "source": "aha_stroke_2026"
+    },
+    {
+     "title": "Other mimics",
+     "text": "Mimics other than glucose disorders are not sourced.",
+     "source": null
+    }
+   ]
+  },
+  {
+   "id": "low_back_pain",
+   "title": "Acute low back pain",
+   "setting": "Primary care or ED",
+   "population": "Adults",
+   "priority": "Leading cause of disability under age 45; imaging overuse is a known problem.",
+   "priority_source": "ajnr_lbp",
+   "lead_guidelines": [
+    "acr_lbp"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Duration",
+     "detail": "Acute means 6 weeks or less.",
+     "source": "applied_rad_lbp"
+    },
+    {
+     "label": "Red flags",
+     "detail": "New urinary retention or overflow incontinence, loss of anal tone or fecal incontinence, saddle anesthesia, progressive leg weakness; also cancer history, infection, fracture risk.",
+     "source": "lbp_imaging"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Cauda equina features or severe or progressive deficit",
+     "detail": "MRI urgently.",
+     "source": "acr_lbp"
+    },
+    {
+     "urgent": false,
+     "label": "No red flags",
+     "detail": "No imaging for uncomplicated pain under 6 weeks.",
+     "source": "applied_rad_lbp"
+    }
+   ],
+   "gate_note": "Most uncomplicated acute low back pain needs no imaging.",
+   "gate_note_source": "acr_lbp",
+   "hypotheses": [
+    {
+     "id": "ces",
+     "name": "Cauda equina syndrome",
+     "short": "Cauda equina",
+     "tier": "must_not_miss",
+     "clue": "Retention, saddle anesthesia",
+     "clue_source": "lbp_imaging",
+     "status": "partial"
+    },
+    {
+     "id": "malig",
+     "name": "Spinal malignancy",
+     "short": "Malignancy",
+     "tier": "must_not_miss",
+     "clue": "Cancer history",
+     "clue_source": "acr_lbp",
+     "status": "partial"
+    },
+    {
+     "id": "infx",
+     "name": "Spinal infection",
+     "short": "Infection",
+     "tier": "must_not_miss",
+     "clue": "Infection red flags",
+     "clue_source": "acr_lbp",
+     "status": "partial"
+    },
+    {
+     "id": "fx",
+     "name": "Vertebral fracture",
+     "short": "Fracture",
+     "tier": "must_not_miss",
+     "clue": "Fracture red flags",
+     "clue_source": "acr_lbp",
+     "status": "partial"
+    },
+    {
+     "id": "mech",
+     "name": "Uncomplicated mechanical back pain",
+     "short": "Mechanical",
+     "tier": "other",
+     "clue": "No red flags",
+     "clue_source": "applied_rad_lbp",
+     "status": "partial"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Red-flag history and exam",
+     "timing": "First visit",
+     "description": "The cornerstone of initial assessment.",
+     "source": null,
+     "effects": {
+      "ces": {
+       "type": "steer",
+       "text": "Bladder, bowel or saddle symptoms, or progressive weakness.",
+       "source": "lbp_imaging"
+      },
+      "malig": {
+       "type": "steer",
+       "text": "Cancer history raises suspicion.",
+       "source": "acr_lbp"
+      },
+      "infx": {
+       "type": "steer",
+       "text": "Infection red flags raise suspicion.",
+       "source": "acr_lbp"
+      },
+      "fx": {
+       "type": "steer",
+       "text": "Fracture red flags raise suspicion.",
+       "source": "acr_lbp"
+      },
+      "mech": {
+       "type": "steer",
+       "text": "No red flags makes uncomplicated pain likely.",
+       "source": "acr_lbp"
+      }
+     },
+     "evidence": [],
+     "id": "low_back_pain.s1",
+     "order": 1
+    },
+    {
+     "title": "No imaging if no red flags",
+     "timing": "Under 6 weeks",
+     "description": "All imaging is rated usually not appropriate.",
+     "source": null,
+     "effects": {
+      "mech": {
+       "type": "steer",
+       "text": "Half of patients recover in 2 weeks and 90% by 3 months.",
+       "source": "applied_rad_lbp"
+      }
+     },
+     "evidence": [],
+     "id": "low_back_pain.s2",
+     "order": 2
+    },
+    {
+     "title": "MRI",
+     "timing": "Red flags, or no improvement after 6 weeks",
+     "description": "Modality of choice for most patients who need imaging.",
+     "source": null,
+     "effects": {
+      "ces": {
+       "type": "conf",
+       "text": "MRI evaluates the cauda equina better than CT.",
+       "source": "applied_rad_lbp"
+      },
+      "malig": {
+       "type": "conf",
+       "text": "MRI is preferred when malignancy is suspected.",
+       "source": "lbp_imaging"
+      },
+      "infx": {
+       "type": "conf",
+       "text": "MRI is the modality of choice for most patients who need imaging.",
+       "source": "lbp_imaging"
+      }
+     },
+     "evidence": [],
+     "id": "low_back_pain.s3",
+     "order": 3
+    }
+   ],
+   "rules": {
+    "ces": {
+     "validation": "ACR criteria and review.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Imaging every patient; it does not improve outcomes in uncomplicated pain.",
+       "source": "applied_rad_lbp",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No red flags means it is not pursued; MRI decides when flags are present."
+    },
+    "malig": {
+     "validation": "ACR criteria and review.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "Malignancy red flags as proven; most lack empirical support.",
+       "source": "lbp_imaging",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No exclusion rule beyond absent red flags."
+    },
+    "infx": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No exclusion rule beyond absent red flags."
+    },
+    "fx": {
+     "validation": "Partly sourced.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "No exclusion rule beyond absent red flags."
+    },
+    "mech": {
+     "validation": "Diagnosis of exclusion.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "What remains when red flags are absent."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Red-flag evidence",
+     "text": "Many red flags lack empirical support; validated thresholds are missing.",
+     "source": "lbp_imaging"
+    }
+   ]
+  },
+  {
+   "id": "flank_pain",
+   "title": "Acute flank pain (suspected stone)",
+   "setting": "Emergency department",
+   "population": "Adults, including pregnancy",
+   "priority": "Has a dedicated ACR topic with four variants.",
+   "priority_source": "acr_flank_narr",
+   "lead_guidelines": [
+    "acr_flank"
+   ],
+   "status": "partial",
+   "layer0": [
+    {
+     "label": "Complaint",
+     "detail": "Sudden, colicky flank pain, often with blood in the urine.",
+     "source": "acr_flank_old"
+    },
+    {
+     "label": "History",
+     "detail": "Known stones, pregnancy, signs of infection.",
+     "source": "acr_flank_narr"
+    }
+   ],
+   "gate": [
+    {
+     "urgent": true,
+     "label": "Signs of infection",
+     "detail": "Covered by the separate ACR acute pyelonephritis topic.",
+     "source": "acr_flank_narr"
+    },
+    {
+     "urgent": false,
+     "label": "No infection signs",
+     "detail": "Image by patient group.",
+     "source": "acr_flank"
+    }
+   ],
+   "gate_note": "Pregnancy changes the first test.",
+   "gate_note_source": "acr_flank",
+   "hypotheses": [
+    {
+     "id": "stone",
+     "name": "Ureteral stone",
+     "short": "Stone",
+     "tier": "other",
+     "clue": "Colicky pain, hematuria",
+     "clue_source": "acr_flank_old",
+     "status": "sourced"
+    },
+    {
+     "id": "pyelo",
+     "name": "Pyelonephritis or infected obstruction",
+     "short": "Infection",
+     "tier": "must_not_miss",
+     "clue": "Fever, infection signs",
+     "clue_source": "acr_flank_narr",
+     "status": "stub"
+    },
+    {
+     "id": "alt_abd",
+     "name": "Other abdominal cause (appendicitis, diverticulitis, ovarian torsion)",
+     "short": "Other abdominal",
+     "tier": "must_not_miss",
+     "clue": "Atypical features",
+     "clue_source": "acr_flank_old",
+     "status": "partial"
+    }
+   ],
+   "steps": [
+    {
+     "title": "Noncontrast CT",
+     "timing": "Nonpregnant adults without known stones",
+     "description": "Imaging study of choice.",
+     "source": null,
+     "effects": {
+      "stone": {
+       "type": "conf",
+       "text": "Reliably shows stone size, position and complications.",
+       "source": "acr_flank"
+      },
+      "alt_abd": {
+       "type": "conf",
+       "text": "Also diagnoses other causes of abdominal pain.",
+       "source": "acr_flank"
+      }
+     },
+     "evidence": [
+      {
+       "text": "In one prospective comparison, CT found an alternative diagnosis in about a third of patients.",
+       "source": "relias_nephro"
+      },
+      {
+       "text": "For causes other than stones, noncontrast CT and ultrasound had similar accuracy (CT sensitivity 74%).",
+       "source": "flank_alt_study"
+      }
+     ],
+     "id": "flank_pain.s1",
+     "order": 1
+    },
+    {
+     "title": "Ultrasound",
+     "timing": "Pregnancy, or to look for obstruction",
+     "description": "First choice in pregnancy; less sensitive for stones.",
+     "source": null,
+     "effects": {
+      "stone": {
+       "type": "steer",
+       "text": "Shows obstruction; MRI may follow in pregnancy.",
+       "source": "acr_flank"
+      }
+     },
+     "evidence": [],
+     "id": "flank_pain.s2",
+     "order": 2
+    },
+    {
+     "title": "Contrast CT or MRI",
+     "timing": "Noncontrast CT inconclusive",
+     "description": "Second-line imaging.",
+     "source": null,
+     "effects": {
+      "stone": {
+       "type": "conf",
+       "text": "CT urogram or MRI may be appropriate.",
+       "source": "acr_flank"
+      }
+     },
+     "evidence": [],
+     "id": "flank_pain.s3",
+     "order": 3
+    }
+   ],
+   "rules": {
+    "stone": {
+     "validation": "ACR criteria for test choice; meta-analysis data for accuracy.",
+     "eliminate_when": [
+      {
+       "text": "No stone or secondary signs on noncontrast CT: pooled sensitivity 94 to 100% in a meta-analysis.",
+       "source": "relias_nephro",
+       "inferred": false
+      },
+      {
+       "text": "Low-dose CT performs similarly (negative likelihood ratio about 0.04) for stones of 2 to 3 mm or more.",
+       "source": "bestbets_ldct",
+       "inferred": false
+      }
+     ],
+     "do_not_rely": [
+      {
+       "text": "Ultrasound alone to exclude a stone; it is less sensitive.",
+       "source": "acr_flank",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": null
+    },
+    "pyelo": {
+     "validation": "Not yet researched.",
+     "eliminate_when": [],
+     "do_not_rely": [],
+     "no_rule_note": "Separate ACR pyelonephritis topic not sourced."
+    },
+    "alt_abd": {
+     "validation": "Comparative study.",
+     "eliminate_when": [],
+     "do_not_rely": [
+      {
+       "text": "A stone-protocol CT as proof that nothing else is wrong; one study found 74% sensitivity for alternative causes.",
+       "source": "flank_alt_study",
+       "inferred": false
+      }
+     ],
+     "no_rule_note": "No reliable exclusion rule; noncontrast CT missed about a quarter of alternative causes in one study."
+    }
+   },
+   "gaps": [
+    {
+     "title": "Vascular causes",
+     "text": "Aortic aneurysm as a flank pain mimic was not sourced.",
+     "source": null
+    }
+   ]
+  }
+ ]
+}

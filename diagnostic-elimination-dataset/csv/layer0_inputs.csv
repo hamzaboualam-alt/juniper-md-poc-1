@@ -1,0 +1,35 @@
+situation_id,position,label,detail,source_id
+chest_pain,1,Complaint,"Pain, pressure, tightness or discomfort in the chest, shoulders, arms, neck, back, upper abdomen or jaw; shortness of breath and fatigue count as equivalents.",aha_cp_top
+chest_pain,2,History,"Pain characteristics, accompanying symptoms and cardiac risk factors.",cchcs_cp
+chest_pain,3,Vitals and exam,"Sweating and fast breathing lean toward ACS, fast heart rate and dyspnea toward PE, air under the skin toward esophageal rupture; chest wall tenderness or pain on inspiration leans noncardiac.",aafp_cp
+chest_pain,4,12-lead ECG,Recorded and read within 10 minutes of arrival.,aafp_cp
+dyspnea,1,Complaint,New or worsening breathlessness.,
+dyspnea,2,History,"Known heart failure, lung disease, VTE risk factors.",
+dyspnea,3,Exam,"Pain on inspiration and one-sided absent breath sounds point to pneumothorax; fever, localized pleuritic pain and dullness point to pneumonia.",tw_cp_exam
+dyspnea,4,First tests,"ECG, chest radiograph, natriuretic peptide.",
+lower_abdominal_pain,1,Complaint,Pain in the lower abdomen or pelvis; its location narrows the list.,aafp_pelvic
+lower_abdominal_pain,2,Pregnancy status,Urine or serum beta-hCG is the first step in women who could be pregnant.,hopkins_pelvic
+lower_abdominal_pain,3,Exam clues,Migration from the umbilicus to the right lower quadrant suggests appendicitis; left lower quadrant tenderness suggests diverticulitis.,aafp_pelvic
+lower_abdominal_pain,4,Patient group,"Adult, child or pregnant; this changes which imaging comes first.",acr_rlq
+headache,1,Complaint,New or different headache; how fast it reached peak intensity (peak within 1 hour matters for the SAH rule).,acep_headache
+headache,2,History: red flags,"SNNOOP10: systemic symptoms including fever, cancer history, neurologic deficit, sudden onset, onset after 65, new or changed pattern, positional, triggered by cough or exertion, papilledema, progressive, pregnancy, painful eye with autonomic features, trauma, immune compromise, painkiller overuse or new drug.",snnoop10
+headache,3,Exam,"Full neurologic exam, level of consciousness, neck pain or stiffness, limited neck flexion, papilledema, fever.",acep_headache
+fever_sepsis,1,Signs of infection and vital signs,"Screened with NEWS/NEWS2, MEWS or SIRS rather than qSOFA alone.",epocrates_ssc_2026
+fever_sepsis,2,Sepsis certainty,"The 2026 guideline grades suspected sepsis as definite, probable, possible or unlikely.",ssc_2026_exec
+syncope,1,The event,"Prodrome, position (standing, sitting, supine), exertion, palpitations, triggers such as pain, cough, micturition or prolonged standing.",esc_syncope_table
+syncope,2,History,"Structural heart disease or prior myocardial infarction, family history of sudden cardiac death at a young age.",esc_syncope_table
+syncope,3,Exam,Physical examination including lying and standing blood pressure.,syncope_risk_review
+syncope,4,12-lead ECG,Useful in the initial evaluation (class I).,acc_syncope_2017
+ugib,1,Complaint,"Vomiting red blood or coffee-ground material, or black stools; bleeding from esophagus, stomach or duodenum.",nursing_ugib
+ugib,2,Vitals and labs,Inputs for the Glasgow-Blatchford score.,jhm_ugib
+leg_swelling,1,Complaint,One-sided leg swelling or pain.,ash_slides
+leg_swelling,2,History,"Prior DVT or PE, cancer, recent immobilization; whether another diagnosis is as likely.",ash_slides
+dizziness,1,Timing and triggers,"Continuous for more than 24 hours (acute vestibular syndrome), triggered by position, or spontaneous episodes.",grace3_pdf
+dizziness,2,Exam,"Nystagmus, HINTS (head impulse, nystagmus, test of skew), gait, Dix-Hallpike when positional.",grace3
+focal_deficit,1,Complaint,"Sudden weakness, numbness, speech or vision loss.",
+focal_deficit,2,Timing,Time last known well decides treatment eligibility.,aha_stroke_2026
+focal_deficit,3,Bedside glucose,Checked before thrombolysis; severe hypoglycemia or hyperglycemia can mimic stroke.,aha_stroke_2026_gc
+low_back_pain,1,Duration,Acute means 6 weeks or less.,applied_rad_lbp
+low_back_pain,2,Red flags,"New urinary retention or overflow incontinence, loss of anal tone or fecal incontinence, saddle anesthesia, progressive leg weakness; also cancer history, infection, fracture risk.",lbp_imaging
+flank_pain,1,Complaint,"Sudden, colicky flank pain, often with blood in the urine.",acr_flank_old
+flank_pain,2,History,"Known stones, pregnancy, signs of infection.",acr_flank_narr

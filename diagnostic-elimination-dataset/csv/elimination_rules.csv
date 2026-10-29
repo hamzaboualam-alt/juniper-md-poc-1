@@ -1,0 +1,115 @@
+situation_id,hypothesis_id,rule_kind,text,source_id,inferred,validation_note
+chest_pain,acs,eliminate_when,Low-risk class on the clinical decision pathway: non-ischemic ECG and negative serial high-sensitivity troponin.,aha_cp_top,False,Sourced to AHA/ACC 2021 summaries.
+chest_pain,acs,eliminate_when,Low-risk patients gain nothing from stress testing or imaging within 30 days.,aafp_cp,False,Sourced to AHA/ACC 2021 summaries.
+chest_pain,acs,do_not_rely,One normal ECG or one early troponin.,iatrox_cp,False,Sourced to AHA/ACC 2021 summaries.
+chest_pain,acs,do_not_rely,The chest radiograph.,rcem_cxr,False,Sourced to AHA/ACC 2021 summaries.
+chest_pain,acs,do_not_rely,"Dismissing the complaint because of sex, age, race, language or anxiety history.",iatrox_cp,False,Sourced to AHA/ACC 2021 summaries.
+chest_pain,acs,do_not_rely,Assuming acute troponin is available everywhere.,cchcs_cp,False,Sourced to AHA/ACC 2021 summaries.
+chest_pain,pe,eliminate_when,Very low suspicion and all eight PERC criteria met.,oep_vte,False,Secondary summaries of ESC and NICE; verify against originals.
+chest_pain,pe,eliminate_when,Wells 4 or less and D-dimer below the age-adjusted cutoff.,evi_wells,False,Secondary summaries of ESC and NICE; verify against originals.
+chest_pain,pe,eliminate_when,Negative CT pulmonary angiography.,evi_wells,False,Secondary summaries of ESC and NICE; verify against originals.
+chest_pain,pe,do_not_rely,D-dimer when clinical probability is high.,iatrox_pe,False,Secondary summaries of ESC and NICE; verify against originals.
+chest_pain,pe,do_not_rely,A normal chest radiograph.,rcem_cxr,False,Secondary summaries of ESC and NICE; verify against originals.
+chest_pain,pe,do_not_rely,The standard Wells route in unstable or pregnant patients.,evi_wells,False,Secondary summaries of ESC and NICE; verify against originals.
+chest_pain,ad,eliminate_when,ADD-RS 1 or less and D-dimer below 500 ng/mL (FEU): consider stopping the work-up.,mdcalc_addrs,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,eliminate_when,In ADvISED this strategy missed about 0.3% of acute aortic syndromes.,advised,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,eliminate_when,"In the later PROFUNDUS study, ADD-RS 1 or less with negative D-dimer had a 0.2% failure rate.",aas_review_2025,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,eliminate_when,"Negative ECG-gated contrast CT, the first-line imaging in ESC 2024 (class I, level C).",ecr_esc_aortic,True,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,do_not_rely,D-dimer alone.,advised,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,do_not_rely,ADD-RS of 0 as proof.,litfl_addrs,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,do_not_rely,Chest radiography.,ebm_addrs,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ad,do_not_rely,A D-dimer threshold in the wrong units (assumes FEU).,mdcalc_addrs,False,"ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation."
+chest_pain,ptx,eliminate_when,"Normal chest radiograph with respiratory distress, pleuritic pain and hypoxia.",rcem_cxr,False,Educational summary of the guideline.
+chest_pain,ptx,do_not_rely,Exam findings alone.,tw_cp_exam,False,Educational summary of the guideline.
+chest_pain,pna,eliminate_when,"Normal chest radiograph makes it unlikely, not impossible.",rcem_cxr,False,Educational summary of the guideline.
+chest_pain,pna,do_not_rely,Exam findings alone.,tw_cp_exam,False,Educational summary of the guideline.
+chest_pain,pc,do_not_rely,A normal ECG: without ST elevation the diagnosis is easily missed.,peri_book,False,Diagnostic criteria only; no exclusion rule found.
+chest_pain,pc,do_not_rely,"Chest film, markers or troponin as diagnostic; only ECG and echo help establish it.",esc_peri_comments,False,Diagnostic criteria only; no exclusion rule found.
+chest_pain,pc,no_rule_note,No formal exclusion rule found. Diagnosis needs at least two of four criteria.,,False,Diagnostic criteria only; no exclusion rule found.
+chest_pain,er,no_rule_note,No elimination rule sourced yet.,,False,Not yet researched.
+chest_pain,nc,do_not_rely,Chest wall tenderness alone.,aafp_cp,False,Diagnosis of exclusion.
+chest_pain,nc,no_rule_note,Not eliminated; it is what remains.,,False,Diagnosis of exclusion.
+dyspnea,ahf,eliminate_when,BNP below 100 ng/L or NT-proBNP below 300 ng/L in new suspected acute heart failure.,nice_cg187,False,NICE CG187 (thresholds match ESC 2021).
+dyspnea,ahf,do_not_rely,"The rule-out threshold in older patients, obesity or prior heart failure: false negatives of 1 in 10 to 1 in 5.",np_ml,False,NICE CG187 (thresholds match ESC 2021).
+dyspnea,ahf,do_not_rely,NT-proBNP rule-out above age 75: negative predictive value fell to about 88% in one cohort.,np_elderly,False,NICE CG187 (thresholds match ESC 2021).
+dyspnea,pe,eliminate_when,Low pre-test probability and negative D-dimer.,ash_vte,False,ASH 2018 and ESC summaries.
+dyspnea,pe,eliminate_when,Negative CTPA.,evi_wells,False,ASH 2018 and ESC summaries.
+dyspnea,pe,do_not_rely,D-dimer when probability is high.,ash_vte,False,ASH 2018 and ESC summaries.
+dyspnea,acs,eliminate_when,Low-risk class with non-ischemic ECG and negative serial troponin.,aha_cp_top,False,See chest pain situation.
+dyspnea,acs,do_not_rely,One normal ECG.,iatrox_cp,False,See chest pain situation.
+dyspnea,ptx,eliminate_when,"Normal chest radiograph with distress, pleuritic pain and hypoxia.",rcem_cxr,False,Educational summary.
+dyspnea,ptx,do_not_rely,Exam alone.,tw_cp_exam,False,Educational summary.
+dyspnea,pna,eliminate_when,Normal chest radiograph makes it unlikely.,rcem_cxr,False,Educational summary.
+dyspnea,pna,do_not_rely,Exam alone.,tw_cp_exam,False,Educational summary.
+dyspnea,copd,no_rule_note,No route sourced; GOLD and GINA guidance would be the next sources.,,False,Not yet researched.
+lower_abdominal_pain,ectopic,eliminate_when,Negative serum beta-hCG.,acr_pelvic_narr,False,ACR Appropriateness Criteria.
+lower_abdominal_pain,appy,eliminate_when,"Negative CT in an adult: at a 43% prevalence the probability of appendicitis falls to about 4% (Cochrane review). A strong reduction, not certainty.",cochrane_appy,False,ACR criteria for test choice; Cochrane diagnostic review for accuracy.
+lower_abdominal_pain,appy,do_not_rely,"A single inconclusive ultrasound in pregnancy; most are inconclusive, so MRI follows.",acr_rlq,False,ACR criteria for test choice; Cochrane diagnostic review for accuracy.
+lower_abdominal_pain,torsion,no_rule_note,No explicit exclusion rule extracted; ultrasound with Doppler is the first study.,,False,Partly sourced.
+lower_abdominal_pain,divert,no_rule_note,No explicit exclusion rule extracted.,,False,Partly sourced.
+lower_abdominal_pain,gyn,no_rule_note,No explicit exclusion rule extracted.,,False,Partly sourced.
+lower_abdominal_pain,stone,no_rule_note,Route lives in the flank pain situation.,,False,See flank pain situation.
+headache,sah,eliminate_when,Ottawa SAH rule negative in an alert patient with normal neuro exam and peak within 1 hour.,acep_headache,False,ACEP 2019 clinical policy.
+headache,sah,eliminate_when,Normal noncontrast CT within 6 hours of onset with normal neuro exam.,acep_headache,False,ACEP 2019 clinical policy.
+headache,sah,eliminate_when,Negative LP or CTA after a negative CT in a patient still at risk.,mdcalc_acep_headache,False,ACEP 2019 clinical policy.
+headache,sah,do_not_rely,A single sign or symptom.,acep_headache,False,ACEP 2019 clinical policy.
+headache,sah,do_not_rely,"The Ottawa rule outside its population (abnormal neuro exam, slower peak).",acep_headache,False,ACEP 2019 clinical policy.
+headache,sah,do_not_rely,A positive Ottawa rule as proof; it has low specificity.,acep_headache,False,ACEP 2019 clinical policy.
+headache,men,do_not_rely,Delaying antibiotics for CT; cultures and antibiotics come first when CT is needed.,ebm_lp,False,IDSA 2004 via secondary summaries; check for newer guidance.
+headache,men,do_not_rely,A normal head CT as proof that LP is safe in every patient.,ebm_lp,False,IDSA 2004 via secondary summaries; check for newer guidance.
+headache,men,no_rule_note,No formal exclusion rule sourced; diagnosis depends on CSF examination.,,False,IDSA 2004 via secondary summaries; check for newer guidance.
+headache,sec,do_not_rely,Imaging everyone; many scans find nothing relevant.,snnoop10,False,Red flags from a narrative review.
+headache,sec,no_rule_note,No single elimination rule; each secondary cause needs its own route.,,False,Red flags from a narrative review.
+headache,prim,no_rule_note,Not eliminated; it is what remains when red flags are absent.,,False,Diagnosis of exclusion.
+fever_sepsis,sepsis,do_not_rely,A negative qSOFA alone.,epocrates_ssc_2026,False,Surviving Sepsis Campaign 2026 (lactate and procalcitonin statements still from 2021).
+fever_sepsis,sepsis,do_not_rely,Procalcitonin to decide whether to start antimicrobials (2021 statement; re-check).,ssc_2021,False,Surviving Sepsis Campaign 2026 (lactate and procalcitonin statements still from 2021).
+fever_sepsis,sepsis,no_rule_note,No formal exclusion test. The 2026 guideline grades certainty and uses a time-limited investigation for possible sepsis.,,False,Surviving Sepsis Campaign 2026 (lactate and procalcitonin statements still from 2021).
+fever_sepsis,men,do_not_rely,Delaying antibiotics for CT.,ebm_lp,False,See headache situation.
+fever_sepsis,men,no_rule_note,Diagnosis depends on CSF examination.,,False,See headache situation.
+fever_sepsis,pna,eliminate_when,Normal chest radiograph makes it unlikely.,rcem_cxr,False,Educational summary.
+fever_sepsis,noninf,no_rule_note,Named in the 2026 guideline; statements not extracted.,,False,Not yet researched.
+syncope,card,eliminate_when,"Only low-risk features after history, exam and ECG: ESC 2018 recommends discharge from the ED (class I, level B). Treating this disposition as elimination is the inferred part.",sec_syncope,True,ESC 2018 and ACC/AHA/HRS 2017 summaries.
+syncope,card,do_not_rely,Routine comprehensive laboratory testing.,acc_syncope_2017,False,ESC 2018 and ACC/AHA/HRS 2017 summaries.
+syncope,card,do_not_rely,Routine cardiac imaging without a suspected cardiac cause.,acc_syncope_2017,False,ESC 2018 and ACC/AHA/HRS 2017 summaries.
+syncope,card,do_not_rely,Risk scores as better than clinical judgment.,aafp_syncope,False,ESC 2018 and ACC/AHA/HRS 2017 summaries.
+syncope,serious,no_rule_note,Route depends on the underlying condition (for example PE or dissection); see the chest pain situation.,,False,Not yet researched.
+syncope,orth,do_not_rely,Carotid imaging without focal neurologic findings.,acc_syncope_2017,False,Partly sourced.
+syncope,orth,no_rule_note,No elimination threshold extracted; orthostatic criteria are in the ESC guideline.,,False,Partly sourced.
+syncope,reflex,no_rule_note,Diagnosis is clinical; tilt testing when suspected.,,False,Partly sourced.
+ugib,needs_intervention,eliminate_when,Glasgow-Blatchford score 0 to 1 with no other reason for admission.,acg_ugib,False,"ACG 2021, conditional recommendation, very low quality evidence."
+ugib,needs_intervention,do_not_rely,"The score without considering age, comorbidities and follow-up reliability.",jhm_ugib,False,"ACG 2021, conditional recommendation, very low quality evidence."
+ugib,ulcer,no_rule_note,No pre-endoscopy exclusion rule.,,False,Diagnosed at endoscopy.
+ugib,other_ugi,no_rule_note,Variceal bleeding guidance (AASLD/Baveno) not sourced.,,False,Not yet researched.
+leg_swelling,dvt,eliminate_when,Low pre-test probability and negative highly sensitive D-dimer.,ash_vte,False,ASH 2018 GRADE guideline (reviewed 2022).
+leg_swelling,dvt,eliminate_when,"Negative whole-leg ultrasound, negative serial proximal ultrasound, or negative D-dimer after a negative proximal scan: no further testing.",mdedge_dvt,False,ASH 2018 GRADE guideline (reviewed 2022).
+leg_swelling,dvt,eliminate_when,"ASH 2018: at intermediate or high probability, proximal or whole-limb ultrasound first, with a one-week repeat after a negative scan in higher-prevalence groups.",jama_vte,False,ASH 2018 GRADE guideline (reviewed 2022).
+leg_swelling,dvt,do_not_rely,D-dimer as the first test at high probability; imaging is warranted.,ash_vte,False,ASH 2018 GRADE guideline (reviewed 2022).
+leg_swelling,dvt,do_not_rely,A single negative proximal scan when the D-dimer is positive; repeat at one week or scan the whole leg.,chest_at9_dvt,False,ASH 2018 GRADE guideline (reviewed 2022).
+leg_swelling,alt,no_rule_note,"Specific alternatives (cellulitis, ruptured Baker cyst) not sourced.",,False,Not yet researched.
+dizziness,stroke,eliminate_when,"Peripheral HINTS pattern in a patient with true acute vestibular syndrome, examined by a trained clinician.",jfp_dizzy,False,GRACE-3 (2023).
+dizziness,stroke,do_not_rely,HINTS done by untrained clinicians or in the wrong patients.,grace3,False,GRACE-3 (2023).
+dizziness,stroke,do_not_rely,An early negative MRI alone: about 80% sensitive in the first 48 hours.,sgem_grace3,False,GRACE-3 (2023).
+dizziness,stroke,do_not_rely,CT for positional dizziness.,grace3,False,GRACE-3 (2023).
+dizziness,bppv,no_rule_note,Confirmed rather than eliminated; positive Dix-Hallpike.,,False,GRACE-3 (2023).
+dizziness,periph,no_rule_note,Supported by a peripheral HINTS pattern.,,False,Partly sourced.
+dizziness,nonvest,no_rule_note,See the syncope situation.,,False,Not yet researched.
+focal_deficit,hypo,eliminate_when,Normal bedside glucose.,aha_stroke_2026_gc,False,2026 AHA/ASA guideline.
+focal_deficit,hypo,eliminate_when,A disabling deficit persisting after glucose correction; thrombolysis is still recommended then.,medscape_stroke_2026,False,2026 AHA/ASA guideline.
+focal_deficit,ich,eliminate_when,Noncontrast CT or MRI without hemorrhage.,aha_stroke_2026_gc,False,"2026 AHA/ASA guideline, class 1, level A."
+focal_deficit,ais,do_not_rely,"Delaying treatment for ECG, troponin or advanced imaging.",emdocs_stroke_2026,False,2026 AHA/ASA guideline.
+focal_deficit,ais,do_not_rely,Mild early ischemic change on CT as a reason to withhold thrombolysis.,medscape_stroke_2026,False,2026 AHA/ASA guideline.
+focal_deficit,ais,no_rule_note,"Stroke is confirmed or treated, not eliminated, in this route.",,False,2026 AHA/ASA guideline.
+focal_deficit,mimic,no_rule_note,"Seizure, migraine and other mimics not sourced.",,False,Not yet researched.
+low_back_pain,ces,do_not_rely,Imaging every patient; it does not improve outcomes in uncomplicated pain.,applied_rad_lbp,False,ACR criteria and review.
+low_back_pain,ces,no_rule_note,No red flags means it is not pursued; MRI decides when flags are present.,,False,ACR criteria and review.
+low_back_pain,malig,do_not_rely,Malignancy red flags as proven; most lack empirical support.,lbp_imaging,False,ACR criteria and review.
+low_back_pain,malig,no_rule_note,No exclusion rule beyond absent red flags.,,False,ACR criteria and review.
+low_back_pain,infx,no_rule_note,No exclusion rule beyond absent red flags.,,False,Partly sourced.
+low_back_pain,fx,no_rule_note,No exclusion rule beyond absent red flags.,,False,Partly sourced.
+low_back_pain,mech,no_rule_note,What remains when red flags are absent.,,False,Diagnosis of exclusion.
+flank_pain,stone,eliminate_when,No stone or secondary signs on noncontrast CT: pooled sensitivity 94 to 100% in a meta-analysis.,relias_nephro,False,ACR criteria for test choice; meta-analysis data for accuracy.
+flank_pain,stone,eliminate_when,Low-dose CT performs similarly (negative likelihood ratio about 0.04) for stones of 2 to 3 mm or more.,bestbets_ldct,False,ACR criteria for test choice; meta-analysis data for accuracy.
+flank_pain,stone,do_not_rely,Ultrasound alone to exclude a stone; it is less sensitive.,acr_flank,False,ACR criteria for test choice; meta-analysis data for accuracy.
+flank_pain,pyelo,no_rule_note,Separate ACR pyelonephritis topic not sourced.,,False,Not yet researched.
+flank_pain,alt_abd,do_not_rely,A stone-protocol CT as proof that nothing else is wrong; one study found 74% sensitivity for alternative causes.,flank_alt_study,False,Comparative study.
+flank_pain,alt_abd,no_rule_note,No reliable exclusion rule; noncontrast CT missed about a quarter of alternative causes in one study.,,False,Comparative study.

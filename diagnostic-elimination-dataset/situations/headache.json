@@ -1,0 +1,309 @@
+{
+ "id": "headache",
+ "title": "Acute nontraumatic headache",
+ "setting": "Emergency department",
+ "population": "Adults",
+ "priority": "Among the top five ED reasons for visit in NHAMCS fact sheets.",
+ "priority_source": "nhamcs_2011",
+ "lead_guidelines": [
+  "acep_headache",
+  "snnoop10"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "New or different headache; how fast it reached peak intensity (peak within 1 hour matters for the SAH rule).",
+   "source": "acep_headache"
+  },
+  {
+   "label": "History: red flags",
+   "detail": "SNNOOP10: systemic symptoms including fever, cancer history, neurologic deficit, sudden onset, onset after 65, new or changed pattern, positional, triggered by cough or exertion, papilledema, progressive, pregnancy, painful eye with autonomic features, trauma, immune compromise, painkiller overuse or new drug.",
+   "source": "snnoop10"
+  },
+  {
+   "label": "Exam",
+   "detail": "Full neurologic exam, level of consciousness, neck pain or stiffness, limited neck flexion, papilledema, fever.",
+   "source": "acep_headache"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Neurologic deficit or decreased consciousness",
+   "detail": "A red flag for a secondary cause; the ACEP rule-out tools below do not apply because they assume a normal neurologic exam.",
+   "source": "acep_headache"
+  },
+  {
+   "urgent": false,
+   "label": "Alert, normal neurologic exam",
+   "detail": "Screen red flags, then apply the SAH rule if the headache peaked within 1 hour.",
+   "source": "acep_headache"
+  }
+ ],
+ "gate_note": "Most headaches are primary, but secondary causes must be screened for first.",
+ "gate_note_source": "jin_headache",
+ "hypotheses": [
+  {
+   "id": "sah",
+   "name": "Subarachnoid hemorrhage",
+   "short": "SAH",
+   "tier": "must_not_miss",
+   "clue": "Thunderclap onset, exertion, neck stiffness",
+   "clue_source": "acep_headache",
+   "status": "sourced"
+  },
+  {
+   "id": "men",
+   "name": "Bacterial meningitis",
+   "short": "Meningitis",
+   "tier": "must_not_miss",
+   "clue": "Fever and systemic signs",
+   "clue_source": "snnoop10",
+   "status": "partial"
+  },
+  {
+   "id": "sec",
+   "name": "Other secondary headache",
+   "short": "Other secondary",
+   "tier": "must_not_miss",
+   "clue": "Any SNNOOP10 red flag",
+   "clue_source": "snnoop10",
+   "status": "partial"
+  },
+  {
+   "id": "prim",
+   "name": "Primary headache (migraine, tension-type)",
+   "short": "Primary",
+   "tier": "other",
+   "clue": "No red flags",
+   "clue_source": "jin_headache",
+   "status": "partial"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Red-flag history (SNNOOP10)",
+   "timing": "First minutes",
+   "description": "Structured screen of every new or different headache.",
+   "source": null,
+   "effects": {
+    "sah": {
+     "type": "steer",
+     "text": "Sudden or thunderclap onset is a red flag.",
+     "source": "snnoop10"
+    },
+    "men": {
+     "type": "steer",
+     "text": "Fever and systemic symptoms are a red flag.",
+     "source": "snnoop10"
+    },
+    "sec": {
+     "type": "steer",
+     "text": "Each flag raises suspicion, but specificity is not validated.",
+     "source": "snnoop10"
+    },
+    "prim": {
+     "type": "steer",
+     "text": "With no red flags, primary headache becomes more likely.",
+     "source": "jin_headache"
+    }
+   },
+   "evidence": [],
+   "id": "headache.s1",
+   "order": 1
+  },
+  {
+   "title": "Neurologic exam",
+   "timing": "First minutes",
+   "description": "Decides which rules can be used.",
+   "source": null,
+   "effects": {
+    "sah": {
+     "type": "blind",
+     "text": "Neck stiffness is strongly associated, but no single sign rules SAH out.",
+     "source": "acep_headache"
+    },
+    "men": {
+     "type": "steer",
+     "text": "Abnormal consciousness or focal deficit means CT before lumbar puncture.",
+     "source": "cam_ct_study"
+    },
+    "sec": {
+     "type": "steer",
+     "text": "A deficit or papilledema is a red flag.",
+     "source": "snnoop10"
+    }
+   },
+   "evidence": [],
+   "id": "headache.s2",
+   "order": 2
+  },
+  {
+   "title": "Ottawa SAH rule",
+   "timing": "Alert patients, normal neuro exam, peak within 1 hour",
+   "description": "Six features: age 40 or older, neck pain or stiffness, witnessed loss of consciousness, onset with exertion, thunderclap onset, limited neck flexion.",
+   "source": null,
+   "effects": {
+    "sah": {
+     "type": "rule",
+     "text": "None present: high sensitivity supports ruling SAH out; any present only means investigate (low specificity).",
+     "source": "acep_headache"
+    }
+   },
+   "evidence": [],
+   "id": "headache.s3",
+   "order": 3
+  },
+  {
+   "title": "Noncontrast head CT",
+   "timing": "As early as possible",
+   "description": "First imaging test for suspected SAH and before LP in at-risk patients.",
+   "source": null,
+   "effects": {
+    "sah": {
+     "type": "rule",
+     "text": "Normal CT within 6 hours of onset, with normal neuro exam, rules out nontraumatic SAH.",
+     "source": "acep_headache"
+    },
+    "men": {
+     "type": "steer",
+     "text": "Only needed before LP if immunocompromised, CNS disease, new seizure, papilledema, abnormal consciousness or focal deficit.",
+     "source": "cam_ct_study"
+    }
+   },
+   "evidence": [],
+   "id": "headache.s4",
+   "order": 4
+  },
+  {
+   "title": "Lumbar puncture or CT angiography",
+   "timing": "If still at risk after a negative CT",
+   "description": "Second-line test chosen with the patient.",
+   "source": null,
+   "effects": {
+    "sah": {
+     "type": "rule",
+     "text": "LP or CTA safely rules out SAH in a patient still at risk after a negative CT.",
+     "source": "mdcalc_acep_headache"
+    },
+    "men": {
+     "type": "conf",
+     "text": "Diagnosis depends on CSF examination; blood cultures and LP should be done promptly.",
+     "source": "aafp_idsa_mening"
+    }
+   },
+   "evidence": [],
+   "id": "headache.s5",
+   "order": 5
+  },
+  {
+   "title": "If no red flags and secondary causes are excluded",
+   "timing": "Last",
+   "description": "Primary headache becomes the working diagnosis.",
+   "source": null,
+   "effects": {
+    "prim": {
+     "type": "steer",
+     "text": "Diagnosis of exclusion once red flags are absent or answered.",
+     "source": "jin_headache"
+    }
+   },
+   "evidence": [],
+   "id": "headache.s6",
+   "order": 6
+  }
+ ],
+ "rules": {
+  "sah": {
+   "validation": "ACEP 2019 clinical policy.",
+   "eliminate_when": [
+    {
+     "text": "Ottawa SAH rule negative in an alert patient with normal neuro exam and peak within 1 hour.",
+     "source": "acep_headache",
+     "inferred": false
+    },
+    {
+     "text": "Normal noncontrast CT within 6 hours of onset with normal neuro exam.",
+     "source": "acep_headache",
+     "inferred": false
+    },
+    {
+     "text": "Negative LP or CTA after a negative CT in a patient still at risk.",
+     "source": "mdcalc_acep_headache",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "A single sign or symptom.",
+     "source": "acep_headache",
+     "inferred": false
+    },
+    {
+     "text": "The Ottawa rule outside its population (abnormal neuro exam, slower peak).",
+     "source": "acep_headache",
+     "inferred": false
+    },
+    {
+     "text": "A positive Ottawa rule as proof; it has low specificity.",
+     "source": "acep_headache",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "men": {
+   "validation": "IDSA 2004 via secondary summaries; check for newer guidance.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Delaying antibiotics for CT; cultures and antibiotics come first when CT is needed.",
+     "source": "ebm_lp",
+     "inferred": false
+    },
+    {
+     "text": "A normal head CT as proof that LP is safe in every patient.",
+     "source": "ebm_lp",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No formal exclusion rule sourced; diagnosis depends on CSF examination."
+  },
+  "sec": {
+   "validation": "Red flags from a narrative review.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Imaging everyone; many scans find nothing relevant.",
+     "source": "snnoop10",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No single elimination rule; each secondary cause needs its own route."
+  },
+  "prim": {
+   "validation": "Diagnosis of exclusion.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Not eliminated; it is what remains when red flags are absent."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Rule validation",
+   "text": "Early reviews noted the Ottawa SAH rule had mainly Canadian validation; check local validity.",
+   "source": "rebel_ottawa"
+  },
+  {
+   "title": "CT/LP versus CT/CTA",
+   "text": "ACEP recommends shared decision making between the two second-line strategies.",
+   "source": "acep_headache"
+  },
+  {
+   "title": "Red-flag evidence",
+   "text": "Most red flags lack prospective data on specificity.",
+   "source": "snnoop10"
+  }
+ ]
+}

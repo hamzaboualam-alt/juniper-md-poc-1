@@ -1,0 +1,598 @@
+{
+ "id": "chest_pain",
+ "title": "Acute chest pain",
+ "setting": "Emergency department or clinic",
+ "population": "Adults",
+ "priority": "Second most common ED reason for visit in NHAMCS fact sheets.",
+ "priority_source": "nhamcs_2011",
+ "lead_guidelines": [
+  "aha_cp_top",
+  "aha_cp_rec",
+  "esc_aortic_2024"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "Pain, pressure, tightness or discomfort in the chest, shoulders, arms, neck, back, upper abdomen or jaw; shortness of breath and fatigue count as equivalents.",
+   "source": "aha_cp_top"
+  },
+  {
+   "label": "History",
+   "detail": "Pain characteristics, accompanying symptoms and cardiac risk factors.",
+   "source": "cchcs_cp"
+  },
+  {
+   "label": "Vitals and exam",
+   "detail": "Sweating and fast breathing lean toward ACS, fast heart rate and dyspnea toward PE, air under the skin toward esophageal rupture; chest wall tenderness or pain on inspiration leans noncardiac.",
+   "source": "aafp_cp"
+  },
+  {
+   "label": "12-lead ECG",
+   "detail": "Recorded and read within 10 minutes of arrival.",
+   "source": "aafp_cp"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Unstable or ECG emergency",
+   "detail": "Ongoing ischemic discomfort, dynamic ECG change, hemodynamic instability or serious arrhythmia: emergency escalation.",
+   "source": "iatrox_cp"
+  },
+  {
+   "urgent": false,
+   "label": "Stable, ECG non-diagnostic",
+   "detail": "Work through the hypotheses, must-not-miss first, with serial high-sensitivity troponin.",
+   "source": "iatrox_cp"
+  }
+ ],
+ "gate_note": "One normal ECG or one early troponin does not rule out ACS; patient characteristics must not be used to dismiss the complaint.",
+ "gate_note_source": "iatrox_cp",
+ "hypotheses": [
+  {
+   "id": "acs",
+   "name": "Acute coronary syndrome",
+   "short": "ACS",
+   "tier": "must_not_miss",
+   "clue": "Sweating, fast breathing",
+   "clue_source": "aafp_cp",
+   "status": "partial"
+  },
+  {
+   "id": "pe",
+   "name": "Pulmonary embolism",
+   "short": "PE",
+   "tier": "must_not_miss",
+   "clue": "Fast heart rate, dyspnea",
+   "clue_source": "aafp_cp",
+   "status": "sourced"
+  },
+  {
+   "id": "ad",
+   "name": "Aortic dissection",
+   "short": "Dissection",
+   "tier": "must_not_miss",
+   "clue": "Abrupt, tearing pain; pulse or BP differential",
+   "clue_source": "mdcalc_addrs",
+   "status": "sourced"
+  },
+  {
+   "id": "ptx",
+   "name": "Pneumothorax",
+   "short": "Pneumothorax",
+   "tier": "other",
+   "clue": "Dyspnea, one-sided absent breath sounds",
+   "clue_source": "tw_cp_exam",
+   "status": "partial"
+  },
+  {
+   "id": "pna",
+   "name": "Pneumonia",
+   "short": "Pneumonia",
+   "tier": "other",
+   "clue": "Fever, localized pleuritic pain",
+   "clue_source": "tw_cp_exam",
+   "status": "partial"
+  },
+  {
+   "id": "pc",
+   "name": "Pericardial disease",
+   "short": "Pericardial",
+   "tier": "other",
+   "clue": "Positional pain, friction rub",
+   "clue_source": "radio_peri",
+   "status": "partial"
+  },
+  {
+   "id": "er",
+   "name": "Esophageal rupture",
+   "short": "Esoph. rupture",
+   "tier": "other",
+   "clue": "Air under the skin",
+   "clue_source": "aafp_cp",
+   "status": "stub"
+  },
+  {
+   "id": "nc",
+   "name": "Common noncardiac causes",
+   "short": "Noncardiac",
+   "tier": "other",
+   "clue": "Chest wall tenderness, pain on inspiration",
+   "clue_source": "aafp_cp",
+   "status": "stub"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Focused history and exam",
+   "timing": "First minutes",
+   "description": "Sets pre-test probability and picks the hypotheses to chase.",
+   "source": null,
+   "effects": {
+    "acs": {
+     "type": "steer",
+     "text": "Sweating and fast breathing raise suspicion.",
+     "source": "aafp_cp"
+    },
+    "pe": {
+     "type": "steer",
+     "text": "Fast heart rate and dyspnea raise suspicion.",
+     "source": "aafp_cp"
+    },
+    "ad": {
+     "type": "steer",
+     "text": "Abrupt, severe or tearing pain, pulse or BP differential, perfusion deficit.",
+     "source": "mdcalc_addrs"
+    },
+    "ptx": {
+     "type": "steer",
+     "text": "Dyspnea, pain on inspiration, absent breath sounds on one side.",
+     "source": "tw_cp_exam"
+    },
+    "pna": {
+     "type": "steer",
+     "text": "Fever, localized pleuritic pain, dullness to percussion.",
+     "source": "tw_cp_exam"
+    },
+    "pc": {
+     "type": "steer",
+     "text": "Pleuritic, positional pain easing when leaning forward; friction rub.",
+     "source": "radio_peri"
+    },
+    "er": {
+     "type": "steer",
+     "text": "Air under the skin.",
+     "source": "aafp_cp"
+    },
+    "nc": {
+     "type": "steer",
+     "text": "Chest wall tenderness or pain on inspiration points here.",
+     "source": "aafp_cp"
+    }
+   },
+   "evidence": [],
+   "id": "chest_pain.s1",
+   "order": 1
+  },
+  {
+   "title": "12-lead ECG",
+   "timing": "Within 10 minutes of arrival",
+   "description": "Best initial test; triggers the emergency pathway when ischemic.",
+   "source": "acc_ed_cp",
+   "effects": {
+    "acs": {
+     "type": "blind",
+     "text": "Ischemic or dynamic change escalates; one normal ECG does not rule ACS out.",
+     "source": "iatrox_cp"
+    },
+    "pc": {
+     "type": "steer",
+     "text": "New widespread ST elevation or PR depression counts toward the two-of-four criteria.",
+     "source": "radio_peri"
+    }
+   },
+   "evidence": [],
+   "id": "chest_pain.s2",
+   "order": 2
+  },
+  {
+   "title": "Chest radiograph",
+   "timing": "After clinical assessment and ECG",
+   "description": "Class 1 recommendation to look for other cardiac, pulmonary and thoracic causes.",
+   "source": "aha_cp_rec",
+   "effects": {
+    "ptx": {
+     "type": "rule",
+     "text": "Normal film with distress, pleuritic pain and hypoxia excludes it; absent vascular markings is diagnostic.",
+     "source": "rcem_cxr"
+    },
+    "pna": {
+     "type": "conf",
+     "text": "Infiltrate or consolidation confirms; a normal film makes it unlikely.",
+     "source": "rcem_cxr"
+    },
+    "acs": {
+     "type": "blind",
+     "text": "No specific finding for ACS.",
+     "source": "rcem_cxr"
+    },
+    "pe": {
+     "type": "steer",
+     "text": "Often normal; with other causes excluded, a normal film raises PE probability.",
+     "source": "rcem_cxr"
+    },
+    "ad": {
+     "type": "blind",
+     "text": "Mediastinal widening helps, but a film cannot rule out aortic syndromes at low probability.",
+     "source": "ebm_addrs"
+    },
+    "er": {
+     "type": "steer",
+     "text": "Air in the mediastinum contributes.",
+     "source": "rcem_cxr"
+    },
+    "pc": {
+     "type": "blind",
+     "text": "Recommended but does not establish the diagnosis.",
+     "source": "esc_peri_comments"
+    }
+   },
+   "evidence": [],
+   "id": "chest_pain.s3",
+   "order": 3
+  },
+  {
+   "title": "Serial high-sensitivity troponin and risk class",
+   "timing": "Early, repeated per assay protocol",
+   "description": "Feeds the clinical decision pathway (low, intermediate, high risk).",
+   "source": "aha_cp_rec",
+   "effects": {
+    "acs": {
+     "type": "rule",
+     "text": "Low-risk class with non-ischemic ECG and negative serial troponin: no further acute testing.",
+     "source": "aha_cp_top"
+    },
+    "pc": {
+     "type": "blind",
+     "text": "Recommended in suspected pericarditis but not diagnostic.",
+     "source": "esc_peri_comments"
+    }
+   },
+   "evidence": [],
+   "id": "chest_pain.s4",
+   "order": 4
+  },
+  {
+   "title": "Pre-test scoring of what is left",
+   "timing": "In parallel, for open must-not-miss causes",
+   "description": "A validated score sets the probability band that selects the next test.",
+   "source": null,
+   "effects": {
+    "pe": {
+     "type": "steer",
+     "text": "Wells two-level score; PERC first if suspicion is very low.",
+     "source": "oep_vte"
+    },
+    "ad": {
+     "type": "steer",
+     "text": "ADD-RS 0 to 3: above 1 goes straight to imaging, 1 or less to D-dimer.",
+     "source": "mdcalc_addrs"
+    }
+   },
+   "evidence": [
+    {
+     "text": "PE incidence is about 12% in the Wells unlikely band and about 37% in the likely band.",
+     "source": "wikem_wells"
+    },
+    {
+     "text": "About 95% of patients with acute aortic dissection score intermediate or high on ADD-RS.",
+     "source": "rcem_addrs"
+    },
+    {
+     "text": "Meta-analysis: ADD-RS of 1 or more is about 94% sensitive alone and close to 100% with D-dimer; the best threshold depends on setting.",
+     "source": "addrs_meta"
+    }
+   ],
+   "id": "chest_pain.s5",
+   "order": 5
+  },
+  {
+   "title": "D-dimer",
+   "timing": "Only at low or intermediate probability",
+   "description": "Rule-out blood test; never confirms.",
+   "source": null,
+   "effects": {
+    "pe": {
+     "type": "rule",
+     "text": "Wells 4 or less and D-dimer below the age-adjusted cutoff.",
+     "source": "evi_wells"
+    },
+    "ad": {
+     "type": "rule",
+     "text": "ADD-RS 1 or less and D-dimer below 500 ng/mL (FEU): consider stopping; not externally validated.",
+     "source": "mdcalc_addrs"
+    }
+   },
+   "evidence": [],
+   "id": "chest_pain.s6",
+   "order": 6
+  },
+  {
+   "title": "Definitive imaging for what remains",
+   "timing": "For hypotheses not yet eliminated",
+   "description": "Settles what earlier steps could not.",
+   "source": null,
+   "effects": {
+    "pe": {
+     "type": "rule",
+     "text": "CT pulmonary angiography: positive confirms, negative excludes.",
+     "source": "evi_wells"
+    },
+    "ad": {
+     "type": "conf",
+     "text": "ECG-gated contrast CT from neck to pelvis is the recommended first-line imaging.",
+     "source": "ecr_esc_aortic"
+    },
+    "pc": {
+     "type": "conf",
+     "text": "Echocardiography: new or worsening effusion counts toward criteria.",
+     "source": "esc_peri_comments"
+    },
+    "er": {
+     "type": "blind",
+     "text": "Confirmation route not yet sourced.",
+     "source": null
+    }
+   },
+   "evidence": [
+    {
+     "text": "ESC 2024 recommends a multiparametric diagnostic algorithm using ADD-RS (class I, level B).",
+     "source": "ecr_esc_aortic"
+    }
+   ],
+   "id": "chest_pain.s7",
+   "order": 7
+  },
+  {
+   "title": "If the dangerous causes are eliminated",
+   "timing": "Last",
+   "description": "Noncardiac causes become the working diagnosis.",
+   "source": null,
+   "effects": {
+    "nc": {
+     "type": "steer",
+     "text": "Chest wall pain, reflux esophagitis and costochondritis are most common in primary care.",
+     "source": "cchcs_cp"
+    },
+    "acs": {
+     "type": "steer",
+     "text": "Low-risk patients do not need urgent stress testing or imaging.",
+     "source": "aha_cp_top"
+    }
+   },
+   "evidence": [],
+   "id": "chest_pain.s8",
+   "order": 8
+  }
+ ],
+ "rules": {
+  "acs": {
+   "validation": "Sourced to AHA/ACC 2021 summaries.",
+   "eliminate_when": [
+    {
+     "text": "Low-risk class on the clinical decision pathway: non-ischemic ECG and negative serial high-sensitivity troponin.",
+     "source": "aha_cp_top",
+     "inferred": false
+    },
+    {
+     "text": "Low-risk patients gain nothing from stress testing or imaging within 30 days.",
+     "source": "aafp_cp",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "One normal ECG or one early troponin.",
+     "source": "iatrox_cp",
+     "inferred": false
+    },
+    {
+     "text": "The chest radiograph.",
+     "source": "rcem_cxr",
+     "inferred": false
+    },
+    {
+     "text": "Dismissing the complaint because of sex, age, race, language or anxiety history.",
+     "source": "iatrox_cp",
+     "inferred": false
+    },
+    {
+     "text": "Assuming acute troponin is available everywhere.",
+     "source": "cchcs_cp",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "pe": {
+   "validation": "Secondary summaries of ESC and NICE; verify against originals.",
+   "eliminate_when": [
+    {
+     "text": "Very low suspicion and all eight PERC criteria met.",
+     "source": "oep_vte",
+     "inferred": false
+    },
+    {
+     "text": "Wells 4 or less and D-dimer below the age-adjusted cutoff.",
+     "source": "evi_wells",
+     "inferred": false
+    },
+    {
+     "text": "Negative CT pulmonary angiography.",
+     "source": "evi_wells",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "D-dimer when clinical probability is high.",
+     "source": "iatrox_pe",
+     "inferred": false
+    },
+    {
+     "text": "A normal chest radiograph.",
+     "source": "rcem_cxr",
+     "inferred": false
+    },
+    {
+     "text": "The standard Wells route in unstable or pregnant patients.",
+     "source": "evi_wells",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "ad": {
+   "validation": "ESC 2024 recommends an ADD-RS-based diagnostic algorithm (class I, level B); MDCalc notes ADD-RS plus D-dimer lacks external validation.",
+   "eliminate_when": [
+    {
+     "text": "ADD-RS 1 or less and D-dimer below 500 ng/mL (FEU): consider stopping the work-up.",
+     "source": "mdcalc_addrs",
+     "inferred": false
+    },
+    {
+     "text": "In ADvISED this strategy missed about 0.3% of acute aortic syndromes.",
+     "source": "advised",
+     "inferred": false
+    },
+    {
+     "text": "In the later PROFUNDUS study, ADD-RS 1 or less with negative D-dimer had a 0.2% failure rate.",
+     "source": "aas_review_2025",
+     "inferred": false
+    },
+    {
+     "text": "Negative ECG-gated contrast CT, the first-line imaging in ESC 2024 (class I, level C).",
+     "source": "ecr_esc_aortic",
+     "inferred": true
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "D-dimer alone.",
+     "source": "advised",
+     "inferred": false
+    },
+    {
+     "text": "ADD-RS of 0 as proof.",
+     "source": "litfl_addrs",
+     "inferred": false
+    },
+    {
+     "text": "Chest radiography.",
+     "source": "ebm_addrs",
+     "inferred": false
+    },
+    {
+     "text": "A D-dimer threshold in the wrong units (assumes FEU).",
+     "source": "mdcalc_addrs",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "ptx": {
+   "validation": "Educational summary of the guideline.",
+   "eliminate_when": [
+    {
+     "text": "Normal chest radiograph with respiratory distress, pleuritic pain and hypoxia.",
+     "source": "rcem_cxr",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "Exam findings alone.",
+     "source": "tw_cp_exam",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "pna": {
+   "validation": "Educational summary of the guideline.",
+   "eliminate_when": [
+    {
+     "text": "Normal chest radiograph makes it unlikely, not impossible.",
+     "source": "rcem_cxr",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "Exam findings alone.",
+     "source": "tw_cp_exam",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "pc": {
+   "validation": "Diagnostic criteria only; no exclusion rule found.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "A normal ECG: without ST elevation the diagnosis is easily missed.",
+     "source": "peri_book",
+     "inferred": false
+    },
+    {
+     "text": "Chest film, markers or troponin as diagnostic; only ECG and echo help establish it.",
+     "source": "esc_peri_comments",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No formal exclusion rule found. Diagnosis needs at least two of four criteria."
+  },
+  "er": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No elimination rule sourced yet."
+  },
+  "nc": {
+   "validation": "Diagnosis of exclusion.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Chest wall tenderness alone.",
+     "source": "aafp_cp",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "Not eliminated; it is what remains."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Local resources",
+   "text": "Some sites cannot run acute troponin, so the pathway cannot be applied as written.",
+   "source": "cchcs_cp"
+  },
+  {
+   "title": "Which PE score",
+   "text": "Wells, revised Geneva and YEARS lead to the same next steps, but protocols differ.",
+   "source": "iatrox_pe"
+  },
+  {
+   "title": "US versus Europe on dissection",
+   "text": "ESC 2024 sends ADD-RS 2 or more to CT regardless of D-dimer; AHA guidance lacks consensus on the ADD-RS cut-off and on D-dimer.",
+   "source": "aas_review_2025"
+  },
+  {
+   "title": "Parallel hypotheses",
+   "text": "No source found on prioritizing ACS, PE and dissection work-ups run at the same time.",
+   "source": null
+  }
+ ]
+}

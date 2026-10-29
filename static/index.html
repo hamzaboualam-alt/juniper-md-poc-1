@@ -14,275 +14,351 @@
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
-  body { margin: 0; font-family: 'Nunito', sans-serif; color: var(--paper); background: var(--frame); overflow: hidden; }
+  body { margin: 0; font-family: 'Nunito', sans-serif; color: var(--ink); background: var(--frame); overflow: hidden; }
   button { font: inherit; cursor: pointer; }
-  button:disabled { opacity: .4; cursor: not-allowed; }
-  .frame { display: grid; grid-template-rows: 72px 1fr 184px; grid-template-columns: minmax(0, 1fr) minmax(300px, 24vw); height: 100vh; min-width: 900px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .hide { display: none !important; }
+  .app { display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); height: 100vh; min-width: 0; }
 
   /* HUD */
-  .hud { grid-column: 1 / 3; display: flex; align-items: center; gap: 20px; padding: 0 24px; background: var(--frame-2); border-bottom: 2px solid var(--line); }
-  .hud .logo { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: .5px; }
-  .pill { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--frame-3); font-weight: 700; font-size: 14px; }
-  .pill .k { color: var(--muted); }
-  .meter { display: flex; align-items: center; gap: 12px; flex: 1; max-width: 420px; }
-  .meter .k { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
-  .meter .bar { flex: 1; height: 14px; border-radius: 999px; background: var(--frame-3); overflow: hidden; }
-  .meter .bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .4s; }
-  .live { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--muted); }
-  .live i { width: 10px; height: 10px; border-radius: 999px; background: var(--accent); display: inline-block; }
-  .live.closed i { background: var(--gold); }
-  .btn { font-weight: 800; font-size: 14px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--line-2); background: transparent; color: var(--paper); }
+  .hud { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 10px 16px; min-height: 64px; min-width: 0; background: var(--frame-2); border-bottom: 3px solid var(--line); color: var(--paper); }
+  @media (max-width: 1400px) { .hud .pill .k.sub { display: none; } }
+  @media (max-width: 1200px) { .hud .logo { font-size: 18px; } .hud .pill { padding: 6px 10px; font-size: 12px; } .hud .btn { padding: 7px 10px; font-size: 12px; } }
+  .hud .logo { font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 800; white-space: nowrap; }
+  .pill { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: var(--frame-3); font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .pill .k { color: var(--muted); font-weight: 700; }
+  .pill.money { background: #1F3A2E; color: var(--accent); } .pill.money.neg { background: #3A2222; color: var(--orange); }
+  .pill.step { background: #3A2222; color: var(--orange); letter-spacing: .5px; }
+  .pill select { font: inherit; font-weight: 800; background: transparent; color: var(--paper); border: 0; cursor: pointer; max-width: 150px; }
+  .btn { font-weight: 800; font-size: 13px; padding: 9px 14px; border-radius: 12px; border: 3px solid var(--line-2); background: transparent; color: var(--paper); white-space: nowrap; }
   .btn.accent { background: var(--accent); color: #0F1A14; border-color: var(--accent); }
   .btn.claude { background: var(--claude); color: #fff; border-color: var(--claude); }
-  .btn.big { font-size: 16px; padding: 14px 18px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn.danger { border-color: var(--pat); color: var(--orange); }
+  .btn.big { font-family: 'Baloo 2', sans-serif; font-size: 20px; padding: 14px 18px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .key { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(15,26,20,.18); }
+  .btn:not(.accent) .key { background: var(--line-2); color: var(--paper); }
 
-  /* ROOM */
-  .room { position: relative; overflow: hidden; background: var(--wall); }
-  .stage { position: absolute; left: 0; top: 0; width: 1000px; height: 600px; transform-origin: top left; }
-  .stage > svg.scene { position: absolute; inset: 0; width: 1000px; height: 600px; }
-  .actor { position: absolute; width: 260px; height: 330px; transition: transform .3s; }
-  .actor.doc { left: 150px; top: 262px; }
-  .actor.pat { left: 640px; top: 262px; }
-  .actor.talking { transform: translateY(-6px); }
-  .bubble { position: absolute; padding: 16px 20px; border-radius: 18px; background: #fff; border: 3px solid var(--doc); color: var(--ink); box-shadow: 0 10px 24px rgba(27,39,51,.18); display: flex; flex-direction: column; gap: 6px; opacity: .55; transition: opacity .3s, transform .3s; }
-  .bubble.on { opacity: 1; animation: pop .35s ease-out; }
-  @keyframes pop { from { transform: scale(.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .bubble::after { content: ""; position: absolute; bottom: -26px; width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 26px solid var(--doc); }
-  .bubble.doc { left: 40px; top: 70px; width: 400px; }
-  .bubble.doc::after { left: 170px; }
-  .bubble.pat { right: 40px; top: 110px; width: 320px; background: var(--pat-soft); border-color: var(--pat); }
-  .bubble.pat::after { right: 120px; border-top-color: var(--pat); }
-  .stage.is-verdict .bubble.doc { width: 330px; left: 30px; top: 96px; }
-  .stage.is-verdict .bubble.doc::after { left: 140px; }
-  .stage.is-verdict .bubble.pat { width: 300px; right: 30px; top: 126px; }
-  .bubble .who { font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--doc); display: flex; align-items: center; gap: 8px; }
-  .bubble.pat .who { color: var(--pat-dark); }
-  .bubble .chip { padding: 2px 8px; border-radius: 999px; background: var(--doc-soft); font-weight: 700; letter-spacing: 0; }
-  .bubble .chip.claude { background: #F1E9FF; color: var(--claude); }
-  .bubble .say { font-size: 21px; font-weight: 700; line-height: 1.3; }
-  .bubble.pat .say { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; }
-  .bubble.pat .say.long { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700; }
-  .bubble .why { font-size: 13px; color: #5B6B7A; font-style: italic; }
-  .bubble .why.claude { color: var(--claude); }
-  .chart { position: absolute; left: 24px; bottom: 20px; display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: rgba(255,255,255,.92); border-radius: 14px; border: 2px solid var(--floor-2); color: var(--ink); }
-  .chart .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #5B6B7A; }
-  .chart .v { font-weight: 700; font-size: 15px; }
-  .chart .v b { color: var(--pat-dark); }
+  /* screens */
+  .screen { display: none; position: relative; overflow: hidden; min-width: 0; min-height: 0; }
+  .screen.on { display: block; }
+  .room { position: absolute; inset: 0; background: var(--wall); }
+  .room .strip { position: absolute; left: 0; right: 0; top: 0; height: 36px; background: var(--wall-2); }
+  .room .floor { position: absolute; left: 0; right: 0; top: 60%; bottom: 0; background: var(--floor); border-top: 10px solid var(--floor-2); }
+  .label { position: absolute; padding: 6px 12px; border-radius: 10px; background: var(--frame-3); color: var(--paper); font-size: 11px; font-weight: 800; letter-spacing: 1px; }
+  .actor { position: absolute; width: 230px; height: 292px; }
+  .dialog { position: absolute; left: 24px; right: 24px; bottom: 24px; min-height: 170px; background: var(--frame-2); border-radius: 22px; border: 4px solid var(--line-2); padding: 18px 22px; display: flex; gap: 20px; color: var(--paper); box-shadow: 0 12px 30px rgba(15,26,32,.35); }
+  .dialog .portrait { width: 96px; height: 96px; border-radius: 999px; background: #E8B48C; border: 4px solid var(--pat); position: relative; overflow: hidden; flex: none; }
+  .dialog .portrait i { position: absolute; left: 14px; top: 2px; width: 68px; height: 36px; border-radius: 40px 40px 10px 10px; background: #2B2B2B; }
+  .dialog .portrait b { position: absolute; top: 46px; width: 6px; height: 6px; border-radius: 999px; background: var(--ink); }
+  .dialog .who { font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  .dialog .say { font-size: clamp(17px, 1.6vw, 23px); font-weight: 700; line-height: 1.3; }
+  .dialog .aside { font-size: 13px; color: var(--muted); font-style: italic; }
+  .dialog .right { width: 230px; flex: none; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+  .dialog .right .hint { font-size: 12px; color: var(--muted); text-align: right; }
+  .monitor { position: absolute; right: 24px; top: 56px; width: min(420px, 40%); padding: 14px 16px; background: #0F1A20; border-radius: 18px; border: 4px solid var(--frame-3); color: var(--accent); }
+  .monitor .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  .monitor .row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .monitor .chip { padding: 5px 10px; border-radius: 999px; background: var(--frame-2); font-size: 13px; font-weight: 800; color: var(--paper); }
+  .monitor .chip.bad { background: var(--pat); color: #fff; }
+  .monitor .note { font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 999px; background: var(--line-2); color: var(--paper); white-space: nowrap; font-weight: 800; }
+  .tag.mnm, .tag.urgent, .tag.bad { background: var(--pat); color: #fff; } .tag.ok { background: var(--accent); color: #0F1A14; } .tag.warn { background: var(--gold); color: #0F1A14; } .tag.teal { background: var(--teal); color: #0F1A14; }
 
-  /* verdict banner */
-  .banner { position: absolute; left: 50%; top: 24px; transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 6px; text-align: center; z-index: 3; }
-  .banner.on { display: flex; animation: pop .4s ease-out; }
-  .banner .stars { display: flex; gap: 6px; }
-  .banner h1 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 54px; line-height: 1; color: #1F7A6E; }
-  .banner h1.bad { color: var(--pat-dark); }
-  .banner h1.warn { color: #B48A1E; }
-  .banner p { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink); }
-
-  /* CASE FILE */
-  .file { background: var(--frame-3); border-left: 2px solid var(--line); display: flex; flex-direction: column; overflow: hidden; position: relative; }
-  .file .head { padding: 16px 18px 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); }
-  .file .head h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 18px; }
-  .file .head .n { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--muted); }
-  .tabs { display: flex; gap: 6px; margin-left: auto; }
-  .tab { font-size: 12px; font-weight: 800; padding: 5px 10px; border-radius: 8px; border: 2px solid var(--line-2); background: transparent; color: var(--muted); }
-  .tab.on { background: var(--line-2); color: var(--paper); }
-  .log { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; overflow: auto; flex: 1; }
-  .entry { padding: 10px 12px; border-radius: 10px; background: var(--frame); display: flex; flex-direction: column; gap: 4px; }
-  .entry .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
-  .entry .k.claude { color: var(--claude-soft); }
-  .entry .q { font-size: 14px; font-weight: 600; }
-  .entry .q b { color: var(--accent); font-weight: 700; }
-  .entry .why { font-size: 12px; color: var(--claude-soft); font-style: italic; }
-  .entry.open { background: var(--line); }
-  .entry.now { background: var(--doc); }
-  .entry.now .k { color: #DCEFE6; }
-  .seal { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--muted); }
-  .seal .tab { margin-left: auto; }
-  .drawer { position: absolute; inset: 0; background: var(--frame-3); display: none; flex-direction: column; overflow: hidden; }
-  .drawer.on { display: flex; }
-  .truthcard { margin: 12px 14px 0; padding: 12px 14px; border-radius: 12px; background: var(--pat-soft); color: var(--ink); }
-  .truthcard b { font-family: 'Baloo 2', sans-serif; font-size: 20px; }
-  .truthcard .s { font-size: 12px; color: #5B6B7A; font-weight: 700; }
-  .clues { list-style: none; margin: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; overflow: auto; flex: 1; }
-  .clues li { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; padding: 6px 8px; border-radius: 8px; background: var(--frame); font-size: 13px; }
-  .clues li .a { font-weight: 800; color: var(--accent); text-align: right; max-width: 40%; }
-  .tag { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 999px; background: var(--line-2); color: var(--paper); white-space: nowrap; }
-  .tag.truth { background: var(--teal); color: #0F1A14; }
-  .tag.initial { background: var(--gold); color: #0F1A14; }
-  .sev { background: var(--pat); color: #fff; }
-  .stats { padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow: auto; flex: 1; }
-  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-  .tile { padding: 12px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 2px; }
-  .tile .v { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; }
-  .tile .v.accent { color: var(--accent); }
-  .tile .l { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: var(--muted); }
-  .bars { display: flex; flex-direction: column; gap: 6px; }
-  .bars .r { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
-  .bars .r span:first-child { color: var(--muted); }
-  .bars .bar { height: 12px; border-radius: 999px; background: var(--frame); overflow: hidden; }
-  .bars .bar i { display: block; height: 100%; background: var(--accent); }
-  .bars .bar i.gold { background: var(--gold); }
-  .box { padding: 12px 14px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 8px; }
-  .box .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--orange); }
-  .box .k.m { color: var(--muted); }
-  .box .row { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 600; }
-  .box .row span:last-child { color: var(--accent); white-space: nowrap; font-weight: 800; }
+  /* chart modal */
+  .dim { position: absolute; inset: 0; background: rgba(15,26,32,.62); }
+  .chart { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(1200px, 92%); height: min(760px, 90%); background: var(--paper); border-radius: 22px; border: 4px solid var(--ink); display: grid; grid-template-columns: 1fr 360px; overflow: hidden; box-shadow: 0 20px 50px rgba(15,26,32,.5); }
+  .chart .doc { padding: 24px 28px; display: flex; flex-direction: column; gap: 14px; overflow: auto; }
+  .chart h1 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 26px; line-height: 1; }
+  .chart .sub { font-size: 13px; font-weight: 700; color: #5B6B7A; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .card { padding: 14px 16px; border-radius: 14px; background: #fff; border: 2px solid var(--floor-2); display: flex; flex-direction: column; gap: 6px; }
+  .card.flag { background: var(--pat-soft); border-color: var(--pat); }
+  .card .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #5B6B7A; }
+  .card.flag .k { color: var(--pat-dark); }
+  .card .v { font-size: 15px; font-weight: 700; line-height: 1.4; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chips span { padding: 4px 10px; border-radius: 999px; background: var(--line); font-size: 12px; font-weight: 700; }
-  .chips span.hit { background: var(--teal); color: #0F1A14; font-weight: 800; }
-  .verdict { padding: 12px 14px; border-radius: 12px; font-weight: 700; font-size: 13px; line-height: 1.4; background: var(--frame); border-left: 4px solid var(--accent); }
-  .verdict.bad { border-color: var(--pat); }
-  .verdict.warn { border-color: var(--gold); }
+  .chips span { padding: 4px 10px; border-radius: 999px; background: #EEF1F4; font-size: 12px; font-weight: 800; }
+  .chips span.bad { background: var(--pat); color: #fff; } .chips span.warn { background: var(--orange); }
+  .chart .rail { background: var(--frame-3); color: var(--paper); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .chart .rail h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 18px; }
+  .chart .rail p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .box { padding: 12px 14px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+  .box .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  .box .row { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
 
-  /* YOUR MOVE */
-  .move { grid-column: 1 / 3; background: var(--frame-2); border-top: 2px solid var(--line); padding: 16px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 24vw); gap: 24px; }
-  .move .top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-  .move .top h3 { margin: 0; font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 18px; color: var(--accent); }
-  .move .top p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
-  .search { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .search input { font: inherit; font-size: 13px; padding: 8px 12px; border-radius: 10px; border: 2px solid var(--line-2); background: var(--frame); color: var(--paper); width: clamp(140px, 18vw, 260px); }
-  .hand { display: flex; gap: 10px; overflow: hidden; }
-  .card { width: 176px; min-height: 92px; flex: none; text-align: left; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--teal); background: var(--frame); color: var(--paper); display: flex; flex-direction: column; gap: 5px; transition: transform .15s; }
-  .card:hover { transform: translateY(-4px); }
-  .card .k { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--teal); }
-  .card.history { border-color: var(--gold); } .card.history .k { color: var(--gold); }
-  .card.asked { opacity: .45; }
-  .card .q { font-size: 13px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .card.more { width: 120px; border: 2px dashed var(--line-2); color: var(--muted); font-weight: 700; font-size: 13px; align-items: center; justify-content: center; }
-  .actions { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
-  .actions .row { display: flex; gap: 10px; }
-  .actions .row .btn { flex: 1; padding: 12px; }
-  .err { font-size: 12px; color: var(--orange); font-weight: 700; min-height: 16px; }
+  /* board */
+  .boardwrap { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) 420px; }
+  .scene { position: relative; background: var(--wall); overflow: hidden; }
+  .white { position: absolute; left: 24px; right: 24px; top: 44px; background: var(--paper); border-radius: 16px; border: 6px solid #8E6540; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 24px rgba(27,39,51,.18); max-height: calc(100% - 230px); overflow: auto; }
+  .white .head { display: flex; align-items: center; gap: 10px; }
+  .white .head h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 19px; }
+  .hyps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .hyp { padding: 11px 12px; border-radius: 12px; background: #fff; border: 3px solid var(--floor-2); display: flex; flex-direction: column; gap: 5px; min-height: 118px; }
+  .hyp.mnm { border-color: var(--pat); }
+  .hyp.remainder { border-style: dashed; }
+  .hyp.eliminated { opacity: .5; } .hyp.eliminated .n { text-decoration: line-through; }
+  .hyp.diagnosed { background: #E4F5E9; border-color: #1F7A6E; }
+  .hyp .top { display: flex; align-items: center; gap: 6px; }
+  .hyp .num { margin-left: auto; font-size: 10px; font-weight: 800; color: #5B6B7A; }
+  .hyp .n { font-weight: 800; font-size: 15px; }
+  .hyp .s { font-size: 11px; color: #5B6B7A; line-height: 1.35; }
+  .hyp .s b { color: #1F7A6E; font-weight: 800; }
+  .hyp .s b.warn { color: var(--pat-dark); }
+  .hyp .cite { font-size: 11px; color: var(--pat-dark); font-weight: 700; }
+  .log { position: absolute; left: 24px; right: 24px; bottom: 20px; display: flex; gap: 12px; align-items: flex-end; }
+  .log .panel { flex: 1; padding: 10px 14px; background: var(--frame-2); border-radius: 16px; border: 3px solid var(--line-2); color: var(--paper); display: flex; flex-direction: column; gap: 4px; max-height: 150px; overflow: auto; }
+  .log .panel .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  .log .panel div.e { font-size: 13px; }
+  .log .panel div.e b { color: var(--muted); font-weight: 800; }
+  .log .panel div.e.now { color: var(--orange); }
+  .rail { background: var(--frame-3); border-left: 3px solid var(--line); color: var(--paper); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+  .rail h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 18px; }
+  .rail .sub { font-size: 12px; color: var(--muted); }
+  .rail .sn { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--muted); margin-top: 4px; }
+  .test { text-align: left; padding: 9px 11px; border-radius: 12px; border: 3px solid var(--teal); background: var(--frame); color: var(--paper); display: flex; align-items: center; gap: 10px; }
+  .test.free { border-color: var(--gold); }
+  .test.done { border-color: var(--line-2); border-style: dashed; color: var(--muted); }
+  .test.blocked { border-color: var(--line-2); color: var(--muted); }
+  .test .num { width: 26px; height: 26px; border-radius: 8px; background: var(--teal); color: #0F1A14; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 13px; flex: none; }
+  .test.free .num { background: var(--gold); } .test.done .num, .test.blocked .num { background: var(--line-2); color: var(--paper); }
+  .test .t { flex: 1; font-weight: 800; font-size: 13px; line-height: 1.2; }
+  .test .p { font-size: 11px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+  .acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: auto; }
+  .acts .btn { padding: 11px 8px; font-size: 13px; }
+  .acts .btn .key { margin-left: 6px; }
+  .err { font-size: 12px; color: var(--orange); font-weight: 700; min-height: 14px; }
 
-  /* diagnosis dialog */
-  dialog { border: 0; border-radius: 18px; padding: 0; background: var(--frame-3); color: var(--paper); width: 560px; max-width: 92vw; }
+  /* result */
+  .reswrap { position: absolute; inset: 0; display: grid; grid-template-columns: 480px minmax(0, 1fr); }
+  .res { background: #0F1A20; color: var(--paper); padding: 24px 26px; display: flex; flex-direction: column; gap: 12px; overflow: auto; }
+  .res h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 22px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .report { padding: 16px 18px; border-radius: 14px; background: var(--frame-2); display: flex; flex-direction: column; gap: 6px; }
+  .report .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  .report .v { font-size: 20px; font-weight: 700; line-height: 1.35; }
+  .report .v em { color: var(--orange); font-style: normal; }
+  .station-scene { position: relative; background: var(--wall); overflow: hidden; }
+  .station-art { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); width: 360px; height: 260px; }
+  .sofar { position: absolute; left: 24px; right: 24px; bottom: 24px; padding: 12px 14px; background: rgba(255,255,255,.92); border-radius: 14px; border: 2px solid var(--floor-2); font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+  .sofar .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #5B6B7A; }
+
+  /* verdict */
+  .vwrap { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr) 500px; }
+  .banner { position: absolute; left: 50%; top: 28px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; width: 90%; }
+  .banner h1 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 54px; line-height: 1; color: #1F7A6E; }
+  .banner h1.bad { color: var(--pat-dark); } .banner h1.warn { color: #B48A1E; }
+  .banner p { margin: 0; font-size: 17px; font-weight: 700; }
+  .bubble { position: absolute; padding: 14px 18px; border-radius: 18px; background: #fff; border: 3px solid var(--doc); display: flex; flex-direction: column; gap: 6px; }
+  .bubble::after { content: ""; position: absolute; bottom: -26px; left: 140px; width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 26px solid var(--doc); }
+  .bubble.pat { background: var(--pat-soft); border-color: var(--pat); } .bubble.pat::after { border-top-color: var(--pat); left: auto; right: 120px; }
+  .bubble .who { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--doc); display: flex; gap: 8px; align-items: center; }
+  .bubble.pat .who { color: var(--pat-dark); }
+  .bubble .say { font-size: 21px; font-weight: 700; line-height: 1.3; }
+  .bubble .why { font-size: 13px; color: #5B6B7A; font-style: italic; }
+  .chip { padding: 2px 8px; border-radius: 999px; background: var(--doc-soft); font-weight: 700; letter-spacing: 0; }
+  .chip.claude { background: #F1E9FF; color: var(--claude); }
+  .routes { position: absolute; left: 24px; right: 24px; bottom: 20px; display: flex; gap: 10px; }
+  .routes div { flex: 1; padding: 10px 14px; background: rgba(255,255,255,.92); border-radius: 14px; border: 2px solid var(--floor-2); font-size: 13px; font-weight: 700; }
+  .routes .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #5B6B7A; }
+  .routes .k.ok { color: #1F7A6E; }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tile { padding: 10px; border-radius: 12px; background: var(--frame); display: flex; flex-direction: column; gap: 2px; }
+  .tile .v { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; }
+  .tile .v.accent { color: var(--accent); } .tile .v.warn { color: var(--orange); }
+  .tile .l { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: var(--muted); }
+  .verdict { padding: 10px 12px; border-radius: 12px; font-weight: 700; font-size: 13px; line-height: 1.4; background: var(--frame); border-left: 4px solid var(--accent); }
+  .verdict.bad { border-color: var(--pat); } .verdict.warn { border-color: var(--gold); }
+  .timeline { display: grid; grid-template-columns: 54px 1fr; gap: 3px 10px; font-size: 12px; }
+  .timeline b { color: var(--muted); }
+  .timeline .ok { color: var(--accent); font-weight: 800; } .timeline .bad { color: var(--orange); font-weight: 800; }
+
+  /* dialogs */
+  dialog { border: 0; border-radius: 18px; padding: 0; background: var(--frame-3); color: var(--paper); width: 600px; max-width: 92vw; }
   dialog::backdrop { background: rgba(10, 16, 22, .7); }
-  dialog .in { padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
-  dialog h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 22px; }
-  dialog label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--muted); }
+  dialog .in { padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; max-height: 86vh; overflow: auto; }
+  dialog h2 { margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 20px; }
+  dialog .muted { color: var(--muted); font-size: 12px; }
+  dialog label.ck { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; padding: 8px 10px; border-radius: 10px; background: var(--frame); cursor: pointer; }
+  dialog label.ck input { margin-top: 3px; }
   dialog select { font: inherit; font-size: 14px; padding: 10px; border-radius: 10px; border: 2px solid var(--line-2); background: var(--frame); color: var(--paper); }
+  dialog textarea, dialog input[type=text] { font: inherit; font-size: 14px; padding: 10px; border-radius: 10px; border: 2px solid var(--line-2); background: var(--frame); color: var(--paper); width: 100%; }
+  dialog textarea { min-height: 90px; resize: vertical; }
+  .watch { margin-top: auto; padding: 12px 14px; border-radius: 12px; background: #2A1F4D; border: 3px solid var(--claude); display: flex; flex-direction: column; gap: 6px; }
+  .watch.base { background: var(--frame); border-color: var(--line-2); }
+  .watch .k { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--claude-soft); }
+  .watch.base .k { color: var(--muted); }
+  .watch .t { font-size: 13px; font-style: italic; line-height: 1.4; }
+  .watch .dots::after { content: '…'; animation: blink 1s steps(3, end) infinite; }
+  .watch .reason { margin-top: 8px; font-size: 12px; font-style: normal; line-height: 1.5; color: var(--paper); white-space: pre-wrap; border-top: 1px dashed var(--line-2); padding-top: 8px; max-height: 240px; overflow-y: auto; }
+  .watch .toggle { margin-top: 6px; font-size: 11px; font-weight: 800; letter-spacing: .5px; color: var(--claude-soft); cursor: pointer; background: none; border: 0; padding: 0; text-align: left; }
+  .watch.base .toggle { color: var(--muted); }
+  .think { margin-top: 4px; }
+  .think summary { font-size: 11px; font-weight: 700; letter-spacing: .3px; color: var(--claude-soft); cursor: pointer; list-style: none; }
+  .think summary::-webkit-details-marker { display: none; }
+  .think summary::before { content: '▸ '; }
+  .think[open] summary::before { content: '▾ '; }
+  .think .body { margin-top: 5px; font-size: 12px; line-height: 1.5; color: var(--muted); white-space: pre-wrap; padding-left: 10px; border-left: 2px solid var(--line-2); }
+  @keyframes blink { 50% { opacity: .2; } }
+  .tiles.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tiles.four .tile .v { font-size: 22px; }
+  .hyp .by { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: #5B6B7A; }
+  .hyp .why { font-size: 11px; color: #5B6B7A; font-style: italic; line-height: 1.35; }
+  .hyp.off { border-style: dotted; }
+  .pill.doc { background: #2A1F4D; color: var(--claude-soft); } .pill.doc.base { background: var(--frame-3); color: var(--paper); }
 </style>
 </head>
 <body>
-<div class="frame">
+<div class="app">
   <header class="hud">
     <div class="logo">DIAGNOSIS ROOM</div>
-    <div class="pill"><span class="k">CASE</span><span id="caseNo">—</span></div>
-    <div class="pill"><span class="k">TURN</span><span id="turn">0 / 20</span></div>
-    <div class="pill"><span class="k">PRESET</span><select id="presetSel" style="font: inherit; font-weight: 700; background: transparent; color: var(--paper); border: 0; cursor: pointer"></select></div>
-    <div class="meter"><span class="k">QUESTION BUDGET</span><div class="bar"><i id="budget" style="width:0%"></i></div></div>
+    <div class="pill"><span class="k">CLOCK</span><span id="clock">09:00</span><span class="k sub" id="clockSub"></span></div>
+    <div class="pill money" id="spendPill"><span class="k">SPENT</span><span id="spend">$0</span><span class="k sub" id="spendSub"></span></div>
+    <div class="pill money hide" id="earnPill"><span class="k">EARNED</span><span id="earned">+0</span></div>
+    <div class="pill"><span class="k">PATIENT</span><span id="patientNo">1 of 1</span></div>
+    <div class="pill doc hide" id="docPill"><span class="k">DOCTOR</span><span id="docName"></span></div>
+    <div class="pill"><span class="k">PRESET</span><select id="presetSel"></select></div>
+    <div class="pill" id="sitPill"><span class="k">SITUATION</span><select id="sitSel"></select></div>
     <div style="flex:1"></div>
-    <div class="live" id="live"><i></i><span>LIVE CONSULTATION</span></div>
-    <a class="btn" href="/eval" style="text-decoration: none; display: inline-flex; align-items: center">Evaluation</a>
+    <div class="pill step" id="step">STEP 1 · ARRIVAL</div>
+    <a class="btn" href="/eval" style="text-decoration:none;display:inline-flex;align-items:center">Evaluation</a>
     <button class="btn" id="newCase">New patient</button>
   </header>
 
-  <section class="room" id="room">
-    <div class="stage" id="stage">
-      <svg class="scene" viewBox="0 0 1000 600" aria-hidden="true">
-        <rect x="0" y="0" width="1000" height="60" fill="#CFE6DA"></rect>
-        <rect x="0" y="420" width="1000" height="180" fill="#E9DCC9"></rect>
-        <rect x="0" y="420" width="1000" height="10" fill="#D6C6AE"></rect>
-        <rect x="60" y="300" width="150" height="100" rx="8" fill="#BFE3F2" stroke="#F6F1E7" stroke-width="8"></rect>
-        <rect x="60" y="348" width="150" height="4" fill="#F6F1E7"></rect>
-        <g transform="translate(850 70)"><rect width="110" height="150" rx="8" fill="#F6F1E7"></rect><rect x="12" y="14" width="70" height="8" rx="4" fill="#C9D6E2"></rect><rect x="12" y="30" width="86" height="8" rx="4" fill="#C9D6E2"></rect><rect x="12" y="46" width="50" height="8" rx="4" fill="#C9D6E2"></rect><rect x="12" y="62" width="86" height="40" rx="6" fill="#DCEFE6"></rect><rect x="12" y="112" width="70" height="8" rx="4" fill="#C9D6E2"></rect></g>
-        <rect x="380" y="380" width="300" height="110" rx="10" fill="#B98A5E"></rect>
-        <rect x="390" y="486" width="18" height="110" fill="#8E6540"></rect>
-        <rect x="652" y="486" width="18" height="110" fill="#8E6540"></rect>
-        <rect x="460" y="318" width="96" height="66" rx="6" fill="#22303C"></rect>
-        <rect x="468" y="326" width="80" height="50" rx="3" fill="#2A9D8F"></rect>
-        <path d="M500 346 l8 0 l5 -12 l7 24 l6 -14 l6 8 l20 0" fill="none" stroke="#B5E48C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-        <rect x="590" y="352" width="60" height="34" rx="4" fill="#F6F1E7" stroke="#D6C6AE" stroke-width="3" transform="rotate(-8 620 369)"></rect>
+  <!-- 1 · ARRIVAL -->
+  <section class="screen on" id="sArrival">
+    <div class="room"><div class="strip"></div><div class="floor"></div>
+      <div class="label" style="left:40px;top:50px">EMERGENCY DEPARTMENT · ENTRANCE</div>
+      <div style="position:absolute;left:70px;top:90px;width:170px;height:400px;border-radius:14px 14px 0 0;background:#B98A5E;border:6px solid #8E6540"></div>
+      <div style="position:absolute;left:90px;top:110px;width:130px;height:360px;background:#F6F1E7;opacity:.55"></div>
+      <svg class="actor" viewBox="0 0 260 330" style="left:210px;top:190px" aria-hidden="true">
+        <path d="M70 162 Q130 150 190 162 L190 250 L70 250 Z" fill="#E76F51"></path><rect x="86" y="250" width="30" height="70" rx="8" fill="#3A4C5E"></rect><rect x="144" y="244" width="30" height="76" rx="8" fill="#3A4C5E"></rect>
+        <rect x="52" y="170" width="26" height="80" rx="10" fill="#E76F51" transform="rotate(14 65 210)"></rect><rect x="182" y="170" width="26" height="80" rx="10" fill="#E76F51" transform="rotate(-24 195 210)"></rect><circle cx="200" cy="245" r="12" fill="#F1C9A5"></circle>
+        <circle cx="130" cy="110" r="46" fill="#E8B48C"></circle><path d="M84 104 Q84 56 130 58 Q176 60 176 104 Q168 76 130 78 Q96 80 84 104 Z" fill="#2B2B2B"></path>
+        <circle cx="116" cy="112" r="4" fill="#22303C"></circle><circle cx="144" cy="112" r="4" fill="#22303C"></circle><path d="M118 134 Q130 128 142 134" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
       </svg>
-      <svg class="actor doc" id="docActor" viewBox="0 0 260 330" aria-hidden="true">
-        <rect x="40" y="250" width="180" height="22" rx="6" fill="#3D5A80"></rect>
-        <rect x="54" y="272" width="14" height="50" fill="#2B4160"></rect>
-        <rect x="192" y="272" width="14" height="50" fill="#2B4160"></rect>
-        <rect x="30" y="150" width="120" height="110" rx="12" fill="#3D5A80"></rect>
-        <path d="M70 160 Q130 150 190 160 L190 250 L70 250 Z" fill="#F6F1E7"></path>
-        <path d="M118 160 L130 250 L142 160 Z" fill="#8FB8DE"></path>
-        <path d="M96 170 Q100 210 130 210 Q160 210 164 170" fill="none" stroke="#22303C" stroke-width="5" stroke-linecap="round"></path>
-        <circle cx="166" cy="172" r="7" fill="#22303C"></circle>
-        <rect x="150" y="214" width="70" height="40" rx="8" fill="#3D5A80"></rect>
-        <circle cx="130" cy="110" r="46" fill="#F1C9A5"></circle>
-        <path d="M84 100 Q90 60 130 60 Q170 60 176 100 Q150 86 110 90 Q96 96 84 100 Z" fill="#4A3728"></path>
-        <circle cx="116" cy="112" r="4" fill="#22303C"></circle>
-        <circle cx="144" cy="112" r="4" fill="#22303C"></circle>
-        <path id="docMouth" d="M118 128 Q130 136 142 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
-      </svg>
-      <svg class="actor pat" id="patActor" viewBox="0 0 260 330" aria-hidden="true">
-        <rect x="40" y="250" width="180" height="22" rx="6" fill="#8E6540"></rect>
-        <rect x="54" y="272" width="14" height="50" fill="#6E4C2E"></rect>
-        <rect x="192" y="272" width="14" height="50" fill="#6E4C2E"></rect>
-        <rect x="110" y="150" width="120" height="110" rx="12" fill="#8E6540"></rect>
-        <path d="M70 162 Q130 150 190 162 L190 250 L70 250 Z" fill="#E76F51"></path>
-        <path d="M104 166 Q130 186 156 166" fill="none" stroke="#C85A3E" stroke-width="5" stroke-linecap="round"></path>
-        <rect x="40" y="214" width="70" height="40" rx="8" fill="#E76F51"></rect>
-        <path d="M60 236 Q58 250 70 258 L104 258 Q110 248 104 236 Z" fill="#F1C9A5"></path>
-        <circle cx="130" cy="110" r="46" fill="#E8B48C"></circle>
-        <path d="M84 104 Q84 56 130 58 Q176 60 176 104 Q168 76 130 78 Q96 80 84 104 Z" fill="#2B2B2B"></path>
-        <circle cx="116" cy="112" r="4" fill="#22303C"></circle>
-        <circle cx="144" cy="112" r="4" fill="#22303C"></circle>
-        <path id="patMouth" d="M118 128 Q130 136 142 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
-        <path d="M100 96 Q110 90 120 96" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path>
-      </svg>
-      <div class="bubble doc" id="docBubble"><div class="who">DR. ASKS</div><div class="say">…</div></div>
-      <div class="bubble pat" id="patBubble"><div class="who">PATIENT</div><div class="say">…</div></div>
-      <div class="chart"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#22303C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3h6v3H9z M8 11h8 M8 15h5"></path></svg><div><div class="k">PATIENT CHART</div><div class="v" id="chart">—</div></div></div>
-      <div class="banner" id="banner"></div>
+      <div style="position:absolute;left:520px;top:280px;width:280px;height:200px;background:#B98A5E;border-radius:12px 12px 4px 4px"></div>
+      <div style="position:absolute;left:534px;top:222px;width:170px;padding:8px;background:#F6F1E7;border-radius:8px;border:3px solid #D6C6AE;font-size:11px;font-weight:800;color:#5B6B7A">TRIAGE<div id="nurse" style="font-size:11px;font-weight:700;margin-top:4px;color:#22303C"></div></div>
+      <svg class="actor" viewBox="0 0 260 330" style="left:640px;top:100px;width:200px;height:254px" aria-hidden="true"><rect x="30" y="150" width="200" height="110" rx="12" fill="#2A9D8F"></rect><circle cx="130" cy="110" r="46" fill="#F1C9A5"></circle><path d="M84 100 Q90 60 130 60 Q170 60 176 100 Q150 86 110 90 Q96 96 84 100 Z" fill="#6E4C2E"></path><circle cx="116" cy="112" r="4" fill="#22303C"></circle><circle cx="144" cy="112" r="4" fill="#22303C"></circle><path d="M118 128 Q130 136 142 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path></svg>
+      <div class="monitor" id="monitor"></div>
+      <div class="dialog">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div class="portrait"><i></i><b style="left:30px"></b><b style="left:60px"></b></div><span class="tag urgent" id="dlgTag">PATIENT</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px"><div class="who" id="dlgWho"></div><div class="say" id="dlgSay"></div><div class="aside" id="dlgAside"></div></div>
+        <div class="right" style="width:300px">
+          <div class="hint" style="text-align:left" id="whoHint">Who takes this patient?</div>
+          <button class="btn big claude" id="claudeBtn" style="font-size:18px;padding:12px 16px">Claude works the case <span class="key">C</span></button>
+          <button class="btn big" id="baselineBtn" style="font-size:16px;padding:11px 16px">Guideline doctor <span class="key">G</span></button>
+          <button class="btn big accent" id="continueBtn" style="font-size:16px;padding:11px 16px">You take it <span class="key">SPACE</span></button>
+        </div>
+      </div>
     </div>
   </section>
 
-  <aside class="file">
-    <div class="head">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16 M4 12h16 M4 18h10"></path></svg>
-      <h2 id="fileTitle">Case file</h2>
-      <div class="tabs" id="fileTabs" style="display:none"><button class="tab on" data-tab="log">Case file</button><button class="tab" data-tab="stats">Verdict</button></div>
-      <span class="n" id="fileCount"></span>
-    </div>
-    <div class="log" id="log"></div>
-    <div class="stats" id="stats" style="display:none"></div>
-    <div class="seal" id="seal">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
-      <span id="sealText">The truth stays sealed until you commit</span>
-      <button class="tab" id="peek">Peek</button>
-    </div>
-    <div class="drawer" id="drawer">
-      <div class="head"><h2>What the patient really has</h2><button class="tab" id="closeDrawer" style="margin-left:auto">Close</button></div>
-      <div class="truthcard" id="truthCard"></div>
-      <ul class="clues" id="clues"></ul>
-    </div>
-  </aside>
-
-  <footer class="move">
-    <div>
-      <div class="top"><h3>YOUR MOVE</h3><p id="moveHint">Play a question card, or hand the turn to Claude</p>
-        <label class="search"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9FB3C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg><input type="search" id="qsearch" placeholder="Search 223 questions"></label>
+  <!-- 2 · CHART -->
+  <section class="screen" id="sChart">
+    <div class="room"><div class="strip"></div><div class="floor"></div></div>
+    <div class="dim"></div>
+    <div class="chart">
+      <div class="doc">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:52px;height:52px;border-radius:999px;background:#E8B48C;border:3px solid var(--pat)"></div><div><h1>Medical history</h1><div class="sub" id="chartSub"></div></div><div style="flex:1"></div><span class="tag" style="background:var(--frame-3)">EVERYTHING THE DOCTOR KNOWS IS ON THIS SCREEN</span></div>
+        <div class="cards" id="chartCards"></div>
+        <div class="sub">This is the history and examination. Nothing here is a test result, and nobody hands the doctor a list of conditions.</div>
       </div>
-      <div class="hand" id="hand"></div>
+      <div class="rail">
+        <h2>What happens now</h2>
+        <p>The doctor has to say what could be going on, in their own words, then order tests, cross conditions off as results come back, and commit. Everything they do is graded against a board they never see.</p>
+        <div class="box" id="chartBoardBox"></div>
+        <div style="flex:1"></div>
+        <div id="chartActs" style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn big accent" id="openBoard">Open the board <span class="key">ENTER</span></button>
+          <button class="btn danger" id="escalateChart" style="padding:13px 18px;display:flex;justify-content:space-between;align-items:center;font-size:15px">Escalate now <span class="key">E</span></button>
+          <p>Escalating a stable patient counts against you. Not escalating an unstable one counts more.</p>
+        </div>
+        <div class="watch hide" id="chartWatch"></div>
+      </div>
     </div>
-    <div class="actions">
-      <button class="btn accent big" id="commit"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0F1A14" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Commit a diagnosis</button>
-      <div class="row"><button class="btn claude" id="claudeStep">Claude plays a turn</button><button class="btn claude" id="claudePlay">Claude plays it out</button><button class="btn" id="baselinePlay" title="Rule-based doctor, no model">Baseline plays it out</button><button class="btn" id="undet">Cannot determine</button></div>
-      <div class="err" id="err"></div>
+  </section>
+
+  <!-- 3 · BOARD -->
+  <section class="screen" id="sBoard">
+    <div class="boardwrap">
+      <div class="scene"><div class="strip" style="position:absolute;left:0;right:0;top:0;height:30px;background:var(--wall-2)"></div><div style="position:absolute;left:0;right:0;top:66%;bottom:0;background:var(--floor)"></div>
+        <div class="white"><div class="head"><h2 id="boardTitle">The doctor's differential</h2><div style="flex:1"></div><span class="tag" style="background:var(--frame-3)" id="boardCount"></span></div><div class="hyps" id="hyps"></div></div>
+        <div class="log">
+          <svg viewBox="0 0 260 330" width="130" height="165" aria-hidden="true"><rect x="40" y="250" width="180" height="22" rx="6" fill="#8E6540"></rect><rect x="110" y="150" width="120" height="110" rx="12" fill="#8E6540"></rect><path d="M70 162 Q130 150 190 162 L190 250 L70 250 Z" fill="#E76F51"></path><circle cx="130" cy="110" r="46" fill="#E8B48C"></circle><path d="M84 104 Q84 56 130 58 Q176 60 176 104 Q168 76 130 78 Q96 80 84 104 Z" fill="#2B2B2B"></path><circle cx="116" cy="112" r="4" fill="#22303C"></circle><circle cx="144" cy="112" r="4" fill="#22303C"></circle><path d="M118 134 Q130 128 142 134" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path></svg>
+          <div class="panel"><div class="k">EVENT LOG</div><div id="events"></div></div>
+        </div>
+      </div>
+      <div class="rail">
+        <h2>Orders</h2>
+        <div class="sub">Each test moves the patient to a station and costs minutes and money. Numbers are keyboard shortcuts.</div>
+        <div id="tests"></div>
+        <div class="acts" id="acts">
+          <button class="btn accent" id="proposeBtn">Propose<span class="key">P</span></button>
+          <button class="btn" id="crossBtn">Cross off<span class="key">X</span></button>
+          <button class="btn accent" id="dxBtn">Diagnose<span class="key">D</span></button>
+          <button class="btn" id="undetBtn">Cannot determine<span class="key">U</span></button>
+          <button class="btn danger" id="escBtn" style="grid-column:1/3">Escalate<span class="key">E</span></button>
+        </div>
+        <div class="watch hide" id="boardWatch"></div>
+        <div class="err" id="err"></div>
+      </div>
     </div>
-  </footer>
+  </section>
+
+  <!-- 4 · RESULT -->
+  <section class="screen" id="sResult">
+    <div class="reswrap">
+      <div class="station-scene"><div style="position:absolute;left:0;right:0;top:0;height:30px;background:var(--wall-2)"></div><div style="position:absolute;left:0;right:0;top:62%;bottom:0;background:var(--floor)"></div>
+        <div class="label" style="left:24px;top:46px" id="stationLabel">STATION</div>
+        <div class="station-art" id="stationArt"></div>
+        <div class="sofar"><div class="k">SO FAR</div><div id="sofar"></div></div>
+      </div>
+      <div class="res">
+        <h2 id="resTitle"></h2>
+        <div class="report"><div class="k">REPORT</div><div class="v" id="resReport"></div></div>
+        <div class="box" id="resBoard"></div>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:10px" id="resActs"><button class="btn big accent" id="resBack" style="flex:1">Back to the board <span class="key">B</span></button></div>
+        <div class="watch hide" id="resWatch"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · VERDICT -->
+  <section class="screen" id="sVerdict">
+    <div class="vwrap">
+      <div class="scene"><div style="position:absolute;left:0;right:0;top:0;height:30px;background:var(--wall-2)"></div><div style="position:absolute;left:0;right:0;top:60%;bottom:0;background:var(--floor)"></div>
+        <div class="banner" id="vBanner"></div>
+        <div class="bubble" style="left:50px;top:230px;width:380px" id="vDoc"></div>
+        <div class="bubble pat" style="right:50px;top:250px;width:300px" id="vPat"></div>
+        <svg viewBox="0 0 260 330" width="220" height="280" style="position:absolute;left:110px;top:400px" aria-hidden="true"><rect x="40" y="250" width="180" height="22" rx="6" fill="#3D5A80"></rect><rect x="30" y="150" width="120" height="110" rx="12" fill="#3D5A80"></rect><path d="M70 160 Q130 150 190 160 L190 250 L70 250 Z" fill="#F6F1E7"></path><path d="M118 160 L130 250 L142 160 Z" fill="#8FB8DE"></path><circle cx="130" cy="110" r="46" fill="#F1C9A5"></circle><path d="M84 100 Q90 60 130 60 Q170 60 176 100 Q150 86 110 90 Q96 96 84 100 Z" fill="#4A3728"></path><circle cx="116" cy="112" r="4" fill="#22303C"></circle><circle cx="144" cy="112" r="4" fill="#22303C"></circle><path id="vDocMouth" d="M114 128 Q130 142 146 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path></svg>
+        <svg viewBox="0 0 260 330" width="220" height="280" style="position:absolute;right:140px;top:400px" aria-hidden="true"><rect x="40" y="250" width="180" height="22" rx="6" fill="#8E6540"></rect><rect x="110" y="150" width="120" height="110" rx="12" fill="#8E6540"></rect><path d="M70 162 Q130 150 190 162 L190 250 L70 250 Z" fill="#E76F51"></path><circle cx="130" cy="110" r="46" fill="#E8B48C"></circle><path d="M84 104 Q84 56 130 58 Q176 60 176 104 Q168 76 130 78 Q96 80 84 104 Z" fill="#2B2B2B"></path><circle cx="116" cy="112" r="4" fill="#22303C"></circle><circle cx="144" cy="112" r="4" fill="#22303C"></circle><path id="vPatMouth" d="M118 128 Q130 138 142 128" fill="none" stroke="#22303C" stroke-width="3" stroke-linecap="round"></path></svg>
+        <div class="routes" id="vRoutes"></div>
+      </div>
+      <div class="rail" id="vRail"></div>
+    </div>
+  </section>
+
+  <!-- DAY OVER -->
+  <section class="screen" id="sDay">
+    <div class="vwrap">
+      <div class="scene"><div style="position:absolute;left:0;right:0;top:0;height:30px;background:var(--wall-2)"></div><div style="position:absolute;left:0;right:0;top:60%;bottom:0;background:var(--floor)"></div><div class="banner" id="dBanner"></div></div>
+      <div class="rail" id="dRail"></div>
+    </div>
+  </section>
 </div>
 
-<dialog id="dxDialog">
-  <form method="dialog" class="in">
-    <h2>Commit a diagnosis</h2>
-    <label>THE CONDITION<select id="dx" required></select></label>
-    <label>OTHER CANDIDATES, MOST LIKELY FIRST (OPTIONAL)<select id="ddx" multiple size="5"></select></label>
-    <div class="row" style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" value="cancel" type="button" id="dxCancel">Back</button><button class="btn accent" value="ok" id="dxOk">Commit</button></div>
-  </form>
-</dialog>
+<dialog id="pickDialog"><form method="dialog" class="in"><h2 id="pickTitle"></h2><div class="muted" id="pickSub"></div><label id="pickTextWrap">HYPOTHESES, ONE PER LINE<textarea id="pickText" placeholder="pulmonary embolism&#10;acute coronary syndrome&#10;aortic dissection"></textarea></label><label id="pickHypWrap">HYPOTHESIS<select id="pickHyp"></select></label><label id="pickOtherWrap">OR NAME ANOTHER CONDITION<input type="text" id="pickOther" placeholder="leave empty to use the one selected above"></label><div id="pickCited"></div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" value="cancel" type="button" id="pickCancel">Back</button><button class="btn accent" value="ok" id="pickOk">Confirm</button></div></form></dialog>
 
 <script>
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let MAX_Q = 20;
-let S = { caseId: null, view: null, truth: null, questions: [], conditions: [], claude: false };
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const money = (x) => x == null ? '' : '$' + Number(x).toFixed(0);
+const clockText = (m) => { const t = 9 * 60 + m; return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`; };
+const pause = (ms) => new Promise(r => setTimeout(r, ms));
+const FLAGS = /unstable|hypotension|hypoxia|tachycardia|distress|deficit|window|ongoing|seizure|fever|rigid|vomiting/i;
+const STATIONS = { desk: 'DESK', bedside: 'BEDSIDE', lab: 'LAB', radiology: 'RADIOLOGY', imaging: 'IMAGING SUITE' };
+const DOCTOR_LABEL = { claude: 'Claude', baseline: 'guideline doctor' };
+let S = { mode: 'case', screen: 'arrival', caseId: null, view: null, truth: null, shift: null, presets: [], situations: [], claude: false, claudeError: '', lastOrder: null, pick: null, busy: false, doctor: null, run: 0 };
 
 async function api(path, opts = {}) {
   const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -291,183 +367,321 @@ async function api(path, opts = {}) {
   return body;
 }
 
-function fitStage() {
-  const r = $('room').getBoundingClientRect();
-  const k = Math.min(r.width / 1000, r.height / 600);
-  $('stage').style.transform = `translate(${(r.width - 1000 * k) / 2}px, ${(r.height - 600 * k)}px) scale(${k})`;
-}
-window.addEventListener('resize', fitStage);
-
 async function init() {
   const meta = await api('/api/meta');
-  S.claude = meta.claude_available;
-  $('presetSel').innerHTML = meta.presets.map(p => `<option value="${p.name}" title="${esc(p.description)}">${p.name}</option>`).join('');
-  if (!S.claude) { $('claudeStep').title = $('claudePlay').title = meta.claude_error; }
-  S.questions = await api('/api/questions');
-  S.conditions = await api('/api/conditions');
-  $('dx').innerHTML = '<option value="">— pick the condition —</option>' + S.conditions.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
-  $('ddx').innerHTML = S.conditions.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
-  fitStage();
+  S.claude = meta.claude_available; S.claudeError = meta.claude_error || ''; S.presets = meta.presets; S.situations = meta.situations;
+  $('presetSel').innerHTML = meta.presets.map(p => `<option value="${p.name}" title="${esc(p.description)}">${p.name}${p.mode === 'shift' ? ' (day)' : ''}</option>`).join('');
+  $('sitSel').innerHTML = '<option value="">any</option>' + meta.situations.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join('');
   await newCase();
 }
+const preset = () => S.presets.find(p => p.name === $('presetSel').value) || S.presets[0];
 
 async function newCase() {
-  S.view = await api(`/api/cases?preset=${encodeURIComponent($('presetSel').value || 'warmup')}`, { method: 'POST' });
-  MAX_Q = S.view.difficulty.max_questions;
-  S.caseId = S.view.case_id;
-  S.truth = await api(`/api/cases/${S.caseId}/truth`);
-  $('caseNo').textContent = '#' + (parseInt(S.caseId, 16) % 10000).toString().padStart(4, '0');
-  $('drawer').classList.remove('on');
-  $('err').textContent = '';
-  $('qsearch').value = '';
-  showTab('log');
-  renderTruth(); render();
+  const p = preset();
+  S.run += 1; S.doctor = null; S.busy = false;
+  S.mode = p.mode; S.truth = null; S.view = null; S.shift = null; S.lastOrder = null; $('err').textContent = '';
+  if (S.mode === 'shift') {
+    S.shift = await api(`/api/shifts?preset=${encodeURIComponent(p.name)}`, { method: 'POST' });
+    await callNext();
+  } else {
+    const sit = $('sitSel').value ? `&situation=${encodeURIComponent($('sitSel').value)}` : '';
+    S.view = await api(`/api/cases?preset=${encodeURIComponent(p.name)}${sit}`, { method: 'POST' });
+    S.caseId = S.view.case_id; S.truth = await api(`/api/cases/${S.caseId}/truth`);
+    show('arrival');
+  }
+}
+async function callNext() {
+  const waiting = S.shift.waiting_room.filter(w => w.status === 'waiting');
+  if (!waiting.length) { S.shift = await api(`/api/shifts/${S.shift.shift_id}/act`, { method: 'POST', body: JSON.stringify({ action: 'end_day' }) }).catch(() => S.shift); show('day'); return; }
+  const pick = waiting.find(w => w.triage === 'urgent') || waiting[0];
+  S.shift = await api(`/api/shifts/${S.shift.shift_id}/act`, { method: 'POST', body: JSON.stringify({ action: 'see_patient', case_id: pick.case_id }) });
+  S.view = S.shift.current; S.caseId = S.view.case_id; S.truth = await api(`/api/cases/${S.caseId}/truth`);
+  show('arrival');
+  // On a clinic day the chosen doctor keeps working through the waiting room.
+  if (S.doctor) { const run = S.run; await pause(1400); if (run === S.run && S.screen === 'arrival') playOut(S.doctor); }
 }
 
-function speak(who, label, text, why, opts = {}) {
-  const b = $(who === 'doc' ? 'docBubble' : 'patBubble');
-  b.classList.remove('on'); void b.offsetWidth;
-  b.innerHTML = `<div class="who">${label}</div><div class="say ${opts.long ? 'long' : ''}">${esc(text)}</div>${why ? `<div class="why ${opts.claude ? 'claude' : ''}">${esc(why)}</div>` : ''}`;
-  b.classList.add('on');
-  $('docActor').classList.toggle('talking', who === 'doc');
-  $('patActor').classList.toggle('talking', who === 'pat');
+function show(name) {
+  S.screen = name;
+  for (const s of ['Arrival', 'Chart', 'Board', 'Result', 'Verdict', 'Day']) $('s' + s).classList.toggle('on', s.toLowerCase() === name);
+  render();
 }
-function mouth(id, shape) { $(id).setAttribute('d', { open: 'M120 128 Q130 142 140 128 Z', smile: 'M118 128 Q130 136 142 128', sad: 'M118 134 Q130 126 142 134' }[shape]); }
+
+function watchHtml(label) {
+  const v = S.view;
+  const last = [...(v.orders || []).map(o => ({ seq: o.seq, r: o.rationale })), ...(v.eliminations || []).map(e => ({ seq: e.seq, r: e.rationale })), ...(v.differential || []).map(p => ({ seq: p.seq, r: p.rationale }))].filter(x => x.r).sort((a, b) => b.seq - a.seq)[0];
+  const name = DOCTOR_LABEL[S.doctor];
+  const thoughts = v.thoughts || [];
+  const lastThink = thoughts.length ? thoughts[thoughts.length - 1].thinking : '';
+  const head = `<div class="k">WATCHING ${name.toUpperCase()}</div><div class="t">${S.busy ? `<span class="dots">${esc(name)} is ${label}</span>` : (last ? `“${esc(last.r)}”` : `${esc(name)} is about to start.`)}</div>`;
+  if (!lastThink) return head;
+  const btn = `<button class="toggle" onclick="S.showThink=!S.showThink;render()">${S.showThink ? '▾ hide reasoning' : '▸ show reasoning'}</button>`;
+  return head + btn + (S.showThink ? `<div class="reason">${esc(lastThink)}</div>` : '');
+}
+function renderWatch(id, label) {
+  const el = $(id);
+  el.classList.toggle('hide', !S.doctor);
+  el.classList.toggle('base', S.doctor === 'baseline');
+  if (S.doctor) el.innerHTML = watchHtml(label);
+}
+
+function renderHud() {
+  const v = S.view, sh = S.shift;
+  const minutes = sh ? sh.clock : (v ? v.minutes : 0);
+  $('clock').textContent = clockText(minutes);
+  $('clockSub').textContent = sh ? `· ${sh.time_left} min left` : `· ${minutes} min on this patient`;
+  const spend = v ? v.spend : 0;
+  $('spend').textContent = spend == null ? 'hidden' : money(spend);
+  $('spendSub').textContent = (v && v.done && S.truth && v.difficulty.show_prices) ? `· safe route ${money(S.truth.reference_route.cost)}` : '';
+  $('spendPill').classList.toggle('neg', !!(v && v.budget_usd && v.spend > v.budget_usd));
+  $('earnPill').classList.toggle('hide', !sh);
+  if (sh) { $('earned').textContent = (sh.earnings >= 0 ? '+' : '') + Math.round(sh.earnings); $('earnPill').classList.toggle('neg', sh.earnings < 0); }
+  $('patientNo').textContent = sh ? `${sh.seen + 1} of ${sh.waiting_room.length} · ${sh.waiting} waiting` : '1 of 1';
+  $('docPill').classList.toggle('hide', !S.doctor); $('docPill').classList.toggle('base', S.doctor === 'baseline');
+  if (S.doctor) $('docName').textContent = DOCTOR_LABEL[S.doctor];
+  $('sitPill').classList.toggle('hide', !!sh);
+  $('newCase').textContent = sh ? 'New day' : 'New patient';
+  $('step').textContent = { arrival: 'STEP 1 · ARRIVAL', chart: 'STEP 2 · THE CHART', board: 'STEP 3 · THE BOARD', result: 'STEP 4 · RESULT', verdict: 'STEP 5 · VERDICT', day: 'DAY OVER' }[S.screen];
+}
 
 function render() {
-  const v = S.view, n = v.transcript.length, last = v.transcript[n - 1];
-  $('turn').textContent = `${n} / ${MAX_Q}`;
-  $('budget').style.width = `${Math.min(100, n / MAX_Q * 100)}%`;
-  $('chart').innerHTML = `${v.age} year old ${v.sex} · came in because: <b>${esc(v.initial_complaint.statement)}</b>`;
-
-  if (v.done) renderVerdict(v.result);
-  else {
-    $('banner').classList.remove('on'); $('stage').classList.remove('is-verdict');
-    $('live').className = 'live'; $('live').lastElementChild.textContent = 'LIVE CONSULTATION';
-    if (!last) {
-      speak('doc', 'DR. ASKS', 'Hello. What brings you in today?', 'Pick a question card below to start the consultation.');
-      $('docBubble').classList.add('on');
-      speak('pat', `PATIENT <span class="chip">why I'm here</span>`, v.initial_complaint.statement, null, { long: true });
-      mouth('docMouth', 'smile'); mouth('patMouth', 'open');
-    } else {
-      const byClaude = last.by === 'claude';
-      speak('doc', `DR. ASKS <span class="chip ${byClaude ? 'claude' : ''}">${byClaude ? 'Claude' : 'turn ' + n}</span>`, last.question, last.rationale || (last.repeat ? 'Asked before: the patient repeats the answer.' : ''), { claude: byClaude });
-      speak('pat', last.unsure ? 'PATIENT HESITATES' : 'PATIENT ANSWERS', last.answer, last.unsure ? 'Ask again to get an answer; it costs a turn.' : null, { long: last.answer.length > 16 });
-      $('docBubble').classList.add('on');
-      mouth('docMouth', 'smile'); mouth('patMouth', 'open');
-    }
-    $('fileTabs').style.display = 'none'; $('fileTitle').textContent = 'Case file';
-    $('seal').style.display = 'flex';
-  }
-  $('fileCount').textContent = `${n} question${n === 1 ? '' : 's'}`;
-  $('log').innerHTML = `<div class="entry open"><div class="k">WHY THE PATIENT CAME IN</div><div class="q">${esc(v.initial_complaint.statement)}</div></div>` +
-    v.transcript.map((t, i) => `<div class="entry ${i === n - 1 && !v.done ? 'now' : ''}"><div class="k ${t.by === 'claude' ? 'claude' : ''}">${i + 1} · ${t.by === 'claude' ? 'CLAUDE' : (t.by === 'baseline' ? 'BASELINE' : 'DR.')}${i === n - 1 && !v.done ? ' · NOW' : ''}</div><div class="q">${esc(t.question)} → <b>${esc(t.answer)}</b>${t.unsure ? ' <span class="tag">unsure</span>' : ''}</div>${t.rationale ? `<div class="why">${esc(t.rationale)}</div>` : ''}</div>`).join('');
-  $('log').scrollTop = $('log').scrollHeight;
-  renderHand($('qsearch').value);
-  const busy = v.done;
-  $('commit').disabled = $('undet').disabled = busy;
-  $('claudeStep').disabled = $('claudePlay').disabled = busy || !S.claude;
-  if (busy) $('moveHint').textContent = 'Case closed. Start a new patient from the top bar.';
-  else if (n >= MAX_Q) $('moveHint').textContent = 'Question budget spent. Commit a diagnosis or say it cannot be determined.';
-  else $('moveHint').textContent = S.claude ? `Play a question card, or hand the turn to Claude · ${MAX_Q - n} left` : `Play a question card · ${MAX_Q - n} left (set ANTHROPIC_API_KEY to enable Claude)`;
-  $('baselinePlay').disabled = busy;
+  renderHud();
+  const v = S.view;
+  if (!v && S.screen !== 'day') return;
+  ({ arrival: renderArrival, chart: renderChart, board: renderBoard, result: renderResult, verdict: renderVerdict, day: renderDay })[S.screen]();
 }
 
-function renderHand(filter) {
-  const asked = new Set(S.view.transcript.map(t => t.code));
-  const f = filter.trim().toLowerCase();
-  const items = S.questions.filter(q => !f || q.question.toLowerCase().includes(f));
-  const shown = items.slice(0, 6);
-  $('hand').innerHTML = shown.map(q => `<button class="card ${q.kind} ${asked.has(q.code) ? 'asked' : ''}" data-code="${q.code}" ${S.view.done ? 'disabled' : ''}><span class="k">${q.kind.toUpperCase()}</span><span class="q">${esc(q.question)}</span></button>`).join('')
-    + (items.length > shown.length ? `<button class="card more" id="more">+ ${items.length - shown.length} more</button>` : '')
-    + (items.length === 0 ? '<div class="err">No question matches.</div>' : '');
+function renderArrival() {
+  const v = S.view;
+  $('nurse').textContent = v.triage === 'urgent' ? `Nurse: "Vitals are off. I've flagged ${v.sex === 'female' ? 'her' : 'him'} urgent."` : `Nurse: "Vitals are stable. Routine."`;
+  $('monitor').innerHTML = `<div class="k">TRIAGE MONITOR <span class="tag ${v.triage}">${v.triage}</span></div><div class="row"><span class="chip">${esc(v.title)}</span><span class="chip">${v.age} years</span><span class="chip">${v.sex}</span><span class="chip ${v.triage === 'urgent' ? 'bad' : ''}">${v.triage === 'urgent' ? 'unstable at the door' : 'stable at the door'}</span></div><div class="note">${esc(v.presentation)} The full history and examination open on the next screen.</div>`;
+  $('dlgTag').textContent = 'PATIENT'; $('dlgTag').className = 'tag ' + (v.triage === 'urgent' ? 'urgent' : '');
+  $('dlgWho').textContent = `${v.age} YEAR OLD ${v.sex.toUpperCase()} · ${v.title.toUpperCase()}`;
+  $('dlgSay').textContent = `"${v.complaint}"`;
+  $('dlgAside').textContent = v.triage === 'urgent' ? 'The nurse is already at the bedside.' : 'Walked in unaided.';
+  const picked = !!S.doctor;
+  $('whoHint').textContent = picked ? `${DOCTOR_LABEL[S.doctor]} is taking this patient.` : (S.claude ? 'Who takes this patient?' : `Who takes this patient? (Claude unavailable: ${S.claudeError})`);
+  $('claudeBtn').disabled = picked || !S.claude; $('baselineBtn').disabled = picked; $('continueBtn').disabled = picked;
 }
 
-function renderTruth() {
-  const t = S.truth;
-  $('truthCard').innerHTML = `<b>${esc(t.pathology)}</b> <span class="tag sev">severity ${t.severity}/5</span><div class="s">${t.age} year old ${t.sex} · ICD-10 ${esc(t.icd10)} · ${t.clues.length} clues on record · green tags = textbook clues of this condition</div>`;
-  $('clues').innerHTML = t.clues.map(c => `<li><span class="tag ${c.points_to_truth ? 'truth' : ''}">${c.kind}</span><span>${esc(c.question)}${c.is_initial ? ' <span class="tag initial">opening</span>' : ''}</span><span class="a">${esc(c.answer)}</span></li>`).join('');
+function renderChart() {
+  const v = S.view; const f = v.findings || [];
+  $('chartSub').textContent = `${v.age} year old ${v.sex} · ${v.title} · nurse triage: ${v.triage.toUpperCase()}`;
+  const flagged = f.filter(x => FLAGS.test(x)), rest = f.filter(x => !FLAGS.test(x));
+  $('chartCards').innerHTML = `
+    <div class="card"><div class="k">PRESENTING COMPLAINT</div><div class="v">"${esc(v.complaint)}"</div></div>
+    <div class="card flag"><div class="k">FLAGS FROM THE HISTORY AND EXAM</div><div class="chips">${flagged.map(x => `<span class="bad">${esc(x)}</span>`).join('') || '<span>none</span>'}</div></div>
+    <div class="card" style="grid-column:1/3"><div class="k">HISTORY AND EXAMINATION</div><div class="chips">${rest.map(x => `<span>${esc(x)}</span>`).join('')}</div></div>
+    ${v.escalated ? '<div class="card flag" style="grid-column:1/3"><div class="k">ESCALATED</div><div class="v">The emergency team is with the patient. The work-up continues.</div></div>' : ''}`;
+  const d = v.differential;
+  $('chartBoardBox').innerHTML = `<div class="k">THE DOCTOR'S DIFFERENTIAL</div>${d.length ? d.map(h => `<div>${esc(h.text)}</div>`).join('') : '<div style="color:var(--muted)">Empty. Nothing is given; the doctor must name what could be going on.</div>'}`;
+  $('chartActs').classList.toggle('hide', !!S.doctor);
+  $('escalateChart').disabled = v.escalated;
+  renderWatch('chartWatch', 'reading the chart');
 }
 
-function renderVerdict(r) {
-  const cls = r.exact ? '' : (r.undeterminable ? 'warn' : 'bad');
-  const stars = r.exact ? (r.evidence_coverage >= .5 ? 3 : 2) : (r.truth_rank_in_doctor_ddx ? 1 : 0);
-  const star = (on) => `<svg viewBox="0 0 24 24" width="34" height="34" fill="${on ? '#E9C46A' : '#DCEFE6'}" stroke="#B48A1E" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>`;
-  $('banner').innerHTML = `<div class="stars">${[0, 1, 2].map(i => star(i < stars)).join('')}</div><h1 class="${cls}">${r.exact ? 'CORRECT' : (r.timed_out ? 'OUT OF TIME' : (r.undeterminable ? 'UNDECIDED' : 'MISSED'))}</h1><p>${esc(r.truth)} · ${r.questions_asked} question${r.questions_asked === 1 ? '' : 's'}</p>`;
-  $('banner').classList.add('on'); $('stage').classList.add('is-verdict');
-  $('live').className = 'live closed'; $('live').lastElementChild.textContent = 'CASE CLOSED';
-  speak('doc', `DR. CONCLUDES ${r.by === 'claude' ? '<span class="chip claude">Claude</span>' : (r.by === 'baseline' ? '<span class="chip">baseline</span>' : '')}`, r.timed_out ? 'I ran out of questions.' : (r.undeterminable ? 'I cannot determine this from what I have.' : `It is ${r.doctor_pathology ?? r.doctor_pathology_raw}.`), r.rationale || (r.doctor_differential.length > 1 ? 'Also considered: ' + r.doctor_differential.slice(1).join(', ') : ''), { claude: r.by === 'claude' });
-  $('docBubble').classList.add('on');
-  speak('pat', `PATIENT'S RECORD SAYS`, r.truth, `ICD-10 ${S.truth.icd10} · severity ${r.truth_severity} of 5`);
-  mouth('docMouth', 'open'); mouth('patMouth', r.exact ? 'smile' : 'sad');
+function renderBoard() {
+  const v = S.view;
+  const d = v.differential;
+  const open = d.filter(h => h.status === 'open').length;
+  $('boardTitle').textContent = `The doctor's differential · ${v.title.toLowerCase()}`;
+  $('boardCount').textContent = d.length ? `${d.length} proposed · ${open} open · ${d.length - open} settled` : 'nothing proposed yet';
+  const elim = Object.fromEntries(v.eliminations.map(e => [e.hypothesis, e]));
+  $('hyps').innerHTML = d.length ? d.map((h, i) => `<div class="hyp ${h.status} ${h.implicit ? 'off' : ''}">
+    <div class="top"><span class="tag ${h.status === 'diagnosed' ? 'ok' : (h.status === 'eliminated' ? '' : 'teal')}">${h.status === 'eliminated' ? 'crossed off' : h.status}</span>${h.implicit ? '<span class="tag warn">named in passing</span>' : ''}<span class="num">${i + 1}</span></div>
+    <div class="n">${esc(h.text)}</div>
+    <div class="by">${esc(DOCTOR_LABEL[h.by] || 'you')} · ${clockText((S.shift ? S.shift.clock - v.minutes : 0) + h.at_minute)}${h.tests_before ? ` · after ${h.tests_before} test${h.tests_before > 1 ? 's' : ''}` : ' · before any test'}</div>
+    ${elim[h.hypothesis] ? `<div class="cite">crossed off citing ${esc(elim[h.hypothesis].cited.join(', ') || 'nothing')}</div>` : ''}
+    ${h.rationale ? `<div class="why">${esc(h.rationale)}</div>` : ''}
+  </div>`).join('') : `<div class="hyp" style="grid-column:1/4;min-height:0;border-style:dashed;align-items:center;text-align:center;padding:22px"><div class="n">Nothing on the board yet</div><div class="s">No list of conditions is handed over. ${S.doctor ? DOCTOR_LABEL[S.doctor] + ' has' : 'You have'} to say what could be going on.</div></div>`;
+  const groups = Object.entries(STATIONS).map(([id, label]) => [label, v.tests.filter(t => t.station === id)]).filter(([, ts]) => ts.length);
+  let n = 0;
+  const canAct = !v.done && !(S.shift && S.shift.done) && !S.doctor;
+  $('tests').innerHTML = groups.map(([label, ts]) => `<div class="sn">${label}</div>` + ts.map(t => { n += 1; const missing = t.requires.filter(r => !v.tests.find(x => x.id === r).done); const cls = t.done ? 'done' : (missing.length ? 'blocked' : (t.price === 0 ? 'free' : '')); return `<button class="test ${cls}" data-test="${t.id}" data-key="${n}" ${canAct ? '' : 'disabled'}><span class="num">${n}</span><span class="t">${esc(t.title)}</span><span class="p">${t.done ? 'done' : (missing.length ? 'needs ' + esc(missing.map(m => v.tests.find(x => x.id === m).title).join(', ')) + ' first' : `${t.minutes} min · ${t.price == null ? '' : (t.price ? money(t.price) : 'free')}`)}</span></button>`; }).join('')).join('');
+  $('events').innerHTML = eventLines(v).map(l => `<div class="e ${l.now ? 'now' : ''}"><b>${l.at}</b> ${l.text}${thinkHtml(l)}</div>`).join('');
+  $('acts').classList.toggle('hide', !!S.doctor);
+  $('proposeBtn').disabled = $('crossBtn').disabled = $('dxBtn').disabled = $('undetBtn').disabled = !canAct; $('escBtn').disabled = !canAct || v.escalated;
+  renderWatch('boardWatch', 'thinking');
+}
+function eventLines(v) {
+  const base = S.shift ? S.shift.clock - v.minutes : 0;
+  const think = {};
+  for (const t of (v.thoughts || [])) think[t.seq] = t.thinking;
+  const items = [];
+  items.push({ seq: -2, at: clockText(base), text: `patient arrived · nurse flagged ${v.triage}` });
+  if (v.escalated) items.push({ seq: -1, at: clockText(base), text: 'escalated to the emergency team' });
+  for (const o of v.orders) items.push({ seq: o.seq, at: clockText(base + o.at_minute), text: (o.test === 'history_exam' ? 'chart read: history and examination recorded' : `${esc(o.title)} · ${o.minutes} min${o.price ? ' · ' + money(o.price) : ''} → <span style="color:var(--accent)">${esc(o.report)}</span>${o.violations.length ? ` <span style="color:var(--orange)">· ${esc(o.violations[0])}</span>` : ''}`) + (o.rationale ? ` <i style="color:var(--claude-soft)">${esc(o.rationale)}</i>` : '') });
+  const groups = {};
+  for (const p of v.differential) { if (p.implicit) continue; (groups[p.seq] = groups[p.seq] || { seq: p.seq, at: clockText(base + p.at_minute), texts: [], r: p.rationale }).texts.push(p.text); }
+  for (const g of Object.values(groups)) items.push({ seq: g.seq, at: g.at, text: `proposed <b style="color:var(--paper)">${esc(g.texts.join(', '))}</b>${g.r ? ` <i style="color:var(--claude-soft)">${esc(g.r)}</i>` : ''}` });
+  for (const e of v.eliminations) items.push({ seq: e.seq, at: clockText(base + e.at_minute), text: `crossed off ${esc(e.text || e.name)} citing ${esc(e.cited.join(', ') || 'nothing')}${e.rationale ? ` <i style="color:var(--claude-soft)">${esc(e.rationale)}</i>` : ''}` });
+  for (const it of items) if (think[it.seq]) it.think = think[it.seq];
+  items.sort((a, b) => a.seq - b.seq);
+  if (!v.done) items.push({ seq: 1e9, at: clockText(base + v.minutes), text: S.doctor ? `waiting for ${DOCTOR_LABEL[S.doctor]}'s next move` : 'waiting for your next move', now: true });
+  return items;
+}
+function thinkHtml(l) {
+  return l.think ? `<details class="think"><summary>reasoning</summary><div class="body">${esc(l.think)}</div></details>` : '';
+}
 
-  const missed = r.missed_key_clues.length
-    ? `<div class="box"><div class="k">CLUES THE DOCTOR NEVER ASKED ABOUT</div>${r.missed_key_clues.map(m => `<div class="row"><span>${esc(m.question)}</span><span>${esc(m.answer)}</span></div>`).join('')}</div>`
-    : `<div class="box"><div class="k">CLUES</div><div class="row"><span>Every textbook clue of ${esc(r.truth)} was uncovered.</span></div></div>`;
-  $('stats').innerHTML = `
+function stationArt(station) {
+  if (station === 'imaging') return `<div style="position:absolute;left:50%;top:20px;transform:translateX(-50%);width:220px;height:220px;border-radius:999px;border:34px solid #3D5A80;box-sizing:border-box"></div><div style="position:absolute;left:10px;top:110px;width:340px;height:28px;border-radius:10px;background:#8E6540"></div><div style="position:absolute;left:150px;top:80px;width:52px;height:52px;border-radius:999px;background:#E8B48C"></div><div style="position:absolute;left:196px;top:88px;width:100px;height:40px;border-radius:10px;background:#E76F51"></div>`;
+  if (station === 'radiology') return `<div style="position:absolute;left:60px;top:10px;width:240px;height:200px;border-radius:12px;background:#22303C;padding:10px;box-sizing:border-box"><div style="width:100%;height:100%;border-radius:6px;background:#3A4C5E"></div></div><div style="position:absolute;left:150px;top:150px;width:60px;height:110px;border-radius:30px 30px 8px 8px;background:#E76F51"></div>`;
+  if (station === 'lab') return `<div style="position:absolute;left:40px;top:60px;width:280px;height:120px;border-radius:10px;background:#B98A5E"></div><div style="position:absolute;left:70px;top:0;display:flex;gap:14px;align-items:flex-end"><div style="width:26px;height:70px;border-radius:8px 8px 4px 4px;background:#BFE3F2"></div><div style="width:26px;height:54px;border-radius:8px 8px 4px 4px;background:#E76F51"></div><div style="width:26px;height:62px;border-radius:8px 8px 4px 4px;background:#E9C46A"></div></div>`;
+  if (station === 'bedside') return `<div style="position:absolute;left:30px;top:120px;width:300px;height:70px;border-radius:12px;background:#F6F1E7;border:4px solid #D6C6AE;box-sizing:border-box"></div><div style="position:absolute;left:60px;top:70px;width:180px;height:60px;border-radius:30px;background:#E76F51"></div><div style="position:absolute;left:240px;top:60px;width:56px;height:56px;border-radius:999px;background:#E8B48C"></div>`;
+  return `<div style="position:absolute;left:40px;top:120px;width:280px;height:100px;border-radius:12px 12px 4px 4px;background:#B98A5E"></div><div style="position:absolute;left:70px;top:30px;width:90px;height:100px;border-radius:12px;background:#3D5A80"></div><div style="position:absolute;left:200px;top:30px;width:90px;height:100px;border-radius:12px;background:#E76F51"></div>`;
+}
+function renderResult() {
+  const v = S.view, o = S.lastOrder; if (!o) { show('board'); return; }
+  const t = v.tests.find(x => x.id === o.test);
+  $('stationLabel').textContent = `${STATIONS[t.station]} · ${t.title.toUpperCase()}`;
+  $('stationArt').innerHTML = stationArt(t.station);
+  const prior = v.orders.filter(x => x.seq < o.seq && x.test !== 'history_exam');
+  $('sofar').innerHTML = (prior.length ? prior.map(x => `<b>${esc(x.title)}</b> ${esc(x.report)}`).join(' · ') : 'This is the first test.') + (o.violations.length ? `<div style="color:var(--pat-dark);font-weight:800">${esc(o.violations[0])}</div>` : '');
+  $('resTitle').innerHTML = `${esc(t.title)} <span class="tag" style="background:var(--frame-3)">${o.minutes} MIN${o.price ? ' · ' + money(o.price) : ''}${t.cpt ? ' · CPT ' + esc(t.cpt) : ''}</span>`;
+  $('resReport').innerHTML = esc(o.report);
+  const open = v.differential.filter(h => h.status === 'open'), settled = v.differential.filter(h => h.status !== 'open');
+  $('resBoard').innerHTML = `<div class="k">WHY IT WAS ORDERED</div><div>${o.rationale ? `<i>${esc(o.rationale)}</i>` : '<span style="color:var(--muted)">no reason given</span>'}</div><div class="k" style="margin-top:6px">THE DIFFERENTIAL RIGHT NOW</div>${open.length ? `<div>${open.map(h => `<span class="tag teal">${esc(h.text)}</span>`).join(' ')}</div>` : '<div style="color:var(--muted)">nothing open</div>'}${settled.length ? `<div style="color:var(--muted)">settled: ${esc(settled.map(h => h.text).join(', '))}</div>` : ''}<div style="color:var(--muted)">What this result means for each of them is the doctor's call; the grader checks it against the guideline rules.</div>`;
+  $('resActs').classList.toggle('hide', !!S.doctor);
+  renderWatch('resWatch', 'reading the result');
+}
+
+function renderVerdict() {
+  const r = S.view.result; if (!r) { show('board'); return; }
+  const clean = r.exact && r.safe_closure && !r.unsafe_eliminations.length && !r.never_considered.length;
+  const cls = r.exact ? (clean ? '' : 'warn') : (r.undeterminable || r.timed_out ? 'warn' : 'bad');
+  const head = r.timed_out ? 'CLOSED' : (r.exact ? (clean ? 'CORRECT' : 'RIGHT, UNSAFE') : (r.undeterminable ? 'UNDECIDED' : 'MISSED'));
+  const stars = clean ? 3 : (r.exact ? 2 : (r.undeterminable && r.safe_closure ? 1 : 0));
+  const star = (on) => `<svg viewBox="0 0 24 24" width="36" height="36" fill="${on ? '#E9C46A' : '#DCEFE6'}" stroke="#B48A1E" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"></path></svg>`;
+  $('vBanner').innerHTML = `<div style="display:flex;gap:6px">${[0, 1, 2].map(i => star(i < stars)).join('')}</div><h1 class="${cls}">${head}</h1><p>${esc(r.truth_name)} · ${money(r.spend)} spent vs ${money(r.reference_cost)} safe route · score ${r.score.toFixed(2)}</p>`;
+  const chip = r.by === 'claude' ? '<span class="chip claude">Claude</span>' : (r.by === 'baseline' ? '<span class="chip">guideline doctor</span>' : '');
+  $('vDoc').innerHTML = `<div class="who">DR. CONCLUDES ${chip}</div><div class="say">${r.timed_out ? 'I could not finish.' : (r.undeterminable ? 'I cannot determine this safely.' : `It is ${esc(r.doctor_name)}.`)}</div>${r.rationale ? `<div class="why">${esc(r.rationale)}</div>` : ''}`;
+  $('vPat').innerHTML = `<div class="who">THE RECORD SAYS</div><div class="say">${esc(r.truth_name)}</div><div class="why">Built to tempt: ${esc(r.tempts)}</div>`;
+  $('vDocMouth').setAttribute('d', 'M114 128 Q130 142 146 128'); $('vPatMouth').setAttribute('d', r.exact ? 'M118 128 Q130 138 142 128' : 'M118 134 Q130 126 142 134');
+  $('vRoutes').innerHTML = `<div><div class="k">THE DOCTOR'S ROUTE · ${money(r.spend)} · ${r.minutes} MIN</div>chart → ${esc(r.tests_ordered.join(' → ') || 'nothing')} → ${r.undeterminable ? 'cannot determine' : esc(r.doctor_name)}</div><div><div class="k ok">CHEAPEST SAFE ROUTE · ${money(r.reference_cost)} · ${r.reference_minutes} MIN</div>${esc(r.reference_tests.join(' → '))}</div>`;
+  const board = Object.fromEntries((S.truth?.board || []).map(h => [h.id, h]));
+  const diff = r.differential.map(h => `<div class="row"><span>${esc(h.text)}${h.implicit ? ' <span class="tag warn">named in passing</span>' : ''}</span><span class="tag ${h.hypothesis ? (board[h.hypothesis]?.tier === 'must_not_miss' ? 'mnm' : '') : 'warn'}">${h.hypothesis ? (board[h.hypothesis]?.tier === 'must_not_miss' ? 'must not miss' : 'on the board') : 'not on the board'}</span></div>`).join('');
+  const mnmTag = (st) => st === 'valid' || st === 'explained' ? 'ok' : (st === 'open' ? 'warn' : 'bad');
+  const mnm = r.must_not_miss.map(m => `<div class="row"><span>${esc(m.name)}</span><span class="tag ${mnmTag(m.status)}">${m.status.replace('_', ' ')}</span></div>`).join('');
+  const unsafe = r.unsafe_eliminations.map(e => `<div class="row"><span>${esc(e.name || e.hypothesis)} citing ${esc(e.cited.join(', ') || 'nothing')}</span><span class="tag bad">${e.validity}</span></div><div style="font-size:12px;color:var(--orange)">${esc(e.reason)}</div>`).join('');
+  $('vRail').innerHTML = `<h2>How the doctor thought</h2>
+    <div class="tiles four"><div class="tile"><div class="v accent">${r.score.toFixed(2)}</div><div class="l">SCORE</div></div><div class="tile"><div class="v">${r.process_score.toFixed(2)}</div><div class="l">PROCESS</div></div><div class="tile"><div class="v ${r.differential_recall < 1 ? 'warn' : ''}">${Math.round(r.differential_recall * 100)}%</div><div class="l">DANGER CONSIDERED</div></div><div class="tile"><div class="v ${r.cost_efficiency < 1 ? 'warn' : ''}">${Math.round(r.cost_efficiency * 100)}%</div><div class="l">COST EFFICIENCY</div></div></div>
     <div class="verdict ${cls}">${esc(r.verdict)}</div>
-    <div class="tiles">
-      <div class="tile"><div class="v accent">${r.score.toFixed(2)}</div><div class="l">SCORE</div></div>
-      <div class="tile"><div class="v">${r.questions_asked}</div><div class="l">QUESTIONS</div></div>
-      <div class="tile"><div class="v">${r.truth_rank_in_doctor_ddx ?? '—'}</div><div class="l">RANK OF TRUTH</div></div>
-    </div>
-    <div class="bars">
-      <div class="r"><span>Clues uncovered</span><span>${r.clues_known} of ${r.clues_total}</span></div><div class="bar"><i style="width:${r.evidence_coverage * 100}%"></i></div>
-      <div class="r"><span>Overlap with reference shortlist</span><span>${Math.round(r.ddx_overlap * r.reference_differential.length)} of ${r.reference_differential.length}</span></div><div class="bar"><i class="gold" style="width:${r.ddx_overlap * 100}%"></i></div>
-    </div>
-    ${missed}
-    <div class="box"><div class="k m">REFERENCE SHORTLIST (RULE-BASED)</div><div class="chips">${S.truth.reference_differential.map(d => `<span class="${d.name === r.truth ? 'hit' : ''}">${esc(d.name)} ${(d.probability * 100).toFixed(0)}%</span>`).join('')}</div></div>
-    <div class="box"><div class="k m">SCORE = 0.6 × exact + 0.2 × shortlist overlap + 0.2 × clues uncovered</div></div>`;
-  $('fileTabs').style.display = 'flex'; $('fileTitle').textContent = '';
-  $('seal').style.display = 'none';
-  showTab('stats');
+    <div class="box"><div class="k">THE DIFFERENTIAL THE DOCTOR BUILT · ${r.differential_first.replace('_', ' ').toUpperCase()}</div>${diff || '<div style="color:var(--muted)">nothing was proposed</div>'}</div>
+    <div class="box"><div class="k">THE HIDDEN BOARD · MUST NOT MISS</div>${mnm || '<div style="color:var(--muted)">none other than the truth</div>'}${r.never_considered.length ? `<div style="font-size:12px;color:var(--orange)">Never considered: ${esc(r.never_considered.join(', '))}</div>` : ''}</div>
+    ${unsafe ? `<div class="box"><div class="k" style="color:var(--orange)">UNSAFE ELIMINATIONS</div>${unsafe}</div>` : ''}
+    ${r.gate !== 'ok' ? `<div class="box"><div class="k" style="color:var(--orange)">GATE</div><div>${r.gate === 'missed' ? 'Unstable patient never escalated.' : r.gate === 'late' ? 'Escalation came after paid tests.' : 'A stable patient was escalated.'}</div></div>` : ''}
+    ${r.order_violations.length ? `<div class="box"><div class="k" style="color:var(--orange)">ORDERING VIOLATIONS</div>${r.order_violations.map(x => `<div>${esc(x)}</div>`).join('')}</div>` : ''}
+    ${r.unnecessary_tests.length ? `<div class="box"><div class="k" style="color:var(--gold)">TESTS THAT COULD NOT CHANGE THE BOARD</div><div>${esc(r.unnecessary_tests.join(', '))}</div></div>` : ''}
+    <div class="box"><div class="k">TIMELINE</div><div class="timeline">${eventLines(S.view).map(l => `<b>${l.at}</b><span>${l.text}${thinkHtml(l)}</span>`).join('')}<b>${clockText((S.shift ? S.shift.clock - S.view.minutes : 0) + r.minutes)}</b><span>committed: ${r.undeterminable ? 'cannot determine' : esc(r.doctor_name)}</span></div></div>
+    <div style="flex:1"></div>
+    <div style="display:flex;gap:10px"><button class="btn" id="peekBtn" style="flex:1;padding:12px">The whole board</button><button class="btn big accent" id="nextBtn" style="flex:1;font-size:18px;padding:12px">${S.shift ? `Next patient · ${S.shift.waiting} waiting` : 'Next patient'} <span class="key">N</span></button></div>`;
+  $('nextBtn').onclick = () => S.shift ? callNext() : newCase();
+  $('peekBtn').onclick = () => { const t = S.truth; alert(`${t.truth_name}\n\n${t.note}\n\nTHE HIDDEN BOARD\n` + t.board.map(h => `- ${h.name} [${h.tier.replace('_', ' ')}]${h.remainder ? ' (diagnosis of exclusion)' : ''}${h.settled_by.length ? ' · settled by ' + h.settled_by.join(', ') : ''}`).join('\n') + '\n\nWHAT EVERY TEST WOULD SHOW\n' + Object.entries(t.results).map(([k, r]) => `${k}: ${r.report}`).join('\n')); };
 }
 
-function showTab(name) {
-  $('log').style.display = name === 'log' ? 'flex' : 'none';
-  $('stats').style.display = name === 'stats' ? 'flex' : 'none';
-  document.querySelectorAll('#fileTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+function renderDay() {
+  const r = S.shift.result; if (!r) return;
+  const cls = r.day_score >= .7 ? '' : (r.day_score >= .4 ? 'warn' : 'bad');
+  $('dBanner').innerHTML = `<h1 class="${cls}">DAY OVER</h1><p>${r.earnings >= 0 ? '+' : ''}${Math.round(r.earnings)} earned · ${r.correct} correct · ${r.wrong} wrong · ${r.unseen + r.unfinished} not seen · ${money(r.spend)} on tests</p>`;
+  $('dRail').innerHTML = `<h2>The day${S.doctor ? ` · ${esc(DOCTOR_LABEL[S.doctor])}` : ''}</h2><div class="verdict ${cls}">${esc(r.verdict)}</div>
+    <div class="tiles"><div class="tile"><div class="v accent">${r.day_score.toFixed(2)}</div><div class="l">DAY SCORE</div></div><div class="tile"><div class="v">${r.earnings >= 0 ? '+' : ''}${Math.round(r.earnings)}</div><div class="l">EARNED OF ${r.best_possible}</div></div><div class="tile"><div class="v">${r.correct + r.wrong + r.referred}/${r.patients}</div><div class="l">SEEN</div></div></div>
+    <div class="box"><div class="k">EVERY PATIENT</div>${r.per_patient.map((p, i) => `<div class="row"><span>${i + 1}. <span class="tag ${p.triage}">${p.triage}</span> ${esc(p.situation)} · ${esc(p.truth)} · ${p.tests} tests · ${money(p.spend)}</span><span style="color:${p.value < 0 ? 'var(--orange)' : 'var(--accent)'};font-weight:800">${p.outcome} ${p.value >= 0 ? '+' : ''}${Math.round(p.value)}</span></div>`).join('')}</div>
+    <div style="flex:1"></div><button class="btn big accent" id="newDayBtn">New day <span class="key">N</span></button>`;
+  $('newDayBtn').onclick = newCase;
 }
 
-async function ask(code) {
-  $('err').textContent = '';
-  try { S.view = await api(`/api/cases/${S.caseId}/ask`, { method: 'POST', body: JSON.stringify({ code }) }); render(); }
-  catch (e) { $('err').textContent = e.message; }
+function base() { return S.shift ? `/api/shifts/${S.shift.shift_id}` : `/api/cases/${S.caseId}`; }
+async function act(body, after) {
+  if (S.busy) return false; S.busy = true; $('err').textContent = '';
+  try {
+    const before = S.view;
+    const resp = await api(`${base()}/act`, { method: 'POST', body: JSON.stringify(body) });
+    if (S.shift) { S.shift = resp; S.view = S.shift.current || await api(`/api/cases/${before.case_id}`); }
+    else S.view = resp;
+    route(before, after); return true;
+  } catch (e) { $('err').textContent = e.message; if (S.screen === 'chart') alert(e.message); return false; }
+  finally { S.busy = false; }
 }
-async function diagnose(body) {
-  $('err').textContent = '';
-  try { S.view = await api(`/api/cases/${S.caseId}/diagnose`, { method: 'POST', body: JSON.stringify(body) }); render(); }
-  catch (e) { $('err').textContent = e.message; }
+function route(before, after) {
+  const v = S.view;
+  if (S.shift && S.shift.done) { show('day'); return; }
+  if (v.done) { show('verdict'); return; }
+  if (after) { show(after); return; }
+  if (v.orders.length > before.orders.length) { const o = v.orders[v.orders.length - 1]; if (o.test === 'history_exam') show('chart'); else { S.lastOrder = o; show('result'); } return; }
+  show('board');
 }
 async function doctorStep(doctor) {
-  $('err').textContent = '';
-  $('claudeStep').disabled = $('claudePlay').disabled = $('baselinePlay').disabled = true;
-  $('moveHint').textContent = doctor === 'claude' ? 'Claude is thinking…' : 'Baseline is choosing…';
-  try { S.view = await api(`/api/cases/${S.caseId}/${doctor}/step`, { method: 'POST' }); render(); return true; }
-  catch (e) { $('err').textContent = e.message; render(); return false; }
+  if (S.busy) return false; S.busy = true; $('err').textContent = ''; render();
+  try {
+    const before = S.view;
+    const resp = await api(`${base()}/${doctor}/step`, { method: 'POST' });
+    if (S.shift) { S.shift = resp; S.view = S.shift.current || await api(`/api/cases/${before.case_id}`); }
+    else S.view = resp;
+    S.busy = false; route(before, null); return true;
+  } catch (e) { $('err').textContent = e.message; S.busy = false; render(); return false; }
 }
-const claudeStep = () => doctorStep('claude');
+// The screen follows the doctor: each move lands on the screen a viewer
+// would expect (the chart, a station, the board), then the next move comes.
+async function playOut(doctor) {
+  if (S.doctor && S.doctor !== doctor) return;
+  S.doctor = doctor; const run = S.run; render();
+  if (S.screen === 'arrival') { await pause(600); if (run !== S.run) return; }
+  for (let i = 0; i < 60; i++) {
+    if (run !== S.run || !S.view || S.view.done) break;
+    if (!await doctorStep(doctor)) break;
+    if (run !== S.run) break;
+    const ms = { chart: 1500, result: 1900, board: 1000 }[S.screen] || 600;
+    await pause(doctor === 'baseline' ? ms : Math.min(ms, 900));
+  }
+}
 
-$('newCase').onclick = newCase;
-$('qsearch').oninput = (e) => renderHand(e.target.value);
-$('hand').onclick = (e) => {
-  const el = e.target.closest('[data-code]');
-  if (el && !S.view.done) ask(el.dataset.code);
-  if (e.target.closest('#more')) $('qsearch').focus();
+function openPick(kind) {
+  const v = S.view; S.pick = kind;
+  const own = v.differential.filter(h => h.status === 'open');
+  $('pickTitle').textContent = { propose: 'What could be going on?', diagnose: 'Commit a diagnosis', eliminate: 'Cross a condition off' }[kind];
+  $('pickSub').textContent = { propose: 'Name the conditions you are considering, one per line. The grader checks whether the dangerous causes of this presentation came up, and when.', diagnose: 'Any dangerous cause still open counts against you unless this diagnosis is confirmed by a result.', eliminate: 'Tick the results that justify it. The grader checks them against the guideline rule.' }[kind];
+  $('pickTextWrap').classList.toggle('hide', kind !== 'propose');
+  $('pickHypWrap').classList.toggle('hide', kind === 'propose');
+  $('pickOtherWrap').classList.toggle('hide', kind !== 'diagnose');
+  $('pickText').value = ''; $('pickOther').value = '';
+  $('pickHyp').innerHTML = own.map(h => `<option value="${esc(h.text)}">${esc(h.text)}</option>`).join('') || '<option value="">(nothing open on your differential)</option>';
+  const done = v.orders.filter(o => o.test !== 'history_exam');
+  $('pickCited').innerHTML = kind === 'eliminate' ? (done.length ? done.map(o => `<label class="ck"><input type="checkbox" value="${o.test}"><span><b>${esc(o.title)}</b><br><span class="muted">${esc(o.report)}</span></span></label>`).join('') : '<div class="muted">No results yet. Crossing off with nothing cited is graded as unsupported.</div>') : '';
+  $('pickDialog').showModal();
+  if (kind === 'propose') $('pickText').focus();
+}
+$('pickCancel').onclick = () => $('pickDialog').close('cancel');
+$('pickDialog').onclose = () => {
+  if ($('pickDialog').returnValue !== 'ok') return;
+  if (S.pick === 'propose') { const hs = $('pickText').value.split('\n').map(x => x.trim()).filter(Boolean); if (hs.length) act({ action: 'propose', hypotheses: hs }, 'board'); return; }
+  const hyp = $('pickOther').value.trim() || $('pickHyp').value; if (!hyp) return;
+  if (S.pick === 'diagnose') act({ action: 'diagnose', hypothesis: hyp });
+  else act({ action: 'eliminate', hypothesis: hyp, cited: [...$('pickCited').querySelectorAll('input:checked')].map(i => i.value) }, 'board');
 };
-$('peek').onclick = () => $('drawer').classList.add('on');
-$('closeDrawer').onclick = () => $('drawer').classList.remove('on');
-$('fileTabs').onclick = (e) => { const b = e.target.closest('[data-tab]'); if (b) showTab(b.dataset.tab); };
-$('commit').onclick = () => { $('dx').value = ''; [...$('ddx').options].forEach(o => o.selected = false); $('dxDialog').showModal(); };
-$('dxCancel').onclick = () => $('dxDialog').close('cancel');
-$('dxDialog').onclose = () => { if ($('dxDialog').returnValue === 'ok' && $('dx').value) diagnose({ pathology: $('dx').value, differential: [...$('ddx').selectedOptions].map(o => o.value) }); };
-$('undet').onclick = () => diagnose({ undeterminable: true });
-$('claudeStep').onclick = claudeStep;
-$('claudePlay').onclick = async () => { for (let i = 0; i < 25 && !S.view.done; i++) { if (!await claudeStep()) break; } };
-$('baselinePlay').onclick = async () => { for (let i = 0; i < 25 && !S.view.done; i++) { if (!await doctorStep('baseline')) break; await new Promise(r => setTimeout(r, 350)); } };
-$('presetSel').onchange = newCase;
 
-init().catch(e => { $('err').textContent = 'failed to load: ' + e.message; });
+$('newCase').onclick = newCase; $('presetSel').onchange = newCase; $('sitSel').onchange = newCase;
+$('continueBtn').onclick = () => S.view.findings ? show('chart') : act({ action: 'history_exam' });
+$('claudeBtn').onclick = () => playOut('claude'); $('baselineBtn').onclick = () => playOut('baseline');
+$('openBoard').onclick = () => show('board');
+$('escalateChart').onclick = () => act({ action: 'escalate' }, 'chart');
+$('tests').onclick = (e) => { const b = e.target.closest('[data-test]'); if (b && !b.disabled) act({ action: 'order', test: b.dataset.test }); };
+$('proposeBtn').onclick = () => openPick('propose'); $('crossBtn').onclick = () => openPick('eliminate'); $('dxBtn').onclick = () => openPick('diagnose');
+$('escBtn').onclick = () => act({ action: 'escalate' }, 'board'); $('undetBtn').onclick = () => act({ action: 'undeterminable' });
+$('resBack').onclick = () => show('board');
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || $('pickDialog').open) return;
+  const k = e.key.toLowerCase();
+  if (S.screen === 'arrival') { if (k === ' ' || k === 'enter') { e.preventDefault(); if (!$('continueBtn').disabled) $('continueBtn').click(); } else if (k === 'c' && !$('claudeBtn').disabled) $('claudeBtn').click(); else if (k === 'g' && !$('baselineBtn').disabled) $('baselineBtn').click(); }
+  else if (S.doctor) { if ((S.screen === 'verdict' || S.screen === 'day') && k === 'n') ($('nextBtn') || $('newDayBtn')).click(); }
+  else if (S.screen === 'chart' && k === 'enter') $('openBoard').click();
+  else if (S.screen === 'chart' && k === 'e') $('escalateChart').click();
+  else if (S.screen === 'board') { if (/^[1-9]$/.test(k)) { const b = $('tests').querySelector(`[data-key="${k}"]`); if (b && !b.disabled) b.click(); } else if (k === 'p') $('proposeBtn').click(); else if (k === 'x') $('crossBtn').click(); else if (k === 'd') $('dxBtn').click(); else if (k === 'e') $('escBtn').click(); else if (k === 'u') $('undetBtn').click(); }
+  else if (S.screen === 'result' && k === 'b') $('resBack').click();
+  else if (S.screen === 'verdict' && k === 'n') $('nextBtn').click();
+  else if (S.screen === 'day' && k === 'n') $('newDayBtn').click();
+});
+init().catch(e => { $('err').textContent = 'failed to load: ' + e.message; alert('failed to load: ' + e.message); });
 </script>
 </body>
 </html>

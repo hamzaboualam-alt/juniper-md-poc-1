@@ -1,0 +1,54 @@
+situation_id,step_id,order,title,timing,description,source_id
+chest_pain,chest_pain.s1,1,Focused history and exam,First minutes,Sets pre-test probability and picks the hypotheses to chase.,
+chest_pain,chest_pain.s2,2,12-lead ECG,Within 10 minutes of arrival,Best initial test; triggers the emergency pathway when ischemic.,acc_ed_cp
+chest_pain,chest_pain.s3,3,Chest radiograph,After clinical assessment and ECG,"Class 1 recommendation to look for other cardiac, pulmonary and thoracic causes.",aha_cp_rec
+chest_pain,chest_pain.s4,4,Serial high-sensitivity troponin and risk class,"Early, repeated per assay protocol","Feeds the clinical decision pathway (low, intermediate, high risk).",aha_cp_rec
+chest_pain,chest_pain.s5,5,Pre-test scoring of what is left,"In parallel, for open must-not-miss causes",A validated score sets the probability band that selects the next test.,
+chest_pain,chest_pain.s6,6,D-dimer,Only at low or intermediate probability,Rule-out blood test; never confirms.,
+chest_pain,chest_pain.s7,7,Definitive imaging for what remains,For hypotheses not yet eliminated,Settles what earlier steps could not.,
+chest_pain,chest_pain.s8,8,If the dangerous causes are eliminated,Last,Noncardiac causes become the working diagnosis.,
+dyspnea,dyspnea.s1,1,History and exam,First minutes,Sets which causes are plausible.,
+dyspnea,dyspnea.s2,2,12-lead ECG,Early,Screens for ischemia.,
+dyspnea,dyspnea.s3,3,Chest radiograph,Early,Finds lung causes and changes PE probability.,
+dyspnea,dyspnea.s4,4,Natriuretic peptide,Single measurement in new suspected heart failure,Rule-out test for heart failure.,
+dyspnea,dyspnea.s5,5,PE route,In parallel if PE is open,"Wells or PERC, then D-dimer or CTPA (see chest pain).",
+dyspnea,dyspnea.s6,6,Echocardiography,If heart failure is not ruled out,Confirms the cardiac abnormality.,
+lower_abdominal_pain,lower_abdominal_pain.s1,1,History and exam,First minutes,Location and migration of pain narrow the list.,
+lower_abdominal_pain,lower_abdominal_pain.s2,2,Pregnancy test,"Before imaging, in anyone who could be pregnant",Decides whether pregnancy causes are possible and which imaging is safe.,
+lower_abdominal_pain,lower_abdominal_pain.s3,3,Pelvic ultrasound with Doppler,"Suspected gynecologic cause, or pregnant",Transabdominal plus transvaginal ultrasound is the usual first imaging.,
+lower_abdominal_pain,lower_abdominal_pain.s4,4,Contrast CT,Nonpregnant adults with a suspected non-gynecologic cause,Most accurate test for appendicitis and other bowel causes.,
+headache,headache.s1,1,Red-flag history (SNNOOP10),First minutes,Structured screen of every new or different headache.,
+headache,headache.s2,2,Neurologic exam,First minutes,Decides which rules can be used.,
+headache,headache.s3,3,Ottawa SAH rule,"Alert patients, normal neuro exam, peak within 1 hour","Six features: age 40 or older, neck pain or stiffness, witnessed loss of consciousness, onset with exertion, thunderclap onset, limited neck flexion.",
+headache,headache.s4,4,Noncontrast head CT,As early as possible,First imaging test for suspected SAH and before LP in at-risk patients.,
+headache,headache.s5,5,Lumbar puncture or CT angiography,If still at risk after a negative CT,Second-line test chosen with the patient.,
+headache,headache.s6,6,If no red flags and secondary causes are excluded,Last,Primary headache becomes the working diagnosis.,
+fever_sepsis,fever_sepsis.s1,1,Screening tool,At triage,"NEWS/NEWS2, MEWS or SIRS rather than qSOFA alone (strong recommendation).",epocrates_ssc_2026
+fever_sepsis,fever_sepsis.s2,2,Grade the certainty,After screening,"Definite, probable, possible or unlikely sepsis, using the guideline's standard language.",ssc_2026_exec
+fever_sepsis,fever_sepsis.s3,3,Time-limited investigation,Possible sepsis without shock,Search for infection within a set time before committing to antimicrobials.,
+fever_sepsis,fever_sepsis.s4,4,Blood lactate,Suspected sepsis,Suggested in the 2021 edition; re-check against 2026.,
+fever_sepsis,fever_sepsis.s5,5,Source search,In parallel,Chest film; lumbar puncture when meningitis is suspected.,
+syncope,syncope.s1,1,Event history,First minutes,Separates low-risk reflex patterns from high-risk features.,
+syncope,syncope.s2,2,Exam with lying and standing blood pressure,Initial evaluation,Part of the standard initial evaluation.,
+syncope,syncope.s3,3,12-lead ECG,Initial evaluation,Class I in the initial evaluation.,acc_syncope_2017
+syncope,syncope.s4,4,Risk stratification and disposition,"After history, exam and ECG","Sorts patients into high, intermediate and low risk.",
+syncope,syncope.s5,5,Targeted tests only when suspected,Selected patients,"Routine labs, cardiac imaging and carotid imaging are not useful without a specific reason.",
+ugib,ugib.s1,1,Risk score,In the ED,Glasgow-Blatchford score.,
+ugib,ugib.s2,2,Endoscopy,Within 24 hours for hospitalized patients,Finds and treats the source.,acg_ugib
+leg_swelling,leg_swelling.s1,1,Pre-test probability (Wells for DVT),First,"Low, intermediate or high; DVT prevalence about 10% or less, 25% and 50% or more.",
+leg_swelling,leg_swelling.s2,2,Highly sensitive D-dimer,Low pre-test probability,Rule-out test.,
+leg_swelling,leg_swelling.s3,3,Compression ultrasound,"High probability, or positive D-dimer",Proximal or whole-leg ultrasound.,
+dizziness,dizziness.s1,1,Classify by timing and triggers,First,Decides which bedside test applies.,
+dizziness,dizziness.s2,2,Dix-Hallpike test,Positional episodes,Diagnoses posterior canal BPPV.,
+dizziness,dizziness.s3,3,HINTS exam by a trained clinician,Continuous dizziness,Separates central from peripheral patterns.,
+dizziness,dizziness.s4,4,MRI,Central or equivocal HINTS,Confirmatory test.,grace3_pdf
+focal_deficit,focal_deficit.s1,1,Bedside glucose,Before thrombolysis,Detects and urgently corrects severe hypoglycemia or hyperglycemia.,aha_stroke_2026_gc
+focal_deficit,focal_deficit.s2,2,Brain imaging: noncontrast CT or MRI,Within 25 minutes of arrival,"Assesses ischemic burden and excludes hemorrhage before any reperfusion treatment (class 1, level A).",aha_stroke_2026_gc
+focal_deficit,focal_deficit.s3,3,ECG and troponin,Baseline,"Recommended, but must not delay treatment.",
+focal_deficit,focal_deficit.s4,4,Vascular and perfusion imaging,Suspected large vessel occlusion within 24 hours; extended windows,CT/CTA or MRI/MRA as fast as possible for thrombectomy selection.,emdocs_stroke_2026
+low_back_pain,low_back_pain.s1,1,Red-flag history and exam,First visit,The cornerstone of initial assessment.,
+low_back_pain,low_back_pain.s2,2,No imaging if no red flags,Under 6 weeks,All imaging is rated usually not appropriate.,
+low_back_pain,low_back_pain.s3,3,MRI,"Red flags, or no improvement after 6 weeks",Modality of choice for most patients who need imaging.,
+flank_pain,flank_pain.s1,1,Noncontrast CT,Nonpregnant adults without known stones,Imaging study of choice.,
+flank_pain,flank_pain.s2,2,Ultrasound,"Pregnancy, or to look for obstruction",First choice in pregnancy; less sensitive for stones.,
+flank_pain,flank_pain.s3,3,Contrast CT or MRI,Noncontrast CT inconclusive,Second-line imaging.,

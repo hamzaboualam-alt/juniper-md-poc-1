@@ -1,0 +1,218 @@
+{
+ "id": "low_back_pain",
+ "title": "Acute low back pain",
+ "setting": "Primary care or ED",
+ "population": "Adults",
+ "priority": "Leading cause of disability under age 45; imaging overuse is a known problem.",
+ "priority_source": "ajnr_lbp",
+ "lead_guidelines": [
+  "acr_lbp"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Duration",
+   "detail": "Acute means 6 weeks or less.",
+   "source": "applied_rad_lbp"
+  },
+  {
+   "label": "Red flags",
+   "detail": "New urinary retention or overflow incontinence, loss of anal tone or fecal incontinence, saddle anesthesia, progressive leg weakness; also cancer history, infection, fracture risk.",
+   "source": "lbp_imaging"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Cauda equina features or severe or progressive deficit",
+   "detail": "MRI urgently.",
+   "source": "acr_lbp"
+  },
+  {
+   "urgent": false,
+   "label": "No red flags",
+   "detail": "No imaging for uncomplicated pain under 6 weeks.",
+   "source": "applied_rad_lbp"
+  }
+ ],
+ "gate_note": "Most uncomplicated acute low back pain needs no imaging.",
+ "gate_note_source": "acr_lbp",
+ "hypotheses": [
+  {
+   "id": "ces",
+   "name": "Cauda equina syndrome",
+   "short": "Cauda equina",
+   "tier": "must_not_miss",
+   "clue": "Retention, saddle anesthesia",
+   "clue_source": "lbp_imaging",
+   "status": "partial"
+  },
+  {
+   "id": "malig",
+   "name": "Spinal malignancy",
+   "short": "Malignancy",
+   "tier": "must_not_miss",
+   "clue": "Cancer history",
+   "clue_source": "acr_lbp",
+   "status": "partial"
+  },
+  {
+   "id": "infx",
+   "name": "Spinal infection",
+   "short": "Infection",
+   "tier": "must_not_miss",
+   "clue": "Infection red flags",
+   "clue_source": "acr_lbp",
+   "status": "partial"
+  },
+  {
+   "id": "fx",
+   "name": "Vertebral fracture",
+   "short": "Fracture",
+   "tier": "must_not_miss",
+   "clue": "Fracture red flags",
+   "clue_source": "acr_lbp",
+   "status": "partial"
+  },
+  {
+   "id": "mech",
+   "name": "Uncomplicated mechanical back pain",
+   "short": "Mechanical",
+   "tier": "other",
+   "clue": "No red flags",
+   "clue_source": "applied_rad_lbp",
+   "status": "partial"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Red-flag history and exam",
+   "timing": "First visit",
+   "description": "The cornerstone of initial assessment.",
+   "source": null,
+   "effects": {
+    "ces": {
+     "type": "steer",
+     "text": "Bladder, bowel or saddle symptoms, or progressive weakness.",
+     "source": "lbp_imaging"
+    },
+    "malig": {
+     "type": "steer",
+     "text": "Cancer history raises suspicion.",
+     "source": "acr_lbp"
+    },
+    "infx": {
+     "type": "steer",
+     "text": "Infection red flags raise suspicion.",
+     "source": "acr_lbp"
+    },
+    "fx": {
+     "type": "steer",
+     "text": "Fracture red flags raise suspicion.",
+     "source": "acr_lbp"
+    },
+    "mech": {
+     "type": "steer",
+     "text": "No red flags makes uncomplicated pain likely.",
+     "source": "acr_lbp"
+    }
+   },
+   "evidence": [],
+   "id": "low_back_pain.s1",
+   "order": 1
+  },
+  {
+   "title": "No imaging if no red flags",
+   "timing": "Under 6 weeks",
+   "description": "All imaging is rated usually not appropriate.",
+   "source": null,
+   "effects": {
+    "mech": {
+     "type": "steer",
+     "text": "Half of patients recover in 2 weeks and 90% by 3 months.",
+     "source": "applied_rad_lbp"
+    }
+   },
+   "evidence": [],
+   "id": "low_back_pain.s2",
+   "order": 2
+  },
+  {
+   "title": "MRI",
+   "timing": "Red flags, or no improvement after 6 weeks",
+   "description": "Modality of choice for most patients who need imaging.",
+   "source": null,
+   "effects": {
+    "ces": {
+     "type": "conf",
+     "text": "MRI evaluates the cauda equina better than CT.",
+     "source": "applied_rad_lbp"
+    },
+    "malig": {
+     "type": "conf",
+     "text": "MRI is preferred when malignancy is suspected.",
+     "source": "lbp_imaging"
+    },
+    "infx": {
+     "type": "conf",
+     "text": "MRI is the modality of choice for most patients who need imaging.",
+     "source": "lbp_imaging"
+    }
+   },
+   "evidence": [],
+   "id": "low_back_pain.s3",
+   "order": 3
+  }
+ ],
+ "rules": {
+  "ces": {
+   "validation": "ACR criteria and review.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Imaging every patient; it does not improve outcomes in uncomplicated pain.",
+     "source": "applied_rad_lbp",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No red flags means it is not pursued; MRI decides when flags are present."
+  },
+  "malig": {
+   "validation": "ACR criteria and review.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "Malignancy red flags as proven; most lack empirical support.",
+     "source": "lbp_imaging",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No exclusion rule beyond absent red flags."
+  },
+  "infx": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No exclusion rule beyond absent red flags."
+  },
+  "fx": {
+   "validation": "Partly sourced.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "No exclusion rule beyond absent red flags."
+  },
+  "mech": {
+   "validation": "Diagnosis of exclusion.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "What remains when red flags are absent."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Red-flag evidence",
+   "text": "Many red flags lack empirical support; validated thresholds are missing.",
+   "source": "lbp_imaging"
+  }
+ ]
+}

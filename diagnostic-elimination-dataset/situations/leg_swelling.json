@@ -1,0 +1,168 @@
+{
+ "id": "leg_swelling",
+ "title": "Unilateral leg swelling or pain (suspected DVT)",
+ "setting": "ED or outpatient",
+ "population": "Adults",
+ "priority": "High-volume VTE presentation with a GRADE guideline.",
+ "priority_source": null,
+ "lead_guidelines": [
+  "ash_vte"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "One-sided leg swelling or pain.",
+   "source": "ash_slides"
+  },
+  {
+   "label": "History",
+   "detail": "Prior DVT or PE, cancer, recent immobilization; whether another diagnosis is as likely.",
+   "source": "ash_slides"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Breathlessness or chest pain",
+   "detail": "Treat as suspected PE and use that route.",
+   "source": "ash_vte"
+  },
+  {
+   "urgent": false,
+   "label": "Leg symptoms only",
+   "detail": "Estimate pre-test probability, then test.",
+   "source": "ash_vte"
+  }
+ ],
+ "gate_note": "Diagnostic strategy depends on the estimated pre-test probability.",
+ "gate_note_source": "ash_vte",
+ "hypotheses": [
+  {
+   "id": "dvt",
+   "name": "Deep vein thrombosis",
+   "short": "DVT",
+   "tier": "must_not_miss",
+   "clue": "Swelling, risk factors",
+   "clue_source": "ash_slides",
+   "status": "sourced"
+  },
+  {
+   "id": "alt",
+   "name": "Alternative diagnosis",
+   "short": "Alternative",
+   "tier": "other",
+   "clue": "Another cause as likely",
+   "clue_source": "ash_slides",
+   "status": "stub"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Pre-test probability (Wells for DVT)",
+   "timing": "First",
+   "description": "Low, intermediate or high; DVT prevalence about 10% or less, 25% and 50% or more.",
+   "source": null,
+   "effects": {
+    "dvt": {
+     "type": "steer",
+     "text": "Sets which test comes first.",
+     "source": "ash_vte_pmc"
+    },
+    "alt": {
+     "type": "steer",
+     "text": "An alternative diagnosis being as likely lowers the score.",
+     "source": "ash_slides"
+    }
+   },
+   "evidence": [],
+   "id": "leg_swelling.s1",
+   "order": 1
+  },
+  {
+   "title": "Highly sensitive D-dimer",
+   "timing": "Low pre-test probability",
+   "description": "Rule-out test.",
+   "source": null,
+   "effects": {
+    "dvt": {
+     "type": "rule",
+     "text": "Negative D-dimer at low pre-test probability: no further testing.",
+     "source": "ash_vte"
+    }
+   },
+   "evidence": [],
+   "id": "leg_swelling.s2",
+   "order": 2
+  },
+  {
+   "title": "Compression ultrasound",
+   "timing": "High probability, or positive D-dimer",
+   "description": "Proximal or whole-leg ultrasound.",
+   "source": null,
+   "effects": {
+    "dvt": {
+     "type": "rule",
+     "text": "Positive scan confirms; a negative whole-leg scan or negative serial proximal scans end the work-up.",
+     "source": "mdedge_dvt"
+    }
+   },
+   "evidence": [],
+   "id": "leg_swelling.s3",
+   "order": 3
+  }
+ ],
+ "rules": {
+  "dvt": {
+   "validation": "ASH 2018 GRADE guideline (reviewed 2022).",
+   "eliminate_when": [
+    {
+     "text": "Low pre-test probability and negative highly sensitive D-dimer.",
+     "source": "ash_vte",
+     "inferred": false
+    },
+    {
+     "text": "Negative whole-leg ultrasound, negative serial proximal ultrasound, or negative D-dimer after a negative proximal scan: no further testing.",
+     "source": "mdedge_dvt",
+     "inferred": false
+    },
+    {
+     "text": "ASH 2018: at intermediate or high probability, proximal or whole-limb ultrasound first, with a one-week repeat after a negative scan in higher-prevalence groups.",
+     "source": "jama_vte",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "D-dimer as the first test at high probability; imaging is warranted.",
+     "source": "ash_vte",
+     "inferred": false
+    },
+    {
+     "text": "A single negative proximal scan when the D-dimer is positive; repeat at one week or scan the whole leg.",
+     "source": "chest_at9_dvt",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "alt": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Specific alternatives (cellulitis, ruptured Baker cyst) not sourced."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Score cut-offs",
+   "text": "Exact Wells DVT cut-offs differ between versions; prevalence bands are used instead.",
+   "source": "ash_vte_pmc"
+  },
+  {
+   "title": "Distal DVT",
+   "text": "The clinical relevance of calf-vein clots found on ultrasound is uncertain.",
+   "source": "jama_vte"
+  }
+ ]
+}

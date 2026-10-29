@@ -1,0 +1,25 @@
+situation_id,position,urgent,label,detail,source_id
+chest_pain,1,True,Unstable or ECG emergency,"Ongoing ischemic discomfort, dynamic ECG change, hemodynamic instability or serious arrhythmia: emergency escalation.",iatrox_cp
+chest_pain,2,False,"Stable, ECG non-diagnostic","Work through the hypotheses, must-not-miss first, with serial high-sensitivity troponin.",iatrox_cp
+dyspnea,1,True,Respiratory failure or instability,Resuscitate first; the elimination route assumes a stabilized patient.,
+dyspnea,2,False,Stable,"Work through heart, lung and clot causes in parallel.",
+lower_abdominal_pain,1,True,Positive pregnancy test with pain,Ectopic pregnancy must be considered; ultrasound first.,acr_pelvic_narr
+lower_abdominal_pain,2,False,Not pregnant,Choose imaging by suspected source: gynecologic or not.,acr_pelvic_2023
+headache,1,True,Neurologic deficit or decreased consciousness,A red flag for a secondary cause; the ACEP rule-out tools below do not apply because they assume a normal neurologic exam.,acep_headache
+headache,2,False,"Alert, normal neurologic exam","Screen red flags, then apply the SAH rule if the headache peaked within 1 hour.",acep_headache
+fever_sepsis,1,True,"Probable or definite sepsis, or shock",Treat as an emergency: antimicrobials within 1 hour of recognition.,umem_ssc_2026
+fever_sepsis,2,False,Possible sepsis without shock,"Time-limited investigation; if infection is likely, antimicrobials within 3 hours.",umem_ssc_2026
+syncope,1,True,Any high-risk feature,"New chest discomfort, breathlessness, abdominal pain or headache; syncope during exertion or supine; palpitations right before syncope; structural heart disease. Evaluate in hospital or with ECG monitoring.",esc_syncope_table
+syncope,2,False,Low-risk features only,"Typical reflex prodrome or trigger, or syncope on standing up. Likely reflex or orthostatic; discharge can be considered.",sec_syncope
+ugib,1,True,Not very low risk,Hospital care; endoscopy within 24 hours.,acg_ugib
+ugib,2,False,Very low risk (Glasgow-Blatchford 0 to 1),"Outpatient follow-up rather than admission, if no other reason to stay.",acg_ugib
+leg_swelling,1,True,Breathlessness or chest pain,Treat as suspected PE and use that route.,ash_vte
+leg_swelling,2,False,Leg symptoms only,"Estimate pre-test probability, then test.",ash_vte
+dizziness,1,True,Continuous dizziness (acute vestibular syndrome),"Stroke must be excluded with HINTS by a trained examiner, then MRI if central or equivocal.",grace3_pdf
+dizziness,2,False,Positional (triggered) episodes,Dix-Hallpike for posterior canal BPPV; no CT and no routine MRI.,grace3
+focal_deficit,1,True,Within a treatment window,Stroke pathway immediately; brain imaging within 25 minutes; other tests must not delay reperfusion.,medscape_stroke_2026
+focal_deficit,2,False,Outside known windows,Still image urgently; the 2026 guideline widens some windows with perfusion imaging.,pn_stroke_2026
+low_back_pain,1,True,Cauda equina features or severe or progressive deficit,MRI urgently.,acr_lbp
+low_back_pain,2,False,No red flags,No imaging for uncomplicated pain under 6 weeks.,applied_rad_lbp
+flank_pain,1,True,Signs of infection,Covered by the separate ACR acute pyelonephritis topic.,acr_flank_narr
+flank_pain,2,False,No infection signs,Image by patient group.,acr_flank

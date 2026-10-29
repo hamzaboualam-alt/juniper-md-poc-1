@@ -1,0 +1,183 @@
+{
+ "id": "flank_pain",
+ "title": "Acute flank pain (suspected stone)",
+ "setting": "Emergency department",
+ "population": "Adults, including pregnancy",
+ "priority": "Has a dedicated ACR topic with four variants.",
+ "priority_source": "acr_flank_narr",
+ "lead_guidelines": [
+  "acr_flank"
+ ],
+ "status": "partial",
+ "layer0": [
+  {
+   "label": "Complaint",
+   "detail": "Sudden, colicky flank pain, often with blood in the urine.",
+   "source": "acr_flank_old"
+  },
+  {
+   "label": "History",
+   "detail": "Known stones, pregnancy, signs of infection.",
+   "source": "acr_flank_narr"
+  }
+ ],
+ "gate": [
+  {
+   "urgent": true,
+   "label": "Signs of infection",
+   "detail": "Covered by the separate ACR acute pyelonephritis topic.",
+   "source": "acr_flank_narr"
+  },
+  {
+   "urgent": false,
+   "label": "No infection signs",
+   "detail": "Image by patient group.",
+   "source": "acr_flank"
+  }
+ ],
+ "gate_note": "Pregnancy changes the first test.",
+ "gate_note_source": "acr_flank",
+ "hypotheses": [
+  {
+   "id": "stone",
+   "name": "Ureteral stone",
+   "short": "Stone",
+   "tier": "other",
+   "clue": "Colicky pain, hematuria",
+   "clue_source": "acr_flank_old",
+   "status": "sourced"
+  },
+  {
+   "id": "pyelo",
+   "name": "Pyelonephritis or infected obstruction",
+   "short": "Infection",
+   "tier": "must_not_miss",
+   "clue": "Fever, infection signs",
+   "clue_source": "acr_flank_narr",
+   "status": "stub"
+  },
+  {
+   "id": "alt_abd",
+   "name": "Other abdominal cause (appendicitis, diverticulitis, ovarian torsion)",
+   "short": "Other abdominal",
+   "tier": "must_not_miss",
+   "clue": "Atypical features",
+   "clue_source": "acr_flank_old",
+   "status": "partial"
+  }
+ ],
+ "steps": [
+  {
+   "title": "Noncontrast CT",
+   "timing": "Nonpregnant adults without known stones",
+   "description": "Imaging study of choice.",
+   "source": null,
+   "effects": {
+    "stone": {
+     "type": "conf",
+     "text": "Reliably shows stone size, position and complications.",
+     "source": "acr_flank"
+    },
+    "alt_abd": {
+     "type": "conf",
+     "text": "Also diagnoses other causes of abdominal pain.",
+     "source": "acr_flank"
+    }
+   },
+   "evidence": [
+    {
+     "text": "In one prospective comparison, CT found an alternative diagnosis in about a third of patients.",
+     "source": "relias_nephro"
+    },
+    {
+     "text": "For causes other than stones, noncontrast CT and ultrasound had similar accuracy (CT sensitivity 74%).",
+     "source": "flank_alt_study"
+    }
+   ],
+   "id": "flank_pain.s1",
+   "order": 1
+  },
+  {
+   "title": "Ultrasound",
+   "timing": "Pregnancy, or to look for obstruction",
+   "description": "First choice in pregnancy; less sensitive for stones.",
+   "source": null,
+   "effects": {
+    "stone": {
+     "type": "steer",
+     "text": "Shows obstruction; MRI may follow in pregnancy.",
+     "source": "acr_flank"
+    }
+   },
+   "evidence": [],
+   "id": "flank_pain.s2",
+   "order": 2
+  },
+  {
+   "title": "Contrast CT or MRI",
+   "timing": "Noncontrast CT inconclusive",
+   "description": "Second-line imaging.",
+   "source": null,
+   "effects": {
+    "stone": {
+     "type": "conf",
+     "text": "CT urogram or MRI may be appropriate.",
+     "source": "acr_flank"
+    }
+   },
+   "evidence": [],
+   "id": "flank_pain.s3",
+   "order": 3
+  }
+ ],
+ "rules": {
+  "stone": {
+   "validation": "ACR criteria for test choice; meta-analysis data for accuracy.",
+   "eliminate_when": [
+    {
+     "text": "No stone or secondary signs on noncontrast CT: pooled sensitivity 94 to 100% in a meta-analysis.",
+     "source": "relias_nephro",
+     "inferred": false
+    },
+    {
+     "text": "Low-dose CT performs similarly (negative likelihood ratio about 0.04) for stones of 2 to 3 mm or more.",
+     "source": "bestbets_ldct",
+     "inferred": false
+    }
+   ],
+   "do_not_rely": [
+    {
+     "text": "Ultrasound alone to exclude a stone; it is less sensitive.",
+     "source": "acr_flank",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": null
+  },
+  "pyelo": {
+   "validation": "Not yet researched.",
+   "eliminate_when": [],
+   "do_not_rely": [],
+   "no_rule_note": "Separate ACR pyelonephritis topic not sourced."
+  },
+  "alt_abd": {
+   "validation": "Comparative study.",
+   "eliminate_when": [],
+   "do_not_rely": [
+    {
+     "text": "A stone-protocol CT as proof that nothing else is wrong; one study found 74% sensitivity for alternative causes.",
+     "source": "flank_alt_study",
+     "inferred": false
+    }
+   ],
+   "no_rule_note": "No reliable exclusion rule; noncontrast CT missed about a quarter of alternative causes in one study."
+  }
+ },
+ "gaps": [
+  {
+   "title": "Vascular causes",
+   "text": "Aortic aneurysm as a flank pain mimic was not sourced.",
+   "source": null
+  }
+ ]
+}

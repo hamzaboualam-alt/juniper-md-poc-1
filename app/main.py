@@ -1,49 +1,58 @@
 from __future__ import annotations
 
-import os
 import random
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from .baseline import GreedyDoctor
-from .data import Dataset
-from .difficulty import PRESETS, eligible
-from .doctor_llm import ClaudeDoctor, DoctorUnavailable
-from .eval import EvalStore, presets, run_eval, summarise
-from .game import BudgetExhausted, Case
+from .baseline import RouteDoctor
+from .difficulty import PRESETS
+from .doctor_llm import DEFAULT_MODEL, ClaudeDoctor, DoctorUnavailable
+from .elim import ElimCase, IllegalMove, eligible, new_case
+from .eval import EvalStore, compare, presets, run_eval, summarise
+from .shift import Shift, new_shift
+from .worlds import load_worlds
 
 STATIC = Path(__file__).resolve().parent.parent / "static"
+CLAUDE_MODELS = ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"]
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    limit = os.environ.get("DDX_LIMIT")
-    app.state.ds = Dataset.load(limit=int(limit) if limit else None)
+    app.state.worlds = load_worlds()
     app.state.cases = {}
-    app.state.doctor = None
+    app.state.shifts = {}
+    app.state.doctors = {}
     app.state.doctor_error = None
-    app.state.baseline = GreedyDoctor(app.state.ds)
+    app.state.baseline = RouteDoctor(app.state.worlds)
     app.state.evals = EvalStore()
     try:
-        app.state.doctor = ClaudeDoctor(app.state.ds)
+        app.state.doctors[DEFAULT_MODEL] = ClaudeDoctor(app.state.worlds, DEFAULT_MODEL)
     except DoctorUnavailable as exc:
         app.state.doctor_error = str(exc)
     yield
 
 
-app = FastAPI(title="DDXPlus diagnosis game POC", lifespan=lifespan)
+app = FastAPI(title="Diagnosis by elimination POC", lifespan=lifespan)
 
 
-def _case(case_id: str) -> Case:
+def _case(case_id: str) -> ElimCase:
     case = app.state.cases.get(case_id)
     if case is None:
         raise HTTPException(404, "unknown case")
     return case
+
+
+def _shift(shift_id: str) -> Shift:
+    shift = app.state.shifts.get(shift_id)
+    if shift is None:
+        raise HTTPException(404, "unknown shift")
+    return shift
 
 
 def _preset(name: str):
@@ -52,18 +61,36 @@ def _preset(name: str):
     return PRESETS[name]
 
 
-class AskBody(BaseModel):
-    code: str
+def _doctor(name: str, model: str | None = None):
+    if name == "baseline":
+        return app.state.baseline
+    if name == "claude":
+        model = model or DEFAULT_MODEL
+        if model not in app.state.doctors:
+            if app.state.doctor_error:
+                raise HTTPException(409, app.state.doctor_error)
+            try:
+                app.state.doctors[model] = ClaudeDoctor(app.state.worlds, model)
+            except DoctorUnavailable as exc:
+                raise HTTPException(409, str(exc))
+        return app.state.doctors[model]
+    raise HTTPException(400, f"unknown doctor {name}")
 
 
-class DiagnoseBody(BaseModel):
-    pathology: str | None = None
-    differential: list[str] = []
-    undeterminable: bool = False
+class ActionBody(BaseModel):
+    action: str
+    test: str | None = None
+    hypothesis: str | None = None
+    hypotheses: list[str] = []
+    cited: list[str] = []
+    case_id: str | None = None
+    rationale: str = ""
+    thinking: str = ""
 
 
 class EvalBody(BaseModel):
     doctor: str = "claude"
+    model: str | None = None
     preset: str = "standard"
     n: int = 20
     seed: int | None = None
@@ -81,47 +108,42 @@ def eval_page():
 
 @app.get("/api/meta")
 def meta():
-    ds: Dataset = app.state.ds
+    worlds = app.state.worlds
     return {
-        "patients": len(ds.patients),
-        "hard_patients": len(eligible(ds, PRESETS["hard"])),
-        "conditions": len(ds.conditions),
-        "questions": len(ds.evidences),
-        "claude_available": app.state.doctor is not None,
+        "situations": [
+            {"id": w.situation, "title": w.title, "hypotheses": len(w.hypotheses), "must_not_miss": len(w.must_not_miss()),
+             "tests": len(w.tests), "cases": len(w.cases), "traps": sum(1 for c in w.cases if c.decoy)}
+            for w in worlds.values()
+        ],
+        "cases": sum(len(w.cases) for w in worlds.values()),
+        "claude_available": app.state.doctor_error is None,
         "claude_error": app.state.doctor_error,
+        "claude_models": CLAUDE_MODELS,
+        "default_model": DEFAULT_MODEL,
         "presets": presets(),
     }
 
 
-@app.get("/api/questions")
-def questions():
-    ds: Dataset = app.state.ds
-    return [
-        {
-            "code": ev.code,
-            "question": ev.question,
-            "kind": ev.kind,
-            "answers": list(ev.values.values()) or (["Yes", "No"] if ev.data_type == "B" else []),
-        }
-        for ev in ds.evidences.values()
-    ]
-
-
-@app.get("/api/conditions")
-def conditions():
-    ds: Dataset = app.state.ds
-    return [
-        {"name": c.name, "icd10": c.icd10, "severity": c.severity}
-        for c in sorted(ds.conditions.values(), key=lambda c: c.name)
-    ]
+# ---- single cases -----------------------------------------------------------
 
 
 @app.post("/api/cases")
-def new_case(seed: int | None = None, preset: str = "warmup"):
-    ds: Dataset = app.state.ds
+def new_case_route(seed: int | None = None, preset: str = "standard", situation: str | None = None, template: str | None = None):
     d = _preset(preset)
-    rng = random.Random(seed)
-    case = Case(ds, rng.choice(eligible(ds, d)), difficulty=d)
+    if d.shift:
+        raise HTTPException(400, f"{preset} is a clinic-day preset; use /api/shifts")
+    worlds = app.state.worlds
+    if template:
+        hit = [(w, c) for w in worlds.values() for c in w.cases if c.id == template]
+        if not hit:
+            raise HTTPException(400, f"unknown case template {template}")
+        case = ElimCase(*hit[0], difficulty=d)
+    else:
+        pool = [(w, c) for w, c in eligible(worlds, d) if situation is None or w.situation == situation]
+        if not pool:
+            raise HTTPException(400, "no case matches that situation and preset")
+        w, c = random.Random(seed).choice(pool)
+        case = ElimCase(w, c, difficulty=d)
     app.state.cases[case.id] = case
     return case.view()
 
@@ -136,87 +158,97 @@ def truth(case_id: str):
     return _case(case_id).truth()
 
 
-@app.post("/api/cases/{case_id}/ask")
-def ask(case_id: str, body: AskBody):
-    case = _case(case_id)
+def _apply(target: Any, body: ActionBody, by: str = "human") -> None:
     try:
-        case.ask(body.code)
-    except KeyError:
-        raise HTTPException(400, f"unknown question code {body.code}")
-    except BudgetExhausted as exc:
+        target.apply(body.model_dump() | {"by": by})
+    except IllegalMove as exc:
         raise HTTPException(409, str(exc))
-    except ValueError as exc:
-        raise HTTPException(409, str(exc))
-    return case.view()
+    except KeyError as exc:
+        raise HTTPException(400, f"missing field for this action: {exc}")
 
 
-@app.post("/api/cases/{case_id}/diagnose")
-def diagnose(case_id: str, body: DiagnoseBody):
+@app.post("/api/cases/{case_id}/act")
+def case_act(case_id: str, body: ActionBody):
     case = _case(case_id)
-    if not body.undeterminable and not body.pathology:
-        raise HTTPException(400, "pick a condition or declare the case undeterminable")
-    try:
-        case.diagnose(body.pathology, body.differential, body.undeterminable)
-    except KeyError:
-        raise HTTPException(400, f"unknown condition {body.pathology}")
-    except ValueError as exc:
-        raise HTTPException(409, str(exc))
+    _apply(case, body)
     return case.view()
-
-
-def _doctor(name: str):
-    if name == "baseline":
-        return app.state.baseline
-    if name == "claude":
-        if app.state.doctor is None:
-            raise HTTPException(409, app.state.doctor_error or "Claude doctor unavailable")
-        return app.state.doctor
-    raise HTTPException(400, f"unknown doctor {name}")
 
 
 @app.post("/api/cases/{case_id}/{doctor}/step")
-def doctor_step(case_id: str, doctor: str):
+def doctor_step(case_id: str, doctor: str, model: str | None = None):
     case = _case(case_id)
-    doc = _doctor(doctor)
+    doc = _doctor(doctor, model)
     if case.result is not None:
-        raise HTTPException(409, "case already diagnosed")
+        raise HTTPException(409, "case already closed")
     try:
         action = doc.decide(case)
-        if action.action == "ask":
-            case.ask(action.evidence_code, by=doc.name, rationale=action.rationale)
-        else:
-            case.diagnose(
-                action.pathology,
-                list(action.differential or []),
-                undeterminable=action.action == "undeterminable",
-                by=doc.name,
-                rationale=action.rationale,
-            )
+        case.apply(action | {"by": doc.name})
     except DoctorUnavailable as exc:
         raise HTTPException(502, str(exc))
-    except BudgetExhausted as exc:
-        raise HTTPException(409, str(exc))
-    except KeyError as exc:
-        raise HTTPException(502, f"the doctor named something unknown: {exc}")
+    except IllegalMove as exc:
+        raise HTTPException(409, f"the doctor tried an illegal move: {exc}")
     return case.view()
+
+
+# ---- clinic days ------------------------------------------------------------
+
+
+@app.post("/api/shifts")
+def new_shift_route(seed: int | None = None, preset: str = "clinic-day"):
+    d = _preset(preset)
+    if not d.shift:
+        raise HTTPException(400, f"{preset} is a single-case preset; use /api/cases")
+    shift = new_shift(app.state.worlds, d, random.Random(seed))
+    app.state.shifts[shift.id] = shift
+    for cid, case in shift.cases.items():
+        app.state.cases[cid] = case
+    return shift.view()
+
+
+@app.get("/api/shifts/{shift_id}")
+def get_shift(shift_id: str):
+    return _shift(shift_id).view()
+
+
+@app.post("/api/shifts/{shift_id}/act")
+def shift_act(shift_id: str, body: ActionBody):
+    shift = _shift(shift_id)
+    _apply(shift, body)
+    return shift.view()
+
+
+@app.post("/api/shifts/{shift_id}/{doctor}/step")
+def shift_step(shift_id: str, doctor: str, model: str | None = None):
+    shift = _shift(shift_id)
+    doc = _doctor(doctor, model)
+    if shift.result is not None:
+        raise HTTPException(409, "the day is over")
+    try:
+        action = doc.decide_shift(shift)
+        shift.apply(action | {"by": doc.name})
+    except DoctorUnavailable as exc:
+        raise HTTPException(502, str(exc))
+    except IllegalMove as exc:
+        raise HTTPException(409, f"the doctor tried an illegal move: {exc}")
+    return shift.view()
+
+
+# ---- evaluation -------------------------------------------------------------
 
 
 @app.post("/api/eval/runs")
 def start_eval(body: EvalBody):
     if not 1 <= body.n <= 500:
         raise HTTPException(400, "n must be between 1 and 500")
-    doc = _doctor(body.doctor)
-    run_id = run_eval(app.state.evals, app.state.ds, doc, _preset(body.preset), body.n, body.seed)
+    doc = _doctor(body.doctor, body.model)
+    run_id = run_eval(app.state.evals, app.state.worlds, doc, _preset(body.preset), body.n, body.seed)
     return {"run_id": run_id}
 
 
 @app.get("/api/eval/runs")
 def list_runs():
     store: EvalStore = app.state.evals
-    out = []
-    for r in store.runs():
-        out.append(r | {"summary": summarise(store.cases(r["id"]))})
-    return out
+    return [r | {"summary": summarise(store.cases(r["id"]))} for r in store.runs()]
 
 
 @app.get("/api/eval/runs/{run_id}")
@@ -227,6 +259,15 @@ def get_run(run_id: str):
         raise HTTPException(404, "unknown run")
     cases = store.cases(run_id)
     return run | {"summary": summarise(cases), "cases": cases}
+
+
+@app.get("/api/eval/compare")
+def compare_runs(a: str, b: str):
+    store: EvalStore = app.state.evals
+    ra, rb = store.run(a), store.run(b)
+    if ra is None or rb is None:
+        raise HTTPException(404, "unknown run")
+    return compare(ra | {"summary": summarise(store.cases(a))}, rb | {"summary": summarise(store.cases(b))})
 
 
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
